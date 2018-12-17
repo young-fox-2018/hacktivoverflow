@@ -3,7 +3,7 @@ module.exports =function(){
     let dd = someDate.getDate();
     let mm = someDate.getMonth() + 1;
     let y = someDate.getFullYear();
-    let closed = dd + ''+ mm + ''+ y;
+    let closed = dd + '/'+ mm + '/'+ y;
     
     return closed
 }

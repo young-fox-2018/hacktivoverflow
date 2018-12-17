@@ -16,7 +16,6 @@ class Controller {
             status: true,
             closed: getCloseDate(),
             tags: tag,
-            createdAt: dateNow()
         })
             .then(data => {
                 res.status(201).json(data)
@@ -62,7 +61,11 @@ class Controller {
     }
 
     static getAllQuestion(req, res) {
-        questionModel.find({})
+        let query = {}
+        if (req.query){
+            query=req.query
+        }
+        questionModel.find(query)
             .populate('userId')
             .then(data => {
                 res.status(200).json(data)
@@ -86,7 +89,6 @@ class Controller {
     }
 
     static upvote(req, res) {
-        console.log('masuk')
         questionModel.findOne({
             _id: req.params.id
         })
@@ -115,22 +117,107 @@ class Controller {
                                     new: true
                                 })])
                 } else if (filteredup.length != 0 && filtereddown.length == 0) {
-                    return questionModel.findOneAndUpdate({
-                        _id: req.params.id
-                    }, {
-                            $pull: { 'upvote': req.user._id }
+                    return Promise
+                        .all([questionModel.findOneAndUpdate({
+                            _id: req.params.id
                         }, {
-                            new: true
-                        })
+                                $pull: { 'upvote': req.user._id }
+                            }, {
+                                new: true
+                            }), userModel.findOneAndUpdate({
+                                _id: data.userId._id
+                            }, {
+                                    reputation: data.userId.reputation - 1
+                                }, {
+                                    new: true
+                                })])
                 } else if (filteredup.length == 0 && filtereddown != 0) {
-                    return questionModel.findOneAndUpdate({
-                        _id: req.params.id
-                    }, {
-                            $pull: { 'downvote': req.user._id },
-                            $push: { 'upvote': req.user._id }
+                    return Promise
+                        .all([questionModel.findOneAndUpdate({
+                            _id: req.params.id
                         }, {
-                            new: true
-                        })
+                                $push: { 'upvote': req.user._id },
+                                $pull: { 'downvote': req.user._id }
+                            }, {
+                                new: true
+                            }), userModel.findOneAndUpdate({
+                                _id: data.userId._id
+                            }, {
+                                    reputation: data.userId.reputation + 2
+                                }, {
+                                    new: true
+                                })])
+                } else {
+                    res.status(403).json({ errMsg: 'err' })
+                }
+            })
+            .then(data => {
+                res.status(202).json(data)
+            })
+            .catch(err => {
+                res.status(400).json(err)
+            })
+    }
+
+    static downvote(req, res) {
+        questionModel.findOne({
+            _id: req.params.id
+        })
+            .populate('userId')
+            .then(data => {
+                let filteredup = data.upvote.filter(val => {
+                    return val == req.user._id
+                })
+                let filtereddown = data.downvote.filter(val => {
+                    return val == req.user._id
+                })
+
+                if (filteredup.length == 0 && filtereddown.length == 0) {
+                    return Promise
+                        .all([questionModel.findOneAndUpdate({
+                            _id: req.params.id
+                        }, {
+                                $push: { 'downvote': req.user._id }
+                            }, {
+                                new: true
+                            }), userModel.findOneAndUpdate({
+                                _id: data.userId._id
+                            }, {
+                                    reputation: data.userId.reputation - 1
+                                }, {
+                                    new: true
+                                })])
+                } else if (filteredup.length == 0 && filtereddown.length != 0) {
+                    return Promise
+                        .all([questionModel.findOneAndUpdate({
+                            _id: req.params.id
+                        }, {
+                                $pull: { 'downvote': req.user._id }
+                            }, {
+                                new: true
+                            }), userModel.findOneAndUpdate({
+                                _id: data.userId._id
+                            }, {
+                                    reputation: data.userId.reputation + 1
+                                }, {
+                                    new: true
+                                })])
+                } else if (filteredup.length != 0 && filtereddown == 0) {
+                    return Promise
+                        .all([questionModel.findOneAndUpdate({
+                            _id: req.params.id
+                        }, {
+                                $push: { 'downvote': req.user._id },
+                                $pull: { 'upvote': req.user._id }
+                            }, {
+                                new: true
+                            }), userModel.findOneAndUpdate({
+                                _id: data.userId._id
+                            }, {
+                                    reputation: data.userId.reputation - 2
+                                }, {
+                                    new: true
+                                })])
                 } else {
                     res.status(403).json({ errMsg: 'err' })
                 }

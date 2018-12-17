@@ -19,7 +19,7 @@ kue.app.listen(4000, function(){
   console.log('redis conect on port 4000')
 });
 
-//SEND WELCOME MAIL
+//SEND MAIL
 que.process('email', function(job,done){
   console.log(job.data)
   sendEmail(job.data.email, {header: job.data.title, main: job.data.template}, done)

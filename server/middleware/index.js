@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const userModel = require('../models/user')
 const questionModel = require('../models/question')
+const answerModel = require('../models/answer')
 require('dotenv').config()
 
 class middleware {
@@ -64,6 +65,24 @@ class middleware {
                     msg: 'cant vote self'
                 })
             } else{
+                next()
+            }
+        })
+        .catch(err => {
+            res.status(400).json(err)
+        })
+    }
+
+    static checkUpdateAnswer(req,res,next){
+        answerModel.findOne({
+            _id: req.params.id
+        })
+        .then(answer => {
+            if (answer.userId != req.user._id){
+                res.status(401).json({
+                    msg:'unauthorized user'
+                })
+            } else {
                 next()
             }
         })

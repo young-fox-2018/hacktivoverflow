@@ -8,6 +8,7 @@ router.get('/', Controller.getAllQuestion)
 
 router.use(middleware.checkLogin)
 router.post('/upvote/:id',middleware.checUpvoteQuest, Controller.upvote)
+router.post('/downvote/:id',middleware.checUpvoteQuest, Controller.downvote)
 router.get('/users', Controller.getUserQuestion)
 router.post('/', Controller.addQuestion)
 router.put('/:id', Controller.updateQuestion)

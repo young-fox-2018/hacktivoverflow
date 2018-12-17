@@ -9,6 +9,7 @@ const cors = require('cors')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var questionRouter = require('./routes/question');
+var answerRouter = require('./routes/answer');
 
 
 
@@ -28,6 +29,7 @@ app.use(cors())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/questions', questionRouter)
+app.use('/answers', answerRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
