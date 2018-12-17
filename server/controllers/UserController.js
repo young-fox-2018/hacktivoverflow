@@ -54,42 +54,37 @@ module.exports = {
     .catch(err => {
       res.status(500).json({
         msg: 'Internal server error',
-        error: err.message,
+        error: err.errors,
       });
     });
   },
   loginUser: function(req, res, next) {
     const {email, password} = req.body;
-    if(email && password) {
-      User.findOne({email})
-      .then(user => {
-        if(user && bcrypt.compareSync(password, user.password)) {
-          const token = generateToken(user);
-          res.status(200).json({
-            msg: 'User successfully login.',
-            token,
-            name: user.name,
-          });
-        } if(user) {
-          res.status(400).json({
-            msg: 'Wrong password.'
-          })
-        } else {
-          res.status(400).json({
-            msg: 'User not found.',
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).json({
-          msg: 'Internal server error',
-          error: err.message,
+    User.findOne({email})
+    .then(user => {
+      if(user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user);
+        res.status(200).json({
+          msg: 'User successfully login.',
+          token,
+          name: user.name,
+          email
         });
+      } if(user) {
+        res.status(400).json({
+          msg: 'Wrong password.'
+        })
+      } else {
+        res.status(400).json({
+          msg: 'User not found.',
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        msg: 'Internal server error',
+        error: err.message,
       });
-    } else {
-      res.status(400).json({
-        msg: 'Email and password cannot be empty.',
-      });
-    }
+    });
   },
 };

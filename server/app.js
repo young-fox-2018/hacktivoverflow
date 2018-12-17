@@ -10,12 +10,14 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/hacktivOverflow' + NODE_ENV);
 
 const indexRouter = require('./routes/user');
+const questionRouter = require('./routes/question');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 
 app.use('/', indexRouter);
+app.use('/questions', questionRouter);
 
 app.listen(port, () => {
   console.log('Server running on port ' + port);
