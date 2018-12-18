@@ -20,8 +20,11 @@
         <p>By: {{questionDetail.authorId.name}}</p>
       </div>
     </div>
-    <div class="columns" id="comment">
+    <div class="columns comment">
       Answers:
+    </div>
+    <div class="columns comment">
+      <input class="input" type="text" placeholder="Answer here...">
     </div>
   </div>
 </template>
@@ -34,21 +37,21 @@ export default {
   data() {
     return {
       questionDetail: {
-        authorId: {}
+        authorId: {},
       },
     };
   },
   created() {
     axios.get('/questions/' + this.$route.params.id)
-    .then(({ data }) => {
-      // console.log('got question detail');
-      this.questionDetail = data.question;
-      this.questionDetail.posted_at = new Date(this.questionDetail.posted_at).toISOString().substring(0, 10);
-    })
-    .catch(err => {
-      console.log('error getting question detail');
-      console.log(err.response);
-    });
+      .then(({ data }) => {
+        // console.log('got question detail');
+        this.questionDetail = data.question;
+        this.questionDetail.posted_at = new Date(this.questionDetail.posted_at).toISOString().substring(0, 10);
+      })
+      .catch(err => {
+        console.log('error getting question detail');
+        console.log(err.response);
+      });
   },
 };
 </script>
@@ -74,7 +77,7 @@ hr {
   align-items: center;
   align-content: center;
 }
-#comment {
+.comment {
   margin: .5rem;
 }
 </style>

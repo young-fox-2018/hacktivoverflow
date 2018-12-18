@@ -26,7 +26,7 @@ export default new Router({
       ],
     },
     {
-      path: '/new-question',
+      path: '/whatsapp',
       name: 'newQuestion',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
