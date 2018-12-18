@@ -59,6 +59,7 @@ module.exports = {
     });
   },
   loginUser: function(req, res, next) {
+    console.log('masuk controller user login');
     const {email, password} = req.body;
     User.findOne({email})
     .then(user => {
@@ -68,9 +69,9 @@ module.exports = {
           msg: 'User successfully login.',
           token,
           name: user.name,
-          email
+          userId: user._id,
         });
-      } if(user) {
+      } else if(user) {
         res.status(400).json({
           msg: 'Wrong password.'
         })
