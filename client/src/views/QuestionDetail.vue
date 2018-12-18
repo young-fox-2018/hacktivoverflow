@@ -16,20 +16,7 @@
         <div id="answersComp">
             <h3 class="text-left">{{answersLength}} Answers</h3>
             <hr>
-            <div class="row" v-for="answer in answers" :key="answer.id">
-                <div class="col-2 d-flex flex-column">
-                    <i class="fas fa-caret-up fa-3x vote"></i>
-                    <!-- isi dengan firebase -->
-                    0
-                    <i class="fas fa-caret-down fa-3x vote"></i>
-                </div>
-                <div class="col-10">
-                    <p>{{answer.content}}</p>
-
-                    <p> answered "time"</p>
-                        {{answer.author}}
-                </div>
-            </div>
+            <Answer v-for="(answer, index) in answers" :key="index" :answer="answer" :answerId="index" />
         </div>
         
         <form @submit.prevent="submitAnswer" class="mr-2">
@@ -42,6 +29,7 @@
 <script>
 import axios from '@/helpers/axios'
 import db from '@/helpers/firebase'
+import Answer from '@/components/Answer'
 
 export default {
     name: 'QuestionDetail',
@@ -62,6 +50,9 @@ export default {
             ownDownvoteId: '',
         }
     },
+    components: {
+        Answer
+    },
     computed: {
         votes(){
             return this.upvoters.length - this.downvoters.length
@@ -81,6 +72,8 @@ export default {
             })
             .then(({data}) =>{
                 this.question = data.question
+                this.checkUpvote()
+                this.checkDownvote()
             })
             .catch(({response}) =>{
                 console.log(response.data)
@@ -161,8 +154,6 @@ export default {
                     self.ownDownvoteId = ''
                     self.downvoters = []
                 }
-                console.log('sampe sini')
-                console.log(self.che)
                 self.checkDownvote();
             })
         },
@@ -172,7 +163,10 @@ export default {
                 return element == this.currentUserEmail
             })
             
-            console.log(upVoted)
+
+            if(this.question.author.email === this.currentUserEmail){
+                upVoted = true
+            }
             
             if(upVoted){
                 this.upVoted = true
@@ -183,8 +177,10 @@ export default {
             let downVoted = this.downvoters.find((element) =>{
                 return element == this.currentUserEmail
             })
-            console.log('testt')
-            console.log(downVoted, 'down')
+
+            if(this.question.author.email === this.currentUserEmail){
+                downVoted = true
+            }
 
             if(downVoted){
                 this.downVoted = true
