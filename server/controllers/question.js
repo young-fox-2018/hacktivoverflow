@@ -2,6 +2,8 @@ const questionModel = require('../models/question')
 const getCloseDate = require('../helpers/closedDate')
 const userModel = require('../models/user')
 const dateNow = require('../helpers/newDate')
+const genSlug = require('../helpers/genSlug')
+
 
 class Controller {
     static addQuestion(req, res) {
@@ -16,6 +18,8 @@ class Controller {
             status: true,
             closed: getCloseDate(),
             tags: tag,
+            slug: genSlug(req.body.title),
+            createdAt: dateNow()
         })
             .then(data => {
                 res.status(201).json(data)
@@ -48,7 +52,8 @@ class Controller {
                 title: req.body.title,
                 body: req.body.body,
                 closed: getCloseDate(),
-                tags: tag
+                tags: tag,
+                slug: genSlug(req.body.title)
             }, {
                 new: true
             })

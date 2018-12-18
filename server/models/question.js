@@ -5,15 +5,19 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 let questionSchema = new Schema({
-    title: String,
+    title: {
+        type:String,
+        unique: true
+    },
     body: String,
-    createdAt: {type: Date, default: new Date()},
+    createdAt: {type: String, default: new Date()},
     userId: {type: Schema.Types.ObjectId, ref:'User'},
     upvote: [],
     downvote: [],
     tags: [],
     status: Boolean,
-    closed:String
+    closed:String,
+    slug: String
 })
 
 let question = mongoose.model('Question', questionSchema)

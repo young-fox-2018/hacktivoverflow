@@ -90,6 +90,19 @@ class middleware {
             res.status(400).json(err)
         })
     }
+
+    static checkVoteAnswer(req,res,next){
+        answerModel.findOne({
+            _id: req.params.id
+        })
+        .then(data => {
+            if (data.userId == req.user._id){
+                res.status(400).json({msg: 'can not vote self'})
+            } else {
+                next()
+            }
+        })
+    }
 }
 
 module.exports = middleware
