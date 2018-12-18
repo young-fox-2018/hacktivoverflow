@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import vmodal from 'vue-js-modal';
+import wysiwyg from 'vue-wysiwyg';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+
+Vue.use(wysiwyg, {});
 
 Vue.use(vmodal);
 

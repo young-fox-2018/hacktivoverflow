@@ -5,13 +5,13 @@
     <p v-html="questionDetail.content"></p>
     <div class="columns" id="userInfo">
       <div class="column is-1">
-        <span class="icon">
-          <i class="far fa-thumbs-up fa-lg"></i> 5
+        <span class="icon" @click="upvoteQuestion">
+          <i class="far fa-thumbs-up fa-lg"></i> {{getQuestionUpvotes}}
         </span>
       </div>
       <div class="column is-1">
-        <span class="icon">
-          <i class="far fa-thumbs-down fa-lg"></i> 4
+        <span class="icon" @click="downvoteQuestion">
+          <i class="far fa-thumbs-down fa-lg"></i> {{getQuestionDownvotes}}
         </span>
       </div>
       <div class="column is-6"></div>
@@ -24,13 +24,26 @@
       Answers:
     </div>
     <div class="columns comment">
-      <input class="input" type="text" placeholder="Answer here...">
+      <input v-model="newAnswer" class="input" type="text" placeholder="Answer here...">
+      <a class="button is-info" @click="postAnswer">Post Answer</a>
+    </div>
+    <!-- <div class="columns" v-for="(userAnswer, index) in answers" :key="index">
+      {{userAnswer.answer}}
+    </div> -->
+    <div class="columns comment">
+      <div class="column is-2">
+        username:
+      </div>
+      <div class="column">
+        user answer
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from '@/assets/dotapi';
+import database from '@/assets/config.js';
 
 export default {
   name: 'QuestionDetail',
@@ -39,19 +52,61 @@ export default {
       questionDetail: {
         authorId: {},
       },
+      newAnswer: '',
+      // answers: {},
+      upvotes: 0,
+      downvotes: 0,
     };
   },
   created() {
-    axios.get('/questions/' + this.$route.params.id)
-      .then(({ data }) => {
-        // console.log('got question detail');
-        this.questionDetail = data.question;
-        this.questionDetail.posted_at = new Date(this.questionDetail.posted_at).toISOString().substring(0, 10);
-      })
-      .catch(err => {
-        console.log('error getting question detail');
-        console.log(err.response);
+    this.getQuestionDetail();
+  },
+  methods: {
+    postAnswer() {
+      this.$store.dispatch('postAnswer',
+      {
+        questionId: this.questionDetail._id,
+        answer: this.newAnswer,
+        userId: localStorage.current_user,
       });
+      this.newAnswer = '';
+    },
+    getQuestionDetail() {
+      axios.get('/questions/' + this.$route.params.id)
+        .then(({ data }) => {
+          this.questionDetail = data.question;
+          this.questionDetail.posted_at = new Date(this.questionDetail.posted_at).toISOString().substring(0, 10);
+        })
+        .catch(err => {
+          console.log('error getting question detail');
+          console.log(err.response);
+        });
+    },
+    upvoteQuestion() {
+      this.$store.dispatch('upvoteQuestion', {
+        questionId: this.questionDetail._id,
+        userId: localStorage.current_user,
+        name: localStorage.name,
+      });
+    },
+    downvoteQuestion() {
+      this.$store.dispatch('downvoteQuestion', {
+        questionId: this.questionDetail._id,
+        userId: localStorage.current_user,
+        name: localStorage.name,
+      });
+    }
+  },
+  computed: {
+    getAllAnswers() {
+      return Object.values(this.$store.state.answers[this.$route.params.id]);
+    },
+    getQuestionUpvotes() {
+      return Object.values(this.$store.state.questionUpvotes[this.$route.params.id] || {}).length;
+    },
+    getQuestionDownvotes() {
+      return Object.values(this.$store.state.questionDownvotes[this.$route.params.id] || {}).length;
+    }
   },
 };
 </script>
@@ -79,5 +134,8 @@ hr {
 }
 .comment {
   margin: .5rem;
+}
+input {
+  margin-right: .5rem;
 }
 </style>

@@ -222,6 +222,7 @@ export default {
           // });
           localStorage.setItem('token', data.token);
           localStorage.setItem('current_user', data.userId);
+          localStorage.setItem('name', data.name);
           this.isLoggedIn = true;
           this.showSuccessMessage( data.msg);
         })

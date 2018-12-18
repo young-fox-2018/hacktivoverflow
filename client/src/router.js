@@ -13,7 +13,6 @@ export default new Router({
       name: 'home',
       component: Home,
       children: [
-
         {
           path: '/question/:id',
           name: 'question-detail',
@@ -23,7 +22,7 @@ export default new Router({
           path: '',
           name: 'question',
           component: () => import(/* webpackChunkName: "question" */ './components/Question.vue'),
-        }
+        },
       ],
     },
     {
