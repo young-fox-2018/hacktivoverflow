@@ -51,5 +51,22 @@ module.exports = {
                     message: 'You successfully updated a question'
                 })
             })
+            .catch(err =>{
+                res.status(400).json({message: err.message})
+            })
+    },
+    delete: function(req,res,next){
+        Question.findByIdAndRemove(
+            req.params.id
+        )
+        .then(question_doc =>{
+            res.status(200).json({
+                question: question_doc,
+                message: 'You successfully deleted a question'
+            })
+        })
+        .catch(err =>{
+            res.status(400).json({message: err.message})
+        })
     }
 }

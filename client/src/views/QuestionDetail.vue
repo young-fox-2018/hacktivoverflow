@@ -20,6 +20,13 @@
           >
             Edit Question
         </button>
+        <button 
+          class="btn btn-danger" 
+          v-if="ownQuestion"
+          @click="deleteQuestion"
+          >
+            Delete Question
+        </button>
 
         <b-modal id="editQuestionModal" title="Bootstrap-Vue" ref="editQuestionModal">
             <form>
@@ -240,6 +247,22 @@ export default {
             .then(({data}) =>{
                 alert(data.message)
                 this.$refs.editQuestionModal.hide()
+            })
+            .catch(({response}) =>{
+                console.log(response)
+            })
+        },
+        deleteQuestion(){
+            axios({
+                url: '/questions/' + this.questionId,
+                method: 'DELETE',
+                headers: {
+                    token: localStorage.token
+                },
+            })
+            .then(({data}) =>{
+                alert(data.message)
+                this.$router.push('/')
             })
             .catch(({response}) =>{
                 console.log(response)

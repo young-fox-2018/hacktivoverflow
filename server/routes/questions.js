@@ -9,5 +9,6 @@ router.get("/", questionsController.all)
 router.post("/", isLoggedIn, questionsController.create)
 router.get("/:id", questionsController.detail)
 router.patch("/:id", isLoggedIn, questionsController.update)
+router.delete("/:id", isLoggedIn, questionsController.delete)
 
 module.exports = router;
