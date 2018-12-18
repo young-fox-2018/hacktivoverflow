@@ -7,7 +7,24 @@ const que = kue.createQueue()
 
 
 class Controller {
-    static register(req,res){
+    static getTop(req,res){
+        userModel.find({}).sort('-reputation')
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(err => {
+            res.status(400).json(err)
+        })
+    }
+    static checkLogin(req, res) {
+        res.status(200).json({
+            avatar: req.user.avatar,
+            name: req.user.name,
+            email: req.user.email,
+            id: req.user._id
+        })
+    }
+    static register(req, res) {
         userModel.create({
             name: req.body.name,
             email: req.body.email,
@@ -15,24 +32,25 @@ class Controller {
             avatar: req.file.cloudStoragePublicUrl,
             reputation: 0
         })
-        .then(data => {
-            que.create('email', {
-                title: 'welcome email',
-                email: data.email,
-                template: `<p>welcome to hackitve overflow !!, thanks for register on our site </p>`
-            }).save(function(err){
-                if(err){
-                    Console.log(err)
-                }
+            .then(data => {
+                que.create('email', {
+                    title: 'welcome email',
+                    email: data.email,
+                    template: `<p>welcome to hackitve overflow !!, thanks for register on our site </p>`
+                }).save(function (err) {
+                    if (err) {
+                        Console.log(err)
+                    }
+                })
+                res.status(201).json(data)
             })
-            res.status(201).json(data)
-        })
-        .catch(err => {
-            res.status(400).json(err)
-        })
+            .catch(err => {
+                res.status(400).json(err)
+            })
     }
 
-    static login(req,res){
+    static login(req, res) {
+        console.log(req.body)
         userModel.findOne({
             email: req.body.email
         })

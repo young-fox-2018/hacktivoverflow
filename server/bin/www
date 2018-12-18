@@ -15,9 +15,6 @@ const sendEmail = require('../helpers/sendMail')
 var kue = require('kue');
 const que = kue.createQueue()
 
-kue.app.listen(4000, function(){
-  console.log('redis conect on port 4000')
-});
 
 //SEND MAIL
 que.process('email', function(job,done){
@@ -32,7 +29,7 @@ var server = http.createServer(app);
 server.listen(port, function(){
   console.log('express conected on port ', port)
 });
-server.on('error', onError);
+server.on('error', onError); 
 server.on('listening', onListening);
 function normalizePort(val) {
   var port = parseInt(val, 10);

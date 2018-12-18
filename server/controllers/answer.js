@@ -63,10 +63,12 @@ class Controller {
             query = req.query
         }
         answerModel.find(query)
+        .populate('userId')
             .then(answer => {
                 res.status(200).json(answer)
             })
             .catch(err => {
+                console.log(err)
                 res.status(400).json(err)
             })
     }
