@@ -10,7 +10,7 @@
         </b-alert>
     <div class="row">
       <div class="col-3">
-        
+        <tags/>
       </div>
       <div class="col-9">
         <router-view/>
@@ -21,11 +21,13 @@
 
 <script>
 import Navbar from '@/components/Navbar.vue'
+import Tags from '@/components/Tags.vue'
 
 export default {
   name: 'App',
   components: {
-    Navbar
+    Navbar,
+    Tags
   },
   data: function() {
     return{

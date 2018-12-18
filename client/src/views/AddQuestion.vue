@@ -15,6 +15,15 @@
             <textarea type="text" class="form-control" v-model="form.content"
             id="questionContent" rows="10" placeholder="Start typing ......"/>
         </div>
+        <b-form-group label="Button style checkboxes with variant <code>primary</code> and large buttons">
+          <b-form-checkbox-group v-model="form.tags"
+                                buttons
+                                button-variant="primary"
+                                size="lg"
+                                name="buttons2"
+                                :options="tags">
+          </b-form-checkbox-group>
+        </b-form-group>
         <button type="submit" class="btn btn-light" @click.prevent="submitQuestion">Submit</button>
     </form>
 </div>
@@ -30,6 +39,7 @@ export default {
       form: {
         title: '',
         body: '',
+        tags: [],
       },
       dismissCountDown: 0,
       errorMessage: '',
@@ -55,6 +65,11 @@ export default {
           this.countDownChanged(3);
         });
     },
+  },
+  computed: {
+      tags(){
+          return this.$store.state.tags
+      }
   },
 };
 </script>

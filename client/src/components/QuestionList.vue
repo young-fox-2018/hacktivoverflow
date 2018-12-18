@@ -16,15 +16,15 @@
                             <div class="col-4 ">
                                 <div class="row justify-content-between">
                                     <div class="col-4">
-                                        0 <br>
+                                        {{Number(question.upvoteSum) - Number(question.downvoteSum)}}<br>
                                         votes    
                                     </div>
                                     <div class="col-4">
-                                        0 <br>
+                                        {{question.answersSum}} <br>
                                         answer
                                     </div>
                                     <div class="col-4">
-                                        0 <br>
+                                        {{question.viewsSum}} <br>
                                         views
                                     </div>
                                 </div>
@@ -46,6 +46,7 @@
 
 <script>
     import axios from '@/helpers/axios.js'
+    import db from '@/helpers/firebase.js'
 
 export default {
     name: 'QuestionList',
@@ -65,13 +66,57 @@ export default {
             })
             .then(({data}) =>{
                 this.questions = data.questions
+                this.fetchQuestionDetail()
             })
             .catch(({response}) =>{
                 console.log(response.data)
             })
         },
         toQuestionDetail(questionId){
+            let newViewsSum 
+
+            this.questions.map(element =>{
+                if(element._id = questionId){
+                    newViewsSum = element.viewsSum +1
+                }
+            })
+
+            db.ref(questionId +'/views')
+            .set(newViewsSum)
+
             this.$router.push(`/questions/${questionId}`);
+        },
+        fetchQuestionDetail(){
+            let self = this
+
+
+            this.questions.map(element =>{
+                db.ref(element._id +'/answers')
+                .on('value', (snapshot) =>{
+                    element.answersSum = snapshot.numChildren()
+                })
+            })
+
+            this.questions.map(element =>{
+                db.ref(element._id +'/upvote')
+                .on('value', (snapshot) =>{
+                    element.upvoteSum = snapshot.numChildren()
+                })
+            })
+
+            this.questions.map(element =>{
+                db.ref(element._id +'/downvote')
+                .on('value', (snapshot) =>{
+                    element.downvoteSum = snapshot.numChildren()
+                })
+            })
+
+            this.questions.map(element =>{
+                db.ref(element._id +'/views')
+                .on('value', (snapshot) =>{
+                    element.viewsSum = snapshot.val()
+                })
+            })
         }
     }
 }
