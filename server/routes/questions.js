@@ -8,5 +8,6 @@ const questionsController = require("../controllers/questions.js")
 router.get("/", questionsController.all)
 router.post("/", isLoggedIn, questionsController.create)
 router.get("/:id", questionsController.detail)
+router.patch("/:id", isLoggedIn, questionsController.update)
 
 module.exports = router;

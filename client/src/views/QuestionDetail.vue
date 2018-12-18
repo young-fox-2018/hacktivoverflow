@@ -4,19 +4,46 @@
         <hr>
         <div class="row">
             <div class="col-2 d-flex flex-column">
-                <i class="fas fa-caret-up fa-3x vote" v-if="!upVoted" @click='upvoteQuestion'></i>
+                <i class="fas fa-caret-up fa-3x vote" v-if="!upvoted" @click='upvoteQuestion'></i>
                 <!-- isi dengan firebase -->
                 {{votes}}
-                <i class="fas fa-caret-down fa-3x vote"  v-if="!downVoted" @click.prevent='downvoteQuestion'></i>
+                <i class="fas fa-caret-down fa-3x vote"  v-if="!downvoted" @click.prevent='downvoteQuestion'></i>
             </div>
             <div class="col-10 text-left">
                 <p>{{question.content}}</p>
             </div>
         </div>
+        <button 
+          class="btn btn-warning" 
+          v-if="ownQuestion"
+          v-b-modal.editQuestionModal
+          >
+            Edit Question
+        </button>
+
+        <b-modal id="editQuestionModal" title="Bootstrap-Vue" ref="editQuestionModal">
+            <form>
+                <div class="form-group">
+                    <label for="editTitle">Title</label>
+                    <input  type="text" class="form-control" id="editTitle" v-model="question.title" >
+                </div>
+                <div class="form-group">
+                    <label for="editContent">Content</label>
+                    <textarea type="text" class="form-control" id="editContent" rows="5" v-model="question.content"/>
+                </div>
+                <!-- <button type="submit" class="btn btn-primary" style="display:none" ></button> -->
+            </form>
+            <div slot="modal-footer" class="w-100">
+                <b-btn size="sm" class="float-right" variant="warning" @click="editQuestion">
+                Edit
+                </b-btn>
+            </div>
+        </b-modal>
+
         <div id="answersComp">
             <h3 class="text-left">{{answersLength}} Answers</h3>
             <hr>
-            <Answer v-for="(answer, index) in answers" :key="index" :answer="answer" :answerId="index" />
+            <Answer v-for="(answer, index) in answers" :key="index" :answer="answer" :answerId="index" :questionId="questionId"/>
         </div>
         
         <form @submit.prevent="submitAnswer" class="mr-2">
@@ -44,10 +71,11 @@ export default {
             answersLength: 0,
             upvoters: [],
             downvoters: [],
-            upVoted: false,
-            downVoted: false,
+            upvoted: false,
+            downvoted: false,
             ownUpvoteId: '',
             ownDownvoteId: '',
+            ownQuestion: false,
         }
     },
     components: {
@@ -74,6 +102,7 @@ export default {
                 this.question = data.question
                 this.checkUpvote()
                 this.checkDownvote()
+                this.checkOwn()
             })
             .catch(({response}) =>{
                 console.log(response.data)
@@ -83,7 +112,10 @@ export default {
             db.ref(this.questionId + "/answers")
             .push({
                 content: this.newQuestion,
-                author: this.currentUserName
+                author: {
+                    name:this.currentUserName,
+                    email: this.currentUserEmail    
+                }
             })
         },
         fetchAnswer() {
@@ -95,10 +127,10 @@ export default {
             })
         },
         upvoteQuestion(){
-            if(this.downVoted){
+            if(this.downvoted){
                 db.ref(this.questionId + "/downvote/" + this.ownDownvoteId)
                 .remove()
-                this.downVoted = false
+                this.downvoted = false
                 this.fetchQuestionDownvotes()
             }
             else {
@@ -127,10 +159,10 @@ export default {
             })
         },
         downvoteQuestion(){
-            if(this.upVoted){
+            if(this.upvoted){
                 db.ref(this.questionId + "/upvote/" + this.ownUpvoteId)
                 .remove()
-                this.upVoted = false
+                this.upvoted = false
                 this.fetchQuestionUpvotes()
             }
             else {
@@ -158,33 +190,60 @@ export default {
             })
         },
         checkUpvote(){
-            let upVoted = this.upvoters.find((element) =>{
+            let upvoted = this.upvoters.find((element) =>{
                 // console.log(element);
                 return element == this.currentUserEmail
             })
             
 
             if(this.question.author.email === this.currentUserEmail){
-                upVoted = true
+                upvoted = true
             }
             
-            if(upVoted){
-                this.upVoted = true
+            if(upvoted){
+                this.upvoted = true
             }
             
         },
         checkDownvote(){
-            let downVoted = this.downvoters.find((element) =>{
+            let downvoted = this.downvoters.find((element) =>{
                 return element == this.currentUserEmail
             })
 
             if(this.question.author.email === this.currentUserEmail){
-                downVoted = true
+                downvoted = true
             }
 
-            if(downVoted){
-                this.downVoted = true
+            if(downvoted){
+                this.downvoted = true
             }
+        },
+        checkOwn(){
+            if(this.question.author.email === this.currentUserEmail){
+                this.ownQuestion = true
+            }
+        },
+        editQuestion(){
+            let input = {
+                title: this.question.title,
+                content: this.question.content
+            }
+
+            axios({
+                url: '/questions/' + this.questionId,
+                method: 'PATCH',
+                headers: {
+                    token: localStorage.token
+                },
+                data: input
+            })
+            .then(({data}) =>{
+                alert(data.message)
+                this.$refs.editQuestionModal.hide()
+            })
+            .catch(({response}) =>{
+                console.log(response)
+            })
         }
     }
 }

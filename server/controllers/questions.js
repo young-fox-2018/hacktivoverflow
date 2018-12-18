@@ -37,4 +37,19 @@ module.exports = {
             res.status(400).json({message: `The articles you are looking for doesn't exist`})
         })
     },
+    update: function(req,res,next){
+        let input = {
+            title: req.body.title,
+            content: req.body.content
+        }
+        Question.findByIdAndUpdate(
+            req.params.id,
+            {set: input},{new: true})
+            .then(question_doc =>{
+                res.status(200).json({
+                    question: question_doc,
+                    message: 'You successfully updated a question'
+                })
+            })
+    }
 }
