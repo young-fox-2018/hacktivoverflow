@@ -13,20 +13,21 @@ export default new Router({
       name: 'home',
       component: Home,
       children: [
+
         {
-          path: '/',
-          name: 'question',
-          component: () => import(/* webpackChunkName: "question" */ './components/Question.vue'),
-        },
-        {
-          path: '/:id',
+          path: '/question/:id',
           name: 'question-detail',
           component: () => import(/* webpackChunkName: "questionDetail" */ './components/QuestionDetail.vue'),
         },
+        {
+          path: '',
+          name: 'question',
+          component: () => import(/* webpackChunkName: "question" */ './components/Question.vue'),
+        }
       ],
     },
     {
-      path: '/whatsapp',
+      path: '/new-question',
       name: 'newQuestion',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route

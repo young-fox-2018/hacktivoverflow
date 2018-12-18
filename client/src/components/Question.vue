@@ -8,7 +8,7 @@
           <div class="column">Views</div>
         </div>
       </div>
-      <router-link :to="'/' + question._id" class="column"> {{question.title}} </router-link>
+      <router-link :to="'/question/' + question._id" class="column"> {{question.title}} </router-link>
     </div>
   </div>
 </template>
