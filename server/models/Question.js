@@ -6,6 +6,7 @@ const questionSchema = new Schema({
     content: String,
     author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     tags: [String],
+    created_at: Date
 })
 
 let Question = mongoose.model("Question", questionSchema)

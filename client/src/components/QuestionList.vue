@@ -1,13 +1,19 @@
 <template>
     <div>
-        <h2>Question</h2>
+        <div class="d-flex justify-content-between mb-3">
+            <h2>Question</h2>
+            <router-link to="/addquestion">
+                <button class="btn btn-primary mr-3" > Ask a Question</button>
+            </router-link>
+        </div>
+        <hr>
 
-    <div class="question-list">
+        <div class="question-list">
             <div v-for="(question) in questions" :key="question.id" >
                 <div class="card" @click.prevent="toQuestionDetail(question._id)">
-                    <div class="card-body d-flex align-items-start flex-column">
+                    <div class="card-body ">
                         <div class="row">
-                            <div class="col-4 d-flex align-items-center justify-content-center ">
+                            <div class="col-4 ">
                                 <div class="row justify-content-between">
                                     <div class="col-4">
                                         0 <br>

@@ -2,8 +2,10 @@
     <b-navbar toggleable="md" type="light" variant="info" class="bg-transparent">
 
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-        <img src="@/assets/scatter.png" width="auto" height="40px" alt="">
-        <b-navbar-brand href="#">Scatter <b> Overflow </b></b-navbar-brand>
+        <router-link to="/">
+            <img src="@/assets/scatter.png" width="auto" height="40px" alt="">
+            <b-navbar-brand href="#">Scatter <b> Overflow </b></b-navbar-brand>
+        </router-link>
 
         <b-collapse is-nav id="nav_collapse">
            <b-navbar-nav class="mr-auto ml-auto">
@@ -21,7 +23,7 @@
           <b-navbar-nav v-if="isLoggedIn" >
             <b-nav-item-dropdown text="Profile" right>
               <b-dropdown-item>
-                Welcome {{usersName}}
+                Welcome {{userName}}
               </b-dropdown-item>
                 <!-- <b-dropdown-item href="#"
                 @click='toMyArticles'>

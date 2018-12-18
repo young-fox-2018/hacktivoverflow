@@ -7,6 +7,7 @@ module.exports = {
             content: req.body.content,
             author: req.currentUser._id,
             tags: req.body.tag,
+            created_at: new Date()
         }, function(err, response){
             if(err) {res.status(400).json({message: err.message})} 
             else {
