@@ -2,3 +2,5 @@
 **/yarn.lock
 hacktivoverflow-server.pem
 ec2.tlp
+**/config
+server/.env
