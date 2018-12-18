@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const { apiError, getToken } = require('../helpers')
+const { createEmailQueue } = require('../helpers/background')
 
 
 module.exports = {
@@ -11,6 +12,7 @@ module.exports = {
     })
       .then(user => {
         let { id, name, email } = user
+        createEmailQueue({ name, email })
         res.status(201).json({ id, name, email })
       })
       .catch(err => {

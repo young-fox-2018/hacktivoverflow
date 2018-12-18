@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('./helpers/background').processEmailQueue()
 
 var express = require('express');
 var path = require('path');

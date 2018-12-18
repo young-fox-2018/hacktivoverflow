@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import { database } from "@/config";
 import answer from "@/components/answers/answer"
 
