@@ -37,21 +37,32 @@ export default new Vuex.Store({
       });
     },
     upvoteQuestion({ commit }, payload) {
-      database.ref(`/upvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
-        // console.log(snapshot.val(), 'upvotes=========');
+      database.ref(`/downvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
-          database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+          database.ref(`/upvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+            if (!snapshot.val()) {
+              database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+            } else {
+              database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+            }
+          });
         } else {
-          database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+          database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
         }
       });
     },
     downvoteQuestion({ commit }, payload) {
-      database.ref(`/downvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+      database.ref(`/upvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
-          database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+          database.ref(`/downvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+            if (!snapshot.val()) {
+              database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+            } else {
+              database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+            }
+          });
         } else {
-          database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+          database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
         }
       });
     },

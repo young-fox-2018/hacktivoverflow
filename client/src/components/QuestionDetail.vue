@@ -5,13 +5,13 @@
     <p v-html="questionDetail.content"></p>
     <div class="columns" id="userInfo">
       <div class="column is-1">
-        <span class="icon" @click="upvoteQuestion">
-          <i class="far fa-thumbs-up fa-lg"></i> {{getQuestionUpvotes}}
+        <span class="icon" v-bind:class="{ 'has-text-info': upvoted }" @click="upvoteQuestion">
+          <i class="far fa-thumbs-up fa-2x"></i> {{getQuestionUpvotes}}
         </span>
       </div>
       <div class="column is-1">
-        <span class="icon" @click="downvoteQuestion">
-          <i class="far fa-thumbs-down fa-lg"></i> {{getQuestionDownvotes}}
+        <span class="icon" v-bind:class="{ 'has-text-danger': downvoted }" @click="downvoteQuestion">
+          <i class="far fa-thumbs-down fa-2x"></i> {{getQuestionDownvotes}}
         </span>
       </div>
       <div class="column is-6"></div>
@@ -53,9 +53,8 @@ export default {
         authorId: {},
       },
       newAnswer: '',
-      // answers: {},
-      upvotes: 0,
-      downvotes: 0,
+      upvoted: false,
+      downvoted: false,
     };
   },
   created() {
@@ -83,30 +82,50 @@ export default {
         });
     },
     upvoteQuestion() {
-      this.$store.dispatch('upvoteQuestion', {
-        questionId: this.questionDetail._id,
-        userId: localStorage.current_user,
-        name: localStorage.name,
-      });
+      if(this.questionDetail.authorId._id !== localStorage.current_user) {
+        this.$store.dispatch('upvoteQuestion', {
+          questionId: this.questionDetail._id,
+          userId: localStorage.current_user,
+          name: localStorage.name,
+        });
+      }
     },
     downvoteQuestion() {
-      this.$store.dispatch('downvoteQuestion', {
-        questionId: this.questionDetail._id,
-        userId: localStorage.current_user,
-        name: localStorage.name,
-      });
-    }
+      if(this.questionDetail.authorId._id !== localStorage.current_user) {
+        this.$store.dispatch('downvoteQuestion', {
+          questionId: this.questionDetail._id,
+          userId: localStorage.current_user,
+          name: localStorage.name,
+        });
+      }
+    },
   },
   computed: {
     getAllAnswers() {
       return Object.values(this.$store.state.answers[this.$route.params.id]);
     },
     getQuestionUpvotes() {
-      return Object.values(this.$store.state.questionUpvotes[this.$route.params.id] || {}).length;
+      const thisRoute = this.$store.state.questionUpvotes[this.$route.params.id];
+      if (thisRoute) {
+        if (thisRoute[localStorage.current_user]) {
+          this.upvoted = true;
+        }
+      } else {
+        this.upvoted = false;
+      }
+      return Object.values(thisRoute || {}).length;
     },
     getQuestionDownvotes() {
-      return Object.values(this.$store.state.questionDownvotes[this.$route.params.id] || {}).length;
-    }
+      const thisRoute = this.$store.state.questionDownvotes[this.$route.params.id];
+      if (thisRoute) {
+        if (thisRoute[localStorage.current_user]) {
+          this.downvoted = true;
+        }
+      } else {
+        this.downvoted = false;
+      }
+      return Object.values(thisRoute || {}).length;
+    },
   },
 };
 </script>
@@ -126,7 +145,8 @@ hr {
 }
 #userInfo {
   margin: 3rem 0 1rem 0;
-  border-bottom: 1px solid rgb(228, 228, 228)
+  border-bottom: 1px solid rgb(228, 228, 228);
+  align-items: center;
 }
 .column {
   align-items: center;

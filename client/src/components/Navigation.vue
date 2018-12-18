@@ -188,6 +188,7 @@ export default {
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
+        this.$router.push('/');
       }
 
     },
