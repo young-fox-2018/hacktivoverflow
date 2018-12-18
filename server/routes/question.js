@@ -4,6 +4,7 @@ const QuestionController = require('../controllers/QuestionController');
 const verifyToken = require('../middlewares/verifyToken');
 
 router.get('/', QuestionController.getAllQuestion);
+router.get('/:questionId', QuestionController.getQuestionDetail);
 
 router.use(verifyToken);
 router.get('/me', QuestionController.getMyQuestion);

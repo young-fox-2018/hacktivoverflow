@@ -2,9 +2,10 @@
   <div class="container ">
     <nav class="navbar is-widescreen" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+        <router-link :to="'/'" class="navbar-item">
           <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-        </a>
+
+        </router-link>
 
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
           <span aria-hidden="true"></span>
@@ -33,7 +34,7 @@
                 Profile
               </a>
               <!-- <hr class="navbar-divider"> -->
-              <a class="navbar-item">
+              <a class="navbar-item" @click="userLogout">
                 Log Out
               </a>
             </div>
@@ -154,6 +155,7 @@
 
 <script>
 import axios from '@/assets/dotapi';
+import store from "../store.js";
 
 export default {
   name: 'Navigation',
@@ -182,13 +184,16 @@ export default {
   },
   methods: {
     checkUserLogin() {
-      if(localStorage.token) {
+      if (localStorage.token) {
         this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
       }
+
     },
     closeModalLogin() {
       this.showLoginModal = false;
-      this.loginForm.email = '',
+      this.loginForm.email = '';
       this.loginForm.password = '';
     },
     closeModalRegister() {
@@ -207,14 +212,18 @@ export default {
           {
             name: this.loginForm.name,
             email: this.loginForm.email,
-            password: this.loginForm.password
-          }
-        )
-        .then((response) => {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('current_user', response.data.userId);
+            password: this.loginForm.password,
+          })
+        .then(({ data }) => {
+          // this.$store.dispatch('userData', {
+          //   token: data.token,
+          //   name: data.name,
+          //   userId: data.userId
+          // });
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('current_user', data.userId);
           this.isLoggedIn = true;
-          this.showSuccessMessage(response.data.msg);
+          this.showSuccessMessage( data.msg);
         })
         .catch((err) => {
           this.showErrorMessage(err.response.data.msg);
@@ -237,6 +246,10 @@ export default {
         this.errorMsg = '';
       }, 3000);
     },
+    userLogout() {
+      localStorage.clear();
+      this.checkUserLogin();
+    }
   },
 };
 </script>

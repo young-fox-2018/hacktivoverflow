@@ -16,6 +16,24 @@ module.exports = {
       });
     });
   },
+  getQuestionDetail: function(req, res, next) {
+    const {questionId} = req.params;
+
+    Question.findById(questionId).populate('authorId').exec()
+    .then(question => {
+      delete question.authorId.password;
+      res.status(200).json({
+        msg: 'Detail of question',
+        question,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        msg: 'Internal server error',
+        error: err.message,
+      });
+    });
+  },
   getMyQuestion: function(req, res, next) {
     Question.find({authorId: req.current_user})
     .then(questions => {
@@ -32,10 +50,10 @@ module.exports = {
     });
   },
   createQuestion: function(req, res, next) {
-    const {title, content} = req.body;
+    const {title, content, category} = req.body;
     const authorId = req.current_user;
 
-    Question.create({title, content, authorId, posted_at: new Date(), updated_at: new Date()})
+    Question.create({title, content, authorId, category, posted_at: new Date(), updated_at: new Date()})
     .then(question => {
       res.status(201).json({
         msg: 'Question posted!',

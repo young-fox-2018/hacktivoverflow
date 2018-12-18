@@ -12,6 +12,18 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+      children: [
+        {
+          path: '/',
+          name: 'question',
+          component: () => import(/* webpackChunkName: "question" */ './components/Question.vue'),
+        },
+        {
+          path: '/:id',
+          name: 'question-detail',
+          component: () => import(/* webpackChunkName: "questionDetail" */ './components/QuestionDetail.vue'),
+        },
+      ],
     },
     {
       path: '/new-question',
