@@ -19,11 +19,15 @@ const userSchema = new Schema({
     required: [true, 'Fill the email, we have something to send to you.']
   },
   password: String,
+  provider: String,
 });
 
-userSchema.pre('save', function(){
-  const salt = bcrypt.genSaltSync(10);
-  this.password = bcrypt.hashSync(this.password, salt);
+
+userSchema.pre('save', function(next){
+  if(!this.provider) {
+    const salt = bcrypt.genSaltSync(10);
+    this.password = bcrypt.hashSync(this.password, salt);
+  }
   next();
 });
 

@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import vmodal from 'vue-js-modal';
 import wysiwyg from 'vue-wysiwyg';
+import GSignInButton from 'vue-google-signin-button';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 
+Vue.use(GSignInButton)
 Vue.use(wysiwyg, {});
 
-Vue.use(vmodal);
 
 Vue.config.productionTip = false;
 

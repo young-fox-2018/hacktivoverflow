@@ -79,6 +79,7 @@ export default {
     postAnswer() {
       this.$store.dispatch('postAnswer',
         {
+          questionTitle: this.questionDetail.title,
           questionId: this.questionDetail._id,
           answer: this.newAnswer,
           name: localStorage.name,
@@ -192,7 +193,7 @@ export default {
 .container {
   width: 100%;
   text-align: left;
-  padding: 0;
+  padding: .5rem;
 }
 h1 {
   font-size: 1.2rem;

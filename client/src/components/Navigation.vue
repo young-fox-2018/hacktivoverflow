@@ -68,6 +68,13 @@
             <button class="delete" @click="error = false; errorMsg = ''"></button>
             {{ errorMsg }}
           </div>
+          <!-- <div id="google-signin-button"></div> -->
+          <g-signin-button
+            :params="googleSignInParams"
+            @success="onSignInSuccess"
+            @error="onSignInError">
+            Sign in with Google
+          </g-signin-button>
           <form class="box" v-on:submit.prevent="loginUser()">
             <div class="field">
               <p class="control has-icons-left has-icons-right">
@@ -105,6 +112,15 @@
           <button class="modal-button-close delete" aria-label="close" @click="closeModalRegister"></button>
         </header>
         <section class="modal-card-body">
+          <div class="notification is-success" v-if="success">
+            <button class="delete" @click="success = false; successMsg = ''"></button>
+            {{ successMsg }}
+          </div>
+
+          <div class="notification is-danger" v-if="error">
+            <button class="delete" @click="error = false; errorMsg = ''"></button>
+            {{ errorMsg }}
+          </div>
           <form class="box" v-on:submit.prevent="registerUser()">
             <div class="field">
               <div class="control has-icons-left has-icons-right">
@@ -173,6 +189,9 @@ export default {
         email: '',
         password: '',
       },
+      googleSignInParams: {
+        client_id: '907636860373-hqmna18kfoam6f51f649462nup5amcha.apps.googleusercontent.com'
+      }
     };
   },
   created() {
@@ -186,7 +205,34 @@ export default {
         this.isLoggedIn = false;
         this.$router.push('/');
       }
-
+    },
+    onSignInSuccess (googleUser) {
+      // `googleUser` is the GoogleUser object that represents the just-signed-in user.
+      // See https://developers.google.com/identity/sign-in/web/reference#users
+      const profile = googleUser.getBasicProfile() // etc etc
+      console.log(googleUser, '----------------')
+      axios
+        .post('/login/socialaccount',
+        {
+          name: profile.ig,
+          email: profile.U3,
+          provider: 'google',
+          google_token: googleUser.Zi.id_token,
+        })
+        .then(({ data }) => {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('current_user', data.userId);
+          localStorage.setItem('name', data.name);
+          this.isLoggedIn = true;
+          this.showSuccessMessage(data.msg);
+        })
+        .catch((err) => {
+          this.showErrorMessage(err.response.data.msg);
+        });
+    },
+    onSignInError (error) {
+      // `error` contains any error occurred.
+      console.log('OH NOES', error)
     },
     closeModalLogin() {
       this.showLoginModal = false;
@@ -200,8 +246,21 @@ export default {
       this.registerForm.password = '';
     },
     registerUser() {
-      console.log('inside methods register user');
-      console.log(this.registerForm);
+      axios
+        .post('/register',
+          {
+            name: this.registerForm.name,
+            email: this.registerForm.email,
+            password: this.registerForm.password
+          })
+          .then(({ data }) => {
+            this.showSuccessMessage(data.msg);
+          })
+          .catch((err) => {
+            this.showErrorMessage(err.response.data.msg);
+          });
+      // console.log('inside methods register user');
+      // console.log(this.registerForm);
     },
     loginUser() {
       axios
@@ -268,6 +327,15 @@ export default {
 .navbar-brand {
   border: 0;
   margin-right: .5rem;
+}
+.g-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #3c82f7;
+  color: #fff;
+  box-shadow: 0 3px 0 #0f69ff;
 }
 
 </style>

@@ -7,14 +7,14 @@ const cors = require('cors');
 const kue = require('kue');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/hacktivOverflow' + NODE_ENV);
+mongoose.connect('mongodb://admin:admin1@ds139534.mlab.com:39534/hacktivoverflowing');
 
 const indexRouter = require('./routes/user');
 const questionRouter = require('./routes/question');
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
+app.use(express.json({limit: '3MB'}));
+app.use(express.urlencoded({ limit: '3MB', extended: false}));
 
 app.use('/', indexRouter);
 app.use('/questions', questionRouter);

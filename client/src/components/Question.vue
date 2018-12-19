@@ -5,7 +5,6 @@
         <div class="columns detailQuestion">
           <div class="column">{{ countTotalVotes(question._id )}} Votes</div>
           <div class="column">{{ countAnswers(question._id)}} Answers</div>
-          <!-- <div class="column">Views</div> -->
         </div>
       </div>
       <router-link :to="'/question/' + question._id" class="column"> {{question.title}} </router-link>

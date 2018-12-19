@@ -32,6 +32,7 @@ export default new Vuex.Store({
   actions: {
     postAnswer({ commit }, payload) {
       database.ref(`/answers/${payload.questionId}`).push({
+        title: payload.questionTitle,
         answer: payload.answer,
         name: payload.name,
         userId: payload.userId,
