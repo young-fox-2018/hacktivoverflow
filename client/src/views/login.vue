@@ -31,6 +31,7 @@
               </div>
               <div class="form-group">
                 <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                <div id="g-signin-btn"></div>
               </div>
               <div id="register-link" class="text-right">
                 <router-link to="/register">Register here</router-link>
@@ -45,6 +46,7 @@
 
 <script>
 import api from "../api/hacktiv.js";
+import miniToastr from "mini-toastr";
 export default {
   name: "login",
   data() {
@@ -54,24 +56,47 @@ export default {
     };
   },
   methods: {
-      submitLogin(){
-        //   console.log('masuk')
-          api
-            .post('/users/login', {
-                email: this.email,
-                password: this.password
-            })
-            .then(data => {
-                localStorage.setItem('token', data.data.token)
-                this.$store.dispatch('login')
-                this.email=""
-                this.password = ""
-                this.$router.push('/')
-            })
-            .catch(err => {
-                console.log(err)
-            })
-      }
+    onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log()
+      api
+        .post("/users/login", { token: id_token })
+        .then(data => {
+          localStorage.setItem("token", data.data.token);
+          this.$store.dispatch("login");
+          miniToastr.success('logedin')
+          this.$router.push("/");
+        })
+        .catch(err => {
+          console.log(err);
+          miniToastr.error('oops something wrong, please try again later')
+        });
+    },
+    submitLogin() {
+      api
+        .post("/users/login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(data => {
+          localStorage.setItem("token", data.data.token);
+          this.$store.dispatch("login");
+          miniToastr.success('logedin')
+          this.email = "";
+          this.password = "";
+          this.$router.push("/");
+        })
+        .catch(err => {
+          console.log(err);
+          miniToastr.error('oops something wrong, please try again later')
+        });
+    }
+  },
+  mounted() {
+    miniToastr.init()
+    gapi.signin2.render("g-signin-btn", {
+      onsuccess: this.onSignIn
+    });
   }
 };
 </script>

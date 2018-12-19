@@ -43,6 +43,7 @@
 
 <script>
 import api from "../api/hacktiv.js";
+import miniToastr from "mini-toastr";
 export default {
   name: "register",
   data() {
@@ -72,11 +73,16 @@ export default {
           this.password = ''
           this.email=''
           this.avatar = ''
+          miniToastr.success('register succes, please go to login page')
         })
         .catch(err => {
+          miniToastr.info('something wrong, please enter another email or try again later')
           console.log(err);
         });
     }
+  },
+  mounted(){
+    miniToastr.init()
   }
 };
 </script>

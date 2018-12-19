@@ -4,7 +4,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark unique-color text">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img style="max-height: 40px" src="@/assets/logo.png" alt="">
+          <img style="max-height: 40px" src="@/assets/logo.png" alt>
         </a>
         <button
           class="navbar-toggler"
@@ -20,20 +20,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <router-link to="/">
-              <a class="nav-link" href="#">
-                Home
-                <span class="sr-only">(current)</span>
-                <i class="fa fa-home" aria-hidden="true"></i>
-              </a>
-                </router-link>
+              <router-link to="/">
+                <a class="nav-link" href="#">
+                  Home
+                  <span class="sr-only">(current)</span>
+                  <i class="fa fa-home" aria-hidden="true"></i>
+                </a>
+              </router-link>
             </li>
             <li class="nav-item">
               <router-link to="/myquestions">
-              <a class="nav-link" href="#">
-                My Questions
-                <i class="fa fa-question" aria-hidden="true"></i>
-              </a>
+                <a class="nav-link" href="#">
+                  My Questions
+                  <i class="fa fa-question" aria-hidden="true"></i>
+                </a>
               </router-link>
             </li>
           </ul>
@@ -41,7 +41,7 @@
           <form @submit.prevent="submitSearch" class="form-inline">
             <div class="md-form my-0">
               <input
-              v-model="searchQuest"
+                v-model="searchQuest"
                 class="form-control mr-sm-2"
                 type="text"
                 placeholder="Search Question"
@@ -49,24 +49,26 @@
               >
             </div>
           </form>
-          
+
           <ul class="navbar-nav">
             <li class="nav-item">
               <router-link to="/login">
-              <a v-if="isLogin == false" class="nav-link">Login</a>
+                <a v-if="isLogin == false" class="nav-link">Login</a>
               </router-link>
             </li>
             <li class="nav-item">
               <router-link to="/register">
-              <a v-if="isLogin == false" class="nav-link">Register</a>
+                <a v-if="isLogin == false" class="nav-link">Register</a>
               </router-link>
             </li>
             <li v-if="isLogin" @click="logout" class="nav-item">
               <a class="nav-link">Logout</a>
             </li>
-        
           </ul>
         </div>
+      </div>
+      <div style="display: none" id="g-signin">
+
       </div>
     </nav>
   </header>
@@ -76,29 +78,44 @@
 
 <script>
 import { mapState } from "vuex";
+import miniToastr from "mini-toastr";
 export default {
   name: "navbar",
-  data (){
+  data() {
     return {
-      searchQuest: ''
-    }
+      searchQuest: ""
+    };
   },
   computed: {
     ...mapState(["isLogin"])
   },
   methods: {
-    submitSearch(){
-      this.$store.dispatch('searchQuestion', `/questions?title=${this.searchQuest}`)
+    submitSearch() {
+      if (this.searchQuest) {
+        this.$store.dispatch(
+          "searchQuestion",
+          `/questions?title=${this.searchQuest}`
+        );
+      } else {
+        this.$store.dispatch("searchQuestion", `/questions`);
+      }
     },
-    logout(){
-      localStorage.removeItem('token')
-      this.$store.dispatch('logout')
-      this.$router.push('/')
+    logout() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(() => {
+        console.log("User signed out.");
+        miniToastr.info("logedout");
+        localStorage.removeItem("token");
+        this.$store.dispatch("logout");
+        this.$router.push("/");
+      });
     }
+  },
+  mounted() {
+    gapi.signin2.render("g-signin", {});
   }
 };
 </script>
 
 <style scoped>
-
 </style>

@@ -7,12 +7,12 @@
             <div class="row">
               <div class="col-md-9">
                 <p class="mb-0">
-                  <span class="text-muted">by: {{element.userId.name}} |</span>
+                  <span class="text-muted">by: {{element.userId.name}} | </span>
                   <i
-                    class="fa fa-star-o"
-                    style="color:green"
+                    class="fa fa-star"
+                    style="color:gold"
                     aria-hidden="true"
-                  >{{element.userId.reputation}}</i>
+                  > <span style="color:black"> {{element.userId.reputation}}</span></i>
                 </p>
                 <h4>
                   <strong>{{element.title}}</strong>

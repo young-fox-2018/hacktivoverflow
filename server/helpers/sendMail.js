@@ -15,13 +15,15 @@ module.exports = function (receiver, content, done) {
         from: 'hafrizresa@gmail.com',
         to: receiver,
         subject: content.header,
-        html:content.main
+        html: content.main
     };
 
     transporter.sendMail(mailOptions, function (err, info) {
-        if (err){
-            console.log(err)}
-        else{
+        if (err) {
+            console.log(err)
+            done()
+        }
+        else {
             console.log(info)
             done()
         };

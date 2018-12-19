@@ -14,19 +14,30 @@
           <div class="row">
             <p class="text-muted">
               <span class="text-muted">by: {{element.userId.name}} |</span>
-              <i
-                class="fa fa-star-o"
-                style="color:green"
-                aria-hidden="true"
-              >{{element.userId.reputation}}</i>
+              <i class="fa fa-star" style="color:gold" aria-hidden="true">
+                <span style="color:black">{{element.userId.reputation}}</span>
+              </i>
             </p>
           </div>
-          <p>{{element.word}}</p>
+          <input v-if="word && element._id == answerId" v-model="word" type="text">
+          <i
+            v-if="word && element._id == answerId"
+            @click="submitAnswer"
+            class="fa fa-check-square ml-1"
+            style="cursor:pointer; font-size:25px; color:green"
+            aria-hidden="true"
+          ></i>
+          <i
+            v-if="word && element._id == answerId"
+            @click="cancelSubmit"
+            class="fa fa-close ml-1"
+            style="cursor:pointer; font-size:25px; color:red"
+            aria-hidden="true"
+          ></i>
+          <p v-else>{{element.word}}</p>
           <div class="row">
             <p
               @click="editAnswer(element)"
-              data-toggle="modal"
-              :data-target="'#editAnswerModal'+element._id"
               class="text-muted"
             >
               <i style="cursor:pointer" class="fa fa-edit" aria-hidden="true">edit</i>
@@ -52,43 +63,9 @@
           ></i>
         </div>
       </div>
-    
+    </div>
+
     <!-- MODAL -->
-    <div
-      class="modal fade"
-      :id="'editAnswerModal'+element._id"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Answer</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group shadow-textarea">
-              <textarea
-                v-model="word"
-                class="form-control z-depth-1"
-                id="exampleFormControlTextarea6"
-                rows="3"
-                placeholder="Write something here..."
-              ></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button @click.prevent="submitAnswer" type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
   </div>
 </template>
 
@@ -114,6 +91,11 @@ export default {
       this.answerId = input._id;
       this.questionId = input.questionId;
     },
+    cancelSubmit() {
+      this.word = "";
+      this.answerId = "";
+      this.questionId = "";
+    },
     submitAnswer() {
       if (this.isLogin) {
         api
@@ -129,15 +111,15 @@ export default {
             }
           )
           .then(data => {
-            console.log(this.questionId);
             this.$store.dispatch("getAnswer", { id: this.questionId });
             miniToastr.success("answer updated`");
-            $("#editAnswerModal").modal("toggle");
+            this.word = "";
+            this.answerId = "";
+            this.questionId = "";
           })
           .catch(err => {
             console.log(err);
             miniToastr.error("access denied");
-            $("#editAnswerModal").modal("toggle");
           });
       } else {
         miniToastr.warn("You must login first");

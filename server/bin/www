@@ -2,6 +2,7 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+const deleteQuestion = require('../helpers/scheduleCloseQuestion')
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/hacktiveoverflow', {useNewUrlParser:true});
 var db = mongoose.connection;
@@ -13,8 +14,15 @@ db.once('open', function() {
 //KUE
 const sendEmail = require('../helpers/sendMail')
 var kue = require('kue');
-const que = kue.createQueue()
+const que = kue.createQueue();
+kue.app.listen(4000);
 
+//CRON
+var cron = require('node-cron');
+cron.schedule(' 0 10 * * *', () => {
+  deleteQuestion()
+  console.log('delete closed question every 1 day');
+});
 
 //SEND MAIL
 que.process('email', function(job,done){

@@ -39,10 +39,11 @@ export default new Vuex.Store({
       api
         .get('/users/top')
         .then(data=> {
-          if(data.data.length>= 5){
+          if(data.data.length <= 5){
             context.commit('topUsers', data.data)
+            console.log('masuk sini')
           } else {
-            let sliced = data.data.slice(0,4)
+            let sliced = data.data.slice(0,5)
             context.commit('topUsers', sliced)
           }
         })

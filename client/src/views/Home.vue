@@ -8,7 +8,7 @@
     <div class="row mt-1">
       <div class="col-md-1"></div>
       <div class="col-md-2" style="border-top:1px dotted black">
-       <toprated/>
+        <toprated/>
       </div>
       <div class="col-md-6" style="border-top:1px dotted black">
         <button
@@ -18,7 +18,23 @@
         >Add New Answer</button>
         <listQuestions/>
       </div>
-      <div class="col-md-2" style="border-top:1px dotted black"></div>
+      <div class="col-md-2" style="border-top:1px dotted black">
+        <div class="sticky-top">
+
+        <form @submit.prevent="submitSearch" class="form-inline mt-5">
+          <div class="md-form my-0">
+            <input
+              v-model="searchQuest"
+              class="form-control mr-sm-2"
+              type="text"
+              placeholder="Search By Tag"
+              aria-label="Search"
+            >
+          </div>
+        </form>
+        <chat/>
+        </div>
+      </div>
       <div class="col-md-1"></div>
     </div>
 
@@ -83,8 +99,9 @@
 <script>
 // @ is an alias to /src
 import api from "../api/hacktiv.js";
+import chat from "../components/chat.vue"
 import listQuestions from "../components/listQuestion.vue";
-import toprated from "../components/topratedusers.vue"
+import toprated from "../components/topratedusers.vue";
 import miniToastr from "mini-toastr";
 import { mapState } from "vuex";
 export default {
@@ -93,17 +110,29 @@ export default {
     return {
       title: "",
       content: "",
-      tags: ""
+      tags: "",
+      searchQuest: ""
     };
   },
   components: {
     toprated,
-    listQuestions
+    listQuestions,
+    chat
   },
   computed: {
     ...mapState(["isLogin"])
   },
   methods: {
+    submitSearch() {
+      if (this.searchQuest) {
+        this.$store.dispatch(
+          "searchQuestion",
+          `/questions?tags=${this.searchQuest}`
+        );
+      } else {
+        this.$store.dispatch("searchQuestion", `/questions`);
+      }
+    },
     submitQuestion() {
       if (this.isLogin) {
         api
