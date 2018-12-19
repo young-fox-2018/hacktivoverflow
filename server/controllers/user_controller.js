@@ -20,40 +20,24 @@ class UserController {
                 console.log(err)
                 res.status(500).json( error.message )
             } if ( data ) {
-                console.log(`setelah encrypt`)
-                let now = new Date()
-                let minute = now.getMinutes()
-                let hour = now.getHours()
-                let schedule = 5
-                if ( minute + schedule > 50) {
-                    if ( hour+=1 === 24 ){
-                        hour = 0
-                    } else {
-                        minute = 0
-                        hour+=1
-                    }
-                }
-                console.log(`------------------`)
-                console.log(randomPassword)
-                let subject = `password pollOverflowPoint anda`
-                let resultText = `password anda adalah ${randomPassword} , silahkan lakukan perubahan untuk keamanan akun anda`
-                mailer ( data.email, subject, resultText, (err ) => {
-                    if ( err) res.send (err )
-                    else res.status(200).json( data )
-                })
                 
-                //harus setting waktu dulu, terus tambahkan 5 menit
-                /*new CronJob(`${minute} ${hour} * * * *`, function() {
-
+                let job = new CronJob(`* * * * * *`, function() {
+                    console.log(`job start`)
                     let subject = `password poll get souliton anda`
                     let resultText = `password anda adalah ${randomPassword} , silahkan lakukan perubahan untuk keamanan akun anda`
                     mailer ( data.email, subject, resultText, (err ) => {
                         if ( err) res.send (err )
-                        else res.status(200).json( data )
                     });
+
+                    job.stop()
                     
-                  }, null, true, 'Asia/Jakarta');;
-                  require('dotenv').config()*/
+                  }, function (){
+                      console.log(`job done`)
+                  }, true, 'Asia/Jakarta');
+                  console.log(`sebelum job start`)
+                  job.start()
+
+                  res.status(200).json( data )
             }
         })
     }
@@ -116,6 +100,7 @@ class UserController {
     }
 
     static gSignIn ( req, res ) {
+        console.log(`masuk gSignIn`)
         const {OAuth2Client} = require('google-auth-library');
         const client = new OAuth2Client(process.env.gSecret);
         client.verifyIdToken({
@@ -127,6 +112,7 @@ class UserController {
                 User.findOne({ email : result.payload['email']})
                 .then( user => {
                     if ( user !== null ){
+                        console.log(`usernya udah ada`)
                         let data = { id : user._id}
                         let jToken = jwt.sign( data, process.env.jSecret )
                         //gimana kirim jToken sambil redirect
@@ -136,6 +122,7 @@ class UserController {
                         }
                     } 
                     else {
+                        console.log(`usernya belum ada`)
                         let user = new User ({
                             email: result.payload['email'],
                             password: req.headers.gtoken
@@ -161,8 +148,22 @@ class UserController {
     }
 
     static readOne ( req, res ) {
-        console.log(req.body)
         User.findById(req.myId)
+            .then( user => {
+                console.log(user)
+                res.status(200).json( user )
+            })
+            .catch( err => {
+                console.log(err)
+                res.status(500).json( {error : err, message : "your email address or password is incorrect"} )
+            })
+    }
+
+    static readBestContributor ( req, res ) {
+        User.find()
+            .select(['name', 'popularity'])
+            .sort({popularity: -1})
+            .limit(5)
             .then( user => {
                 console.log(user)
                 res.status(200).json( user )

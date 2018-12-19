@@ -6,6 +6,7 @@ const   express = require('express'),
 
 router.post('/gSignIn', UserController.gSignIn );
 router.post('/signin', UserController.signIn );
+router.get('/best', UserController.readBestContributor );
 router.get('/', authentication, UserController.readOne );
 router.post('/', UserController.create );
 router.patch('/', authentication, UserController.updatePassword );

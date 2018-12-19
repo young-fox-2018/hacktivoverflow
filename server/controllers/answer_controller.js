@@ -38,7 +38,7 @@ class AnswerController {
 
     static readOwn (req, res){
         Answer.find({ UserId : req.myId})
-        .populate('QuestionId', 'title')
+        .populate('QuestionId', 'title slug')
         .then( answers => {
             console.log(`masuk read all answer`)
             console.log(answers)

@@ -15,6 +15,7 @@ db.once('open', function() {
 const usersRouter = require('./routes/usersRoute');
 const questionsRouter = require('./routes/questionsRoute');
 const answersRouter = require('./routes/answersRoute');
+const tagsRouter = require('./routes/tagsRoute');
 
 const app = express();
 
@@ -28,4 +29,5 @@ app.use(cors())
 app.use('/users', usersRouter);
 app.use('/questions', questionsRouter);
 app.use('/answers', answersRouter);
+app.use('/tags', tagsRouter);
 module.exports = app;

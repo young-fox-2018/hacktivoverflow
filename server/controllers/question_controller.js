@@ -1,4 +1,5 @@
-const   Question = require('../models/question');
+const   Question = require('../models/question'),
+        User = require('../models/user');
 
 class QuestionController {
     static create ( req, res ){
@@ -7,7 +8,8 @@ class QuestionController {
             title: req.body.title,
             description: req.body.description,
             slug: req.body.slug,
-            dateCreate: new Date()
+            dateCreate: new Date(),
+            tags: req.body.tags
         })
         question.save( (err, data) => {
             if (err) {
@@ -28,11 +30,10 @@ class QuestionController {
     }
 
     static readAll (req, res){
-        console.log(`===========read all question`)
         Question.find()
             .populate('UserId', 'name')
+            .sort({dateCreate: -1})
             .then( questions => {
-                console.log(questions)
                 res.status(200).json( questions )
             })
             .catch( error => {
@@ -71,7 +72,8 @@ class QuestionController {
         Question.findByIdAndUpdate({ _id : req.params.id}, {
             title: req.body.title,
             description: req.body.description,
-            slug: req.body.slug,         
+            slug: req.body.slug,
+            tags: req.body.tags        
         },{new: true})
         .then( questions => {
             Question.find({ UserId : req.myId})
@@ -123,14 +125,32 @@ class QuestionController {
                     let upvoteArr = result.upvote
                     if (upvoteArr.indexOf(req.myId) === -1 ){
                         result.update({$push: {upvote: req.myId}, $pull: {downvote: req.myId}})
-                            .then( result => {
-                                Question.find()
-                                .then( questions => {
-                                    console.log(questions)
-                                    res.status(200).json( questions )
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity +=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
                                 })
                                 .catch( error => {
-                                    console.log(`error di read all question`)
                                     console.log(error)
                                     res.status(500).json(error.message)
                                 })
@@ -142,14 +162,32 @@ class QuestionController {
                     //kalo sudah ada, maka hilangkan status upvote dari user tersebut
                     else{
                         result.update({$pull: {upvote: req.myId}})
-                            .then( result => {
-                                Question.find()
-                                .then( questions => {
-                                    console.log(questions)
-                                    res.status(200).json( questions )
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity -=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
                                 })
                                 .catch( error => {
-                                    console.log(`error di read all question`)
                                     console.log(error)
                                     res.status(500).json(error.message)
                                 })
@@ -179,14 +217,32 @@ class QuestionController {
                     let downvote = result.downvote
                     if (downvote.indexOf(req.myId) === -1 ){
                         result.update({$push: {downvote: req.myId}, $pull: {upvote: req.myId}})
-                            .then( result => {
-                                Question.find()
-                                .then( questions => {
-                                    console.log(questions)
-                                    res.status(200).json( questions )
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity +=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
                                 })
                                 .catch( error => {
-                                    console.log(`error di read all question`)
                                     console.log(error)
                                     res.status(500).json(error.message)
                                 })
@@ -198,14 +254,33 @@ class QuestionController {
                     //kalo sudah ada, maka hilangkan status upvote dari user tersebut
                     else{
                         result.update({$pull: {downvote: req.myId}})
-                            .then( result => {
-                                Question.find()
-                                .then( questions => {
-                                    console.log(questions)
-                                    res.status(200).json( questions )
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity -=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
+
                                 })
                                 .catch( error => {
-                                    console.log(`error di read all question`)
                                     console.log(error)
                                     res.status(500).json(error.message)
                                 })
