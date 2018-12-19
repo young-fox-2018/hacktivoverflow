@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 const CronJob = require('cron').CronJob
 const User = require('./models/User')
 const nodemailer = require('nodemailer')
-mongoose.connect(`mongodb://localhost/${process.env.DB}`);
+mongoose.connect('mongodb://robertarifin:r123456@ds139534.mlab.com:39534/hacktiv8overflow')
 
 require('dotenv').config()
 
