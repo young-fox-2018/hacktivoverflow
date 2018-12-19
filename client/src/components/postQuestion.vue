@@ -28,7 +28,7 @@
 </template>
 
 <script>
-
+const IP = `http://35.240.198.92`
 export default {
     name: 'newquestion',
     data () {
@@ -41,7 +41,7 @@ export default {
         postQuestion () {
             axios({
                 method: `POST`,
-                url: `http://localhost:3000/questions`,
+                url: `${IP}/questions`,
                 data: {
                     title: this.title,
                     content: this.content

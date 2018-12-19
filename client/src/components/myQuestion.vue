@@ -33,6 +33,7 @@
 
 <script>
 import {mapState} from 'vuex'
+const IP = `http://35.240.198.92`
 export default {
     name: 'myQuestion',
     data() {
@@ -53,7 +54,7 @@ export default {
         deleteQuestion (id) {
           axios({
             method: `DELETE`,
-            url: `http://localhost:3000/questions/${id}`,
+            url: `${IP}/questions/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }

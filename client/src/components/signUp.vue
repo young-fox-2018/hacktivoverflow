@@ -39,6 +39,7 @@
 </template>
 
 <script>
+const IP = `http://35.240.198.92`
 export default {
     name: 'signup',
     data () {
@@ -60,7 +61,7 @@ export default {
             formData.append('avatar', this.avatar)
             axios({
                 method: `POST`,
-                url: `http://localhost:3000/users`,
+                url: `${IP}/users`,
                 data: formData
             })
             .then((user) => {

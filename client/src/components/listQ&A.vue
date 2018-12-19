@@ -170,6 +170,7 @@
 <script>
 import {mapState} from 'vuex'
 import moment from 'moment'
+const IP = `http://35.240.198.92`
 export default {
     data () {
         return {
@@ -207,7 +208,7 @@ export default {
         findOneQuestion (id) {
             axios({
                 method: `GET`,
-                url: `http://localhost:3000/questions/${id}`,
+                url: `${IP}/questions/${id}`,
             })
             .then((question) => {
                 this.questionId = id
@@ -223,7 +224,7 @@ export default {
         postAnswer (id) {
             axios({
                 method: `POST`,
-                url: `http://localhost:3000/answers/${id}`,
+                url: `${IP}/answers/${id}`,
                 data: {
                     content: this.content
                 },
@@ -242,7 +243,7 @@ export default {
         upVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `http://localhost:3000/questions/upvote/${id}`,
+            url: `${IP}/questions/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -257,7 +258,7 @@ export default {
         downVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `http://localhost:3000/questions/downvote/${id}`,
+            url: `${IP}/questions/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -273,7 +274,7 @@ export default {
         upVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `http://localhost:3000/answers/upvote/${id}`,
+            url: `${IP}/answers/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -289,7 +290,7 @@ export default {
          downVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `http://localhost:3000/answers/downvote/${id}`,
+            url: `${IP}/answers/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }

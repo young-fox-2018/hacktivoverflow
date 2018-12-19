@@ -27,6 +27,7 @@
 </template>
 
 <script>
+const IP = `http://35.240.198.92`
 export default {
     name: 'editanswer',
     data () {
@@ -38,7 +39,7 @@ export default {
           editAnswer() {
             axios({
                 method: `PUT`,
-                url:`http://localhost:3000/answers/one/${this.$route.params.id}`,
+                url:`${IP}/answers/one/${this.$route.params.id}`,
                 data: {
                     content: this.content
                 },
@@ -57,7 +58,7 @@ export default {
         findAnswer() {
             axios({
                 method: `GET`,
-                url: `http://localhost:3000/answers/${this.$route.params.id}`
+                url: `${IP}/answers/${this.$route.params.id}`
             })
             .then((answer) => {
                 console.log(answer)

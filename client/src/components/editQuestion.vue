@@ -28,6 +28,7 @@
 </template>
 
 <script>
+const IP = `http://35.240.198.92`
 export default {
     name: 'editQuestion',
     data () {
@@ -40,7 +41,7 @@ export default {
         editQuestion () {
             axios({
                 method: `PUT`,
-                url: `http://localhost:3000/questions/${this.$route.params.id}`,
+                url: `${IP}/questions/${this.$route.params.id}`,
                 data: {
                     title: this.title,
                     content: this.content
