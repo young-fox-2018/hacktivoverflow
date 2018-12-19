@@ -1,17 +1,17 @@
 <template>
-    <b-navbar toggleable="md" type="light" variant="info" class="bg-transparent">
+    <b-navbar toggleable="md" type="light" variant="info" class="bg-transparent background-custom">
 
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
         <router-link to="/">
             <img src="@/assets/scatter.png" width="auto" height="40px" alt="">
-            <b-navbar-brand href="#">Scatter <b> Overflow </b></b-navbar-brand>
+            <b-navbar-brand href="#">Scatter <b style="color: orange"> Overflow </b></b-navbar-brand>
         </router-link>
 
         <b-collapse is-nav id="nav_collapse">
            <b-navbar-nav class="mr-auto ml-auto">
-               <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+               <form @submit.prevent="searchArticle" class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"  v-model="searchQuery">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                 </form>
           </b-navbar-nav>
 
@@ -44,6 +44,7 @@
     </b-navbar>
 </template>
 
+
 <script>
 import SignInModal from '@/components/SignInModal.vue';
 import RegisterModal from '@/components/RegisterModal.vue';
@@ -53,7 +54,8 @@ export default {
     data: function() {
         return{
             userName: localStorage.getItem('userName'),
-            dismissCountDown: 0
+            dismissCountDown: 0,
+            searchQuery: ''
         }
     },
     components: {
@@ -80,7 +82,17 @@ export default {
             localStorage.clear();
             this.$store.dispatch('checkLog',false)
         },
+        searchArticle(){
+            this.$router.push('/?search='+ this.searchQuery )
+        }
     },
 }
 
 </script>
+
+<style scoped>
+.background-custom{
+    background-color: white !important;
+} 
+</style>
+

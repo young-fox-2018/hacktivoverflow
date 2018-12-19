@@ -14,11 +14,11 @@
 
         <wysiwyg v-model="form.content" />
         
-        <b-form-group label="Button style checkboxes with variant <code>primary</code> and large buttons">
+        <b-form-group label="Add Category">
           <b-form-checkbox-group v-model="form.tags"
                                 buttons
                                 button-variant="primary"
-                                size="lg"
+                                size="sm"
                                 name="buttons2"
                                 :options="tags">
           </b-form-checkbox-group>

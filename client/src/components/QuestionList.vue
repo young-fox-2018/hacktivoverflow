@@ -9,7 +9,7 @@
         <hr>
 
         <div class="question-list">
-            <div v-for="(question) in questions" :key="question.id" >
+            <div v-for="(question) in filteredQuestions" :key="question.id" >
                 <div class="card" @click.prevent="toQuestionDetail(question._id)">
                     <div class="card-body ">
                         <div class="row">
@@ -62,11 +62,20 @@ export default {
     name: 'QuestionList',
     data: function() {
         return{
-            questions: []
+            questions: [],
+            filteredQuestions: [],
+            tag: this.$route.query.tag
         }
     },
     created() {
         this.fetchQuestion()
+    },
+    watch: {
+        $route() {
+            this.tag = this.$route.query.tag;
+            this.filteredQuestions = []
+            this.fetchQuestion()
+        }
     },
     methods: {
         fetchQuestion() {
@@ -98,11 +107,7 @@ export default {
                             }
 
                         } 
-
-                        // answersSum
-                        // upvoteSum
-                        // downvoteSum
-                        // viewsSum
+                        this.filterQuestion()
                     });
 
             })
@@ -114,8 +119,13 @@ export default {
             let newViewsSum 
 
             this.questions.map(element =>{
-                if(element._id = questionId){
-                    newViewsSum = element.viewsSum +1
+                if(element._id == questionId){
+                    if(element.viewsSum){
+                        newViewsSum = element.viewsSum +1
+                    }
+                    else {
+                        newViewsSum = 1
+                    }
                 }
             })
 
@@ -124,7 +134,32 @@ export default {
 
             this.$router.push(`/questions/${questionId}`);
         },
-        fetchQuestionDetail(){
+        filterQuestion(){
+            console.log('filtering')
+            if(this.$route.query.tag){
+                this.questions.map(element =>{
+                    let foundTag = false
+                    if(element.tags){
+                        foundTag = element.tags.find(tagElement =>{
+                            return tagElement == this.tag
+                        })
+                    }
+                    if(foundTag){
+                        this.filteredQuestions.push(element)
+                    }
+                })
+            }
+            else if(this.$route.query.search) {
+                this.filteredQuestions = this.questions.filter(element =>{
+                    let searchRegex = new RegExp(this.$route.query.search, 'gi')
+                    if(element.title.match(searchRegex)){
+                        return element
+                    }
+                })
+            }
+            else {
+                this.filteredQuestions = {...this.questions}
+            }
         }
     }
 }

@@ -1,45 +1,44 @@
 <template>
     <div >
-        
-                <div class="card">
-                      <div class="card-body pb-0 row">
-                          <div class="col-2 d-flex flex-column">
-                                <i class="fas fa-caret-up fa-3x vote" v-if="!upvoted" @click.prevent="upvoteAnswer"></i>
-                                <i class="fas fa-caret-up fa-3x disabled-icon" v-if="ownAnswer"></i>
-                                <!-- isi dengan firebase -->
-                                {{votes}}
-                                <i class="fas fa-caret-down fa-3x vote" v-if="!downvoted" @click.prevent="downvoteAnswer"></i>
-                                <i class="fas fa-caret-down fa-3x disabled-icon"  v-if="ownAnswer"></i>
-                            </div>
-                            <div class="col-10 d-flex flex-column">
-                                <div>
-                                    <h5 v-if="!editing" v-html="answer.content"></h5>
-                                    <form v-if="editing" @submit.prevent="submitEditAnswer">
-                                        <wysiwyg v-model="answer.content" />
-                                        <input type="submit" class="btn btn-primary"/>
-                                        <button class="btn btn-danger"  @click.prevent="cancelEdit">cancel</button>
-                                    </form>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <div class="justify-content-end">
-                                    <p> answered "time"</p>
-                                    <img src="@/assets/avatar.png" alt="" width="20px" height="auto">
-                                    {{answer.author.name}}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <button 
-                                    class="btn btn-warning" 
-                                    v-if="ownAnswer"
-                                    @click="showEditForm">
-                                        edit Answer
-                                    </button>
-                                </div>
-
-                            </div>
-                      </div>
+        <div class="card mb-2">
+                <div class="card-body pb-0 row">
+                    <div class="col-2 d-flex flex-column">
+                        <i class="fas fa-caret-up fa-3x vote" v-if="!upvoted" @click.prevent="upvoteAnswer"></i>
+                        <i class="fas fa-caret-up fa-3x disabled-icon" v-if="ownAnswer"></i>
+                        <!-- isi dengan firebase -->
+                        {{votes}}
+                        <i class="fas fa-caret-down fa-3x vote" v-if="!downvoted" @click.prevent="downvoteAnswer"></i>
+                        <i class="fas fa-caret-down fa-3x disabled-icon"  v-if="ownAnswer"></i>
                     </div>
+                    <div class="col-10 d-flex flex-column">
+                        <div>
+                            <h5 v-if="!editing" v-html="answer.content"></h5>
+                            <form v-if="editing" @submit.prevent="submitEditAnswer">
+                                <wysiwyg v-model="answer.content" />
+                                <input type="submit" class="btn btn-primary"/>
+                                <button class="btn btn-danger"  @click.prevent="cancelEdit">cancel</button>
+                            </form>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <div class="justify-content-end">
+                            <p> answered "time"</p>
+                            <img src="@/assets/avatar.png" alt="" width="20px" height="auto">
+                            {{answer.author.name}}
+                            </div>
+                        </div>
+
+                        <div>
+                            <button 
+                            class="btn btn-warning" 
+                            v-if="ownAnswer"
+                            @click="showEditForm">
+                                edit Answer
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
 
         <!-- <b-modal id="editAnswerModal" title="Bootstrap-Vue" ref="editAnswerModal">
             <form>

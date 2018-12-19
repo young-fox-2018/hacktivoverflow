@@ -1,60 +1,66 @@
 <template>
     <div>
-        <h3 class="text-left">{{question.title}}</h3>
-        <hr>
-        <div class="row">
-            <div class="col-2 d-flex flex-column">
-                <i class="fas fa-caret-up fa-3x vote" v-if="!upvoted" @click='upvoteQuestion'></i>
-                <i class="fas fa-caret-up fa-3x disabled-icon" v-if="ownQuestion"></i>
-                <!-- isi dengan firebase -->
-                {{votes}}
-                <i class="fas fa-caret-down fa-3x vote"  v-if="!downvoted" @click.prevent='downvoteQuestion'></i>
-                <i class="fas fa-caret-down fa-3x disabled-icon"  v-if="ownQuestion"></i>
-            </div>
-            <div class="col-10" v-html='question.content'>
-                <!-- <p>{{question.content}}</p> -->
-            </div>
-            <div class="d-flex ">
+        <div class="card mt-2">
+            <div class="card-body pb-0">
+                    <h3 class="text-left">{{question.title}}</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-2 d-flex flex-column">
+                        <i class="fas fa-caret-up fa-3x vote" v-if="!upvoted" @click='upvoteQuestion'></i>
+                        <i class="fas fa-caret-up fa-3x disabled-icon" v-if="ownQuestion"></i>
+                        <!-- isi dengan firebase -->
+                        {{votes}}
+                        <i class="fas fa-caret-down fa-3x vote"  v-if="!downvoted" @click.prevent='downvoteQuestion'></i>
+                        <i class="fas fa-caret-down fa-3x disabled-icon"  v-if="ownQuestion"></i>
+                    </div>
+                    <div class="col-10" v-html='question.content'>
+                        <!-- <p>{{question.content}}</p> -->
+                    </div>
+                    <div class="d-flex ">
+                        <button 
+                        class="btn btn-primary btn-sm m-2"
+                        v-for="(tag,index) in question.tags"
+                        :key="index">
+                        {{tag}}
+                        </button>
+                    </div>
+                </div>
                 <button 
-                  class="btn btn-primary btn-sm m-2"
-                  v-for="(tag,index) in question.tags"
-                  :key="index">
-                  {{tag}}
+                class="btn btn-warning" 
+                v-if="ownQuestion"
+                v-b-modal.editQuestionModal
+                >
+                    Edit Question
                 </button>
-            </div>
-        </div>
-        <button 
-          class="btn btn-warning" 
-          v-if="ownQuestion"
-          v-b-modal.editQuestionModal
-          >
-            Edit Question
-        </button>
-        <button 
-          class="btn btn-danger" 
-          v-if="ownQuestion"
-          @click="deleteQuestion"
-          >
-            Delete Question
-        </button>
+                <button 
+                class="btn btn-danger" 
+                v-if="ownQuestion"
+                @click="deleteQuestion"
+                >
+                    Delete Question
+                </button>
 
-        <b-modal id="editQuestionModal" title="Bootstrap-Vue" ref="editQuestionModal">
-            <form>
-                <div class="form-group">
-                    <label for="editTitle">Title</label>
-                    <input  type="text" class="form-control" id="editTitle" v-model="question.title" >
-                </div>
-                <div>
-                    <wysiwyg v-model="question.content" />
-                </div>
-                <!-- <button type="submit" class="btn btn-primary" style="display:none" ></button> -->
-            </form>
-            <div slot="modal-footer" class="w-100">
-                <b-btn size="sm" class="float-right" variant="warning" @click="editQuestion">
-                Edit
-                </b-btn>
-            </div>
-        </b-modal>
+                <b-modal id="editQuestionModal" title="Bootstrap-Vue" ref="editQuestionModal">
+                    <form>
+                        <div class="form-group">
+                            <label for="editTitle">Title</label>
+                            <input  type="text" class="form-control" id="editTitle" v-model="question.title" >
+                        </div>
+                        <div>
+                            <wysiwyg v-model="question.content" />
+                        </div>
+                        <!-- <button type="submit" class="btn btn-primary" style="display:none" ></button> -->
+                    </form>
+                    <div slot="modal-footer" class="w-100">
+                        <b-btn size="sm" class="float-right" variant="warning" @click="editQuestion">
+                        Edit
+                        </b-btn>
+                    </div>
+                </b-modal>
+            </div>      
+        </div>
+        
+        
         
 
         <div id="answersComp">
@@ -63,10 +69,15 @@
             <Answer v-for="(answer, index) in answers" :key="index" :answer="answer" :answerId="index" :questionId="questionId"/>
         </div>
         
-        <form @submit.prevent="submitAnswer" class="mr-2">
-            <textarea class="form-control" id="answerText" rows="3" v-model="newQuestion"></textarea>
-            <input type="submit" class="btn btn-primary"/>
-        </form>
+        <div class="card">
+            <h5 class="card-title"> Add Answer </h5>
+            <div class="card-body">
+                <form @submit.prevent="submitAnswer" class="mr-2">
+                    <wysiwyg v-model="newQuestion" />
+                    <input type="submit" class="btn btn-primary"/>
+                </form>
+            </div>
+        </div>
     </div>
 </template>
 

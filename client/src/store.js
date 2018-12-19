@@ -8,7 +8,7 @@ export default new Vuex.Store({
     isLoggedIn: false,
     successMessage: '',
     success: false,
-    tags: ['romance', 'technology', 'supernatural', 'movies', 'music', 'parrenting']
+    tags: ['romance', 'technology', 'supernatural', 'movies', 'music', 'parrenting', 'mathematic']
   },
   mutations: {
     checkLog(state, data){
