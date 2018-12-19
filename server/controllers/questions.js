@@ -19,6 +19,7 @@ module.exports = {
         Question.find({})
         .populate('author')
         .then((question_docs) =>{
+            console.log(question_docs)
             res.status(200).json({questions: question_docs})
         })
         .catch((err) =>{
