@@ -61,9 +61,13 @@ export default {
       }
     },
     logout() {
-      localStorage.removeItem('token')
-      this.$store.dispatch('actionUserLoggedOut')
-      this.checkLogin()
+      var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(() => {
+          localStorage.removeItem('token')
+          this.$store.dispatch('actionUserLoggedOut')
+          this.checkLogin()
+          this.$router.push('/')
+        })
     }
   },
 

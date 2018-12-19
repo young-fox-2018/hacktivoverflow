@@ -32,6 +32,7 @@ export default new Vuex.Store({
     },
     mutationUserLoggedOut(state, payloads) {
       state.isLogin = false
+      state.userProfile = {}
     },
     mutationAllQuestion(state, payloads) {
       state.allQuestions = payloads
