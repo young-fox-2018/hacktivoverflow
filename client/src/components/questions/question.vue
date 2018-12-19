@@ -2,11 +2,17 @@
   <div v-if="!edit" class="box">
     <div class="columns">
       <div class="column is-1 vote">
-        <span @click="voteQuestion(1)" class="icon">
+        <span v-show="upvoted" @click="voteQuestion(1)" class="icon">
+          <i class="fas fa-thumbs-up"></i>
+        </span>
+        <span v-show="!upvoted" @click="voteQuestion(1)" class="icon">
           <i class="far fa-thumbs-up"></i>
         </span>
         <span>{{ question.voteCount }}</span>
-        <span @click="voteQuestion(-1)" class="icon">
+        <span v-show="downvoted" @click="voteQuestion(-1)" class="icon">
+          <i class="fas fa-thumbs-down"></i>
+        </span>
+        <span v-show="!downvoted" @click="voteQuestion(-1)" class="icon">
           <i class="far fa-thumbs-down"></i>
         </span>
       </div>
@@ -61,9 +67,27 @@ export default {
     };
   },
 
-  computed: mapState({
-    user: state => state.user
-  }),
+  computed: {
+    ...mapState({
+      user: state => state.user
+    }),
+
+    upvoted() {
+      return (
+        this.user &&
+        this.question.votes &&
+        this.question.votes[this.user.id] === 1
+      );
+    },
+
+    downvoted() {
+      return (
+        this.user &&
+        this.question.votes &&
+        this.question.votes[this.user.id] === -1
+      );
+    }
+  },
 
   methods: {
     updateQuestion() {
@@ -91,18 +115,37 @@ export default {
         .catch(err => alert(err.message));
     },
 
-    voteQuestion(by) {
+    voteQuestion(vote) {
+      // if (this.user) {
+      //   if (this.question.user.id !== this.user.id) {
+      //     database
+      //       .ref(`/questions/${this.question.id}/votes/${this.user.id}`)
+      //       .transaction(currentVote => {
+      //         if (currentVote && currentVote + vote >= -1 && currentVote + vote <= 1) {
+      //           currentVote = currentVote + vote || null;
+      //         } else {
+      //           currentVote = vote;
+      //         }
+      //         return currentVote;
+      //       });
+      //   } else {
+      //     alert(`Sorry, you can't vote your own question`);
+      //   }
+      // } else {
+      //   alert(`Please login first`);
+      // }
+
       if (this.user) {
         if (this.question.user.id !== this.user.id) {
           database
             .ref(`/questions/${this.question.id}/votes/${this.user.id}`)
-            .transaction(vote => {
-              if (vote && vote + by >= -1 && vote + by <= 1) {
-                vote = vote + by || null;
+            .transaction(currentVote => {
+              if (currentVote == vote) {
+                currentVote = null;
               } else {
-                vote = by;
+                currentVote = vote;
               }
-              return vote;
+              return currentVote;
             });
         } else {
           alert(`Sorry, you can't vote your own question`);

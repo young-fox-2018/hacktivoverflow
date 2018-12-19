@@ -2,7 +2,11 @@
   <div id="app">
     <navbar class="has-background-light" style="margin-bottom: 1rem"></navbar>
     <div class="container">
-      <router-view @userLoggedIn="getUser"/>
+      <div class="columns">
+        <div class="column is-9">
+          <router-view @userLoggedIn="getUser"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,5 +48,8 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+.columns {
+  justify-content: center
+}
 </style>

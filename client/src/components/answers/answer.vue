@@ -2,11 +2,17 @@
   <div v-if="!edit" class="box">
     <div class="columns">
       <div class="column is-1 vote">
-        <span @click="voteAnswer(1)" class="icon">
+        <span v-show="upvoted" @click="voteAnswer(1)" class="icon">
+          <i class="fas fa-thumbs-up"></i>
+        </span>
+        <span v-show="!upvoted" @click="voteAnswer(1)" class="icon">
           <i class="far fa-thumbs-up"></i>
         </span>
         <span>{{ answer.voteCount }}</span>
-        <span @click="voteAnswer(-1)" class="icon">
+        <span v-show="downvoted" @click="voteAnswer(-1)" class="icon">
+          <i class="fas fa-thumbs-down"></i>
+        </span>
+        <span v-show="!downvoted" @click="voteAnswer(-1)" class="icon">
           <i class="far fa-thumbs-down"></i>
         </span>
       </div>
@@ -51,23 +57,45 @@ export default {
     };
   },
 
-  computed: mapState({
-    user: state => state.user
-  }),
+  computed: {
+    ...mapState({
+      user: state => state.user
+    }),
+
+    upvoted() {
+      return (
+        this.user &&
+        this.answer.votes &&
+        this.answer.votes[this.user.id] === 1
+      );
+    },
+
+    downvoted() {
+      return (
+        this.user &&
+        this.answer.votes &&
+        this.answer.votes[this.user.id] === -1
+      );
+    }
+  },
 
   methods: {
-    voteAnswer(by) {
+    voteAnswer(vote) {
       if (this.user) {
         if (this.user.id !== this.answer.user.id) {
           database
-            .ref(`/answers/${this.$route.params.id}/${this.answer.id}/votes/${this.user.id}`)
-            .transaction(vote => {
-              if (vote && vote + by >= -1 && vote + by <= 1) {
-                vote = vote + by || null;
+            .ref(
+              `/answers/${this.$route.params.id}/${this.answer.id}/votes/${
+                this.user.id
+              }`
+            )
+            .transaction(currentVote => {
+              if (currentVote == vote) {
+                currentVote = null;
               } else {
-                vote = by;
+                currentVote = vote;
               }
-              return vote;
+              return currentVote;
             });
         } else {
           alert(`Sorry, you can't vote your own answer`);
@@ -87,7 +115,7 @@ export default {
           this.edit = false;
         })
         .catch(err => alert(err.message));
-    },
+    }
   }
 };
 </script>
