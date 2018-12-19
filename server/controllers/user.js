@@ -48,20 +48,26 @@ module.exports = {
 
   gSignIn(req, res) {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    client.verifyIdToken({ idToken: req.body.id_token })
-      .then(ticket => {
-        return User
-          .findOne({
-            email: ticket.payload.email
-          }).exec()
-      })
-      .then(user => {
+    let verification = client.verifyIdToken({ idToken: req.body.id_token })
+    let checkUser = verification.then(ticket => {
+      return User
+        .findOne({
+          email: ticket.payload.email
+        }).exec()
+    })
+
+    Promise.all([verification, checkUser])
+      .then(([ticket, user]) => {
         if (user) {
           return getToken({ id: user.id })
         } else {
-          return User.create(req.body)
+          return User.create({
+            name: ticket.payload.given_name + ticket.payload.family_name,
+            email: ticket.payload.email,
+            password: '123456'
+          })
             .then(user => {
-              return getToken({ userId: user.id })
+              return getToken({ id: user.id })
             })
         }
       })
