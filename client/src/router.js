@@ -10,8 +10,29 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import(/* webpackChunkName: "home-question" */ './components/HomeQuestions.vue')
+        },
+        {
+          path: '/question/detail/:id',
+          name: 'question-detail',
+          component: () => import(/* webpackChunkName: "question-detail" */ './components/QuestionDetail.vue')
+        },
+        {
+          path: '/question/add',
+          name: 'add-question',
+          component: () => import(/* webpackChunkName: "add-question" */ './components/AddQuestions.vue')
+        },
+        {
+          path: '/question/edit/:id',
+          name: 'edit-question',
+          component: () => import(/* webpackChunkName: "edit-question" */ './components/EditQuestions.vue')
+        }
+      ]
     },
     {
       path: '/about',
@@ -20,6 +41,11 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '*',
+      name: 'notfound',
+      component: () => import(/* webpackChuckName: "about" */ './views/NotFound.vue')
     }
   ]
 })

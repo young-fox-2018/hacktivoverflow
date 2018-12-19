@@ -1,5 +1,13 @@
 const User = require('../models/user')
-const {hashPass, signJwt, compare} = require('../helpers/')
+const {hashPass, signJwt, compare, nodemailer} = require('../helpers/')
+const axios = require('axios')
+const {OAuth2Client} = require('google-auth-library');
+var kue = require('kue')
+ , queue = kue.createQueue();
+
+queue.process('email', function(job, done){
+    nodemailer(job, done);
+  });  
 
 module.exports = {
     register : function(req,res){
@@ -19,6 +27,12 @@ module.exports = {
                             console.log(err)
                         }else{
                             console.log(users)
+                            var job = queue.create('email', {recipient: users.email, name: users.name
+                              }).save( function(err){
+                                if( !err ) console.log( job.id );
+                            });
+
+                            // nodemailer({recipient : users.email, name: users.name})
                             res.status(201).json(users)
                         }
                     })
@@ -40,7 +54,10 @@ module.exports = {
                         });
                         res.status(200).json({
                             msg : "user login", 
-                            token: token
+                            token: token,
+                            id : user._id,
+                            email: user.email
+
                         })
                     }else{
                         res.status(401).json({message : "Unauthorized : wrong password"})
@@ -51,6 +68,18 @@ module.exports = {
                     })
                 }
             }
+        })
+    },
+    loginGoogle: function(req,res){
+        axios({
+            method: 'GET',
+            url: `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${req.body.token}`
+        })
+        .then(result => {
+            console.log(result)
+        })
+        .catch(err=> {
+            console.log(err)
         })
     }
 }

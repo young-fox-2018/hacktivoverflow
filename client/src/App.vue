@@ -1,31 +1,46 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <navbar> </navbar>
+    <section class="content">
+      <router-view></router-view>
+    </section>
   </div>
 </template>
 
+<script>
+import Navbar from '@/components/Navbar'
+import { mapState } from 'vuex'
+import { mapActions } from 'vuex'
+export default {
+  computed:{
+    ...mapState([
+      'isLogin','userId','email'
+    ])
+  },
+  methods:{
+    ...mapActions([
+      'signOut','checkToken','getQuestions'
+    ]),
+  },
+  mounted() {
+    this.checkToken()
+    this.getQuestions()
+  },
+  components: {
+    Navbar
+  }
+}
+</script>
+
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  color: #363838;
 }
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.content {
+  margin-top: 80px;
+  background-color: #ecf0f1;
 }
 </style>

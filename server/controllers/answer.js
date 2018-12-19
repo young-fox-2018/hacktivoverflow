@@ -1,5 +1,4 @@
 const Answer = require('../models/answer')
-var mongoose = require('mongoose');
 
 module.exports = {
     create : function(req, res){
@@ -45,22 +44,71 @@ module.exports = {
         })
     },
     upVote : function(req, res, next){
-        Answer.findOneAndUpdate({_id : req.params.id}, {$push: {'upVote' : req.body}}, {new: true}, function(err, result){
-            if(err){
-                res.status(400).json(err)
-            }else{
-                res.status(200).json({result})
-            }
-        })
+        if(req.hasUpVote){
+            Answer.findOneAndUpdate({_id : req.params.id}, {$pull: {'upVote' : req.body.userId}}, {new: true}, function(err, result){
+                if(err){
+                    res.status(400).json(err)
+                }else{
+                    res.status(200).json({result})
+                }
+            })
+        }else if(!req.hasDownVote && !req.hasUpVote){
+            Answer.findOneAndUpdate({_id : req.params.id}, {$push: {'upVote' : req.body.userId}}, {new: true}, function(err, result){
+                if(err){
+                    res.status(400).json(err)
+                }else{0
+                    res.status(200).json({result})
+                }
+            })
+        }else if(req.hasDownVote && !req.hasUpVote){
+            Answer.findById(req.params.id, function(err, answer){
+                if(err){
+                    res.status(400).json(err)
+                }else{
+                    Answer.update({_id : answer._id}, {$pull: {'downVote' : req.body.userId}, $push: {'upVote' : req.body.userId}}, {new: true }, function(err, result){
+                        if(err){
+                            res.status(400).json(err)
+                        }else{
+                            res.status(200).json(result)
+                        }
+                    })
+                }
+            })
+        }
     },
     downVote : function(req,res, next){
-        Answer.findOneAndUpdate({_id : req.params.id}, {$push: {'downVote' : req.body}}, {new: true}, function(err, result){
-            if(err){
-                res.status(400).json(err)
-            }else{
-                res.status(200).json({result})
-            }
-        })
+        if(req.hasDownVote){
+            Answer.findOneAndUpdate({_id : req.params.id}, {$pull: {'downVote' : req.body.userId}}, {new: true},function(err, result){
+                if(err){
+                    res.status(400).json(err)
+                }else{
+                    res.status(200).json({result})
+                }
+            })
+        }else if(!req.hasDownVote && !req.hasUpVote){
+            Answer.findOneAndUpdate({_id : req.params.id}, {$push: {'downVote' : req.body.userId}}, {new: true},function(err, result){
+                if(err){
+                    res.status(400).json(err)
+                }else{
+                    res.status(200).json({result})
+                }
+            })
+        }else if(!req.hasDownVote && req.hasUpVote){
+            Answer.findById(req.params.id, function(err, answer){
+                if(err){
+                    res.status(400).json(err)
+                }else{
+                    Answer.update({_id : answer._id}, {$pull: {'upVote' : req.body.userId}, $push: {'downVote' : req.body.userId}}, {new: true }, function(err, result){
+                        if(err){
+                            res.status(400).json(err)
+                        }else{
+                            res.status(200).json(result)
+                        }
+                    })
+                }
+            })
+        }
+        
     },
     delete : function(req, res, next){
         Answer.findOneAndDelete({_id: req.params.id}, function(err, result){
