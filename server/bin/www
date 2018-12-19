@@ -4,7 +4,8 @@ var debug = require('debug')('server:server');
 var http = require('http');
 const deleteQuestion = require('../helpers/scheduleCloseQuestion')
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/hacktiveoverflow', {useNewUrlParser:true});
+// mongoose.connect('mongodb://localhost/hacktiveoverflow', {useNewUrlParser:true});
+mongoose.connect('mongodb://hacktivoverflow:Rahasiaa1@ds115592.mlab.com:15592/hacktivoverflow', {useNewUrlParser:true})
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
