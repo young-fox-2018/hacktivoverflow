@@ -60,11 +60,15 @@ export default {
         url: '/users/googleSignIn'
       })
       .then(({ data }) => {
+        console.log('ini dibahaw juga', data)
+        console.log('udah dibawah')
         localStorage.setItem('token', data.token);
         localStorage.setItem('userEmail', data.user.email);
         localStorage.setItem('userName', data.user.name);
+        localStorage.setItem('provider', 'google');
         this.$store.dispatch('checkLog',true)
         this.hideModal();
+        this.checkLog
       })
       .catch(({ response: { data } }) => {
         this.errorMessage = data.message;
@@ -86,6 +90,7 @@ export default {
           localStorage.setItem('userEmail', data.user.email);
           localStorage.setItem('userName', data.user.name);
           this.$store.dispatch('checkLog',true)
+          this.checkLog()
           this.hideModal();
         })
         .catch(({ response: { data } }) => {

@@ -25,10 +25,10 @@
               <b-dropdown-item>
                 Welcome {{userName}}
               </b-dropdown-item>
-                <!-- <b-dropdown-item href="#"
-                @click='toMyArticles'>
-                    My Article
-                </b-dropdown-item> -->
+                <b-dropdown-item href="#"
+                @click='toMyQuestion'>
+                    My Question
+                </b-dropdown-item>
                 <b-dropdown-item href="#" @click="logOut">
                     Log Out
                 </b-dropdown-item>
@@ -86,6 +86,7 @@ export default {
                     console.log('User signed out.');
                 })
                 localStorage.clear()
+                this.$store.dispatch('checkLog',false)
             }
             else {
                 localStorage.clear();
@@ -94,6 +95,9 @@ export default {
         },
         searchArticle(){
             this.$router.push('/?search='+ this.searchQuery )
+        },
+        toMyQuestion(){
+            this.$router.push('/user')
         }
     },
 }

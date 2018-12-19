@@ -9,7 +9,7 @@ const userSchema = new Schema({
 })
 
 userSchema.pre("save", function(next){
-    if(this.provider !== "facebook"){
+    if(this.provider !== "google"){
         this.password = bcrypt.hashPassword(this.password)
     }
 

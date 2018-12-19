@@ -7,5 +7,6 @@ const {isLoggedIn} = require('../middlewares/authentication')
 
 router.post("/", usersController.create)
 router.post("/signIn", usersController.signIn)
+router.post("/googleSignIn", usersController.googleSignIn)
 
 module.exports = router;

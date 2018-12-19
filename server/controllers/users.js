@@ -66,6 +66,7 @@ module.exports = {
         })
     },
     signIn: function(req,res,next){
+        console.log('sign in ')
         User.findOne({
             email: req.body.email
         }, function(err,users_data){
@@ -89,5 +90,49 @@ module.exports = {
                 }
             }
         })
+    },
+    googleSignIn: function(req,res,next){
+        let input = {
+            email: req.body.email,
+            name: req.body.name,
+            provider: 'google',
+            password: null
+        }
+
+        console.log(input, 'djfkdjfkjdkf=====input=======')
+
+        User.findOne({
+            email: req.body.email
+        })
+        .then((user_doc) =>{
+            if(user_doc){
+                User.create(input)
+                .then((new_user) =>{
+                    var job = queue.create('registerationMail', {
+                        name: new_user.name,
+                        email: new_user.email,
+                    }).save( function(err){
+                        if(err) console.log(err)
+                        else console.log(job.id)
+                    })
+
+                    res.status(201).json({
+                        token: jwt.sign(users_data.email, process.env.jwtSecret),
+                        user: {new_user},
+                        message: 'You successfully registered by Google'})
+                })
+                .catch((err) =>{
+                    res.status(400).json({message: err.message})
+                })
+            }
+            else{
+                res.status(200).json({
+                    token: jwt.sign(input.email, process.env.jwtSecret),
+                    user: {...input},
+                    message: `You sucessfully signed in by Google`
+                })
+            }
+        })
+    
     }
 }

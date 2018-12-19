@@ -6,8 +6,8 @@
             @dismiss-count-down="countDownChanged">
             <p>{{errorMessage}}</p>
         </b-alert>
-        <table class="table table-dark">
-            <thead>
+        <table class="table user-table">
+            <thead class="user-table-head">
                 <tr>
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
@@ -27,7 +27,7 @@
                     </button>
                     <button 
                     class="btn btn-danger btn-sm" 
-                    @click="deleteQuestion"
+                    @click="deleteQuestion(question)"
                     >
                         Delete Question
                     </button>
@@ -83,6 +83,11 @@ export default {
             }
         }
     },
+    computed: {
+      tags(){
+          return this.$store.state.tags
+      }
+    },
     created() {
         this.fetchOwnQuestions()
     },
@@ -132,15 +137,17 @@ export default {
 
             this.$refs.editQuestionModal.show()
         },
-        editQuestion(){
+        editQuestion(question){
             let input = {
                 title: this.form.title,
                 content: this.form.content,
                 tags: this.form.tags
             }
 
+            console.log('edited', input)
+
             axios({
-                url: '/questions/' + this.questionId,
+                url: '/questions/' + this.form._id,
                 method: 'PATCH',
                 headers: {
                     token: localStorage.token
@@ -149,15 +156,17 @@ export default {
             })
             .then(({data}) =>{
                 alert(data.message)
+                this.fetchOwnQuestions()
                 this.$refs.editQuestionModal.hide()
             })
             .catch(({response}) =>{
                 console.log(response)
             })
         },
-        deleteQuestion(){
+        deleteQuestion(question){
+            
             axios({
-                url: '/questions/' + this.questionId,
+                url: '/questions/' + question._id,
                 method: 'DELETE',
                 headers: {
                     token: localStorage.token
@@ -165,7 +174,7 @@ export default {
             })
             .then(({data}) =>{
                 alert(data.message)
-                this.$router.push('/')
+                this.fetchOwnQuestions()
             })
             .catch(({response}) =>{
                 console.log(response)
@@ -174,3 +183,15 @@ export default {
     }
 }
 </script>
+
+<style>
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
+
+.user-table{
+    background-color: white
+}
+.user-table-head{
+    background-color: orange
+}
+</style>
+

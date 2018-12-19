@@ -1,4 +1,5 @@
 const Question = require("../models/Question")
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 module.exports = {
     create: function(req,res,next){
@@ -17,6 +18,19 @@ module.exports = {
     },
     all: function(req,res,next){
         Question.find({})
+        .populate('author')
+        .then((question_docs) =>{
+            res.status(200).json({questions: question_docs})
+        })
+        .catch((err) =>{
+            res.status(400).json({message: err.message})
+        })
+    },
+    own: function(req,res,next){
+        console.log(req.currentUser._id)
+        Question.find({
+            author: req.currentUser._id
+        })
         .populate('author')
         .then((question_docs) =>{
             console.log(question_docs)
@@ -39,14 +53,18 @@ module.exports = {
         })
     },
     update: function(req,res,next){
+        console.log(req.body.tags, "----------ini tags-----------")
+        console.log(req.params.id)
         let input = {
             title: req.body.title,
-            content: req.body.content
+            content: req.body.content,
+            tags: req.body.tags
         }
         Question.findByIdAndUpdate(
             req.params.id,
-            {set: input},{new: true})
+            input,{new: true})
             .then(question_doc =>{
+                console.log(question_doc, 'baruru')
                 res.status(200).json({
                     question: question_doc,
                     message: 'You successfully updated a question'

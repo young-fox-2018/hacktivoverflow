@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="flex-col">
                                         <p>Created at: {{question.created_at}}</p>
-                                        <p class="text-right">{{question.author.name}}</p>
+                                        <p class="text-right">{{question.author? question.author.name : ''}}</p>
                                     </div>
                                 </div>
                                 <!-- <p>created_at: {{ question.created_at }}</p> -->
@@ -67,6 +67,11 @@ export default {
             filteredQuestions: [],
             tag: this.$route.query.tag
         }
+    },
+    computed: {
+      tags(){
+          return this.$store.state.tags
+      }
     },
     created() {
         this.fetchQuestion()
