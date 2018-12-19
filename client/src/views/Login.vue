@@ -30,13 +30,13 @@
         <div class="control">
           <button @click="login" class="button is-link">Login</button>
         </div>
-        <div class="control">
+        <!-- <div class="control">
           <router-link to="/">
             <button class="button is-text">Cancel</button>
           </router-link>
-        </div>
+        </div>-->
         <div class="control">
-          <div class="g-signin2" data-onsuccess="gOnSignIn"></div>
+          <div id="g-signin2" class="g-signin2"></div>
         </div>
       </div>
     </div>
@@ -45,6 +45,8 @@
 
 <script>
 import { api } from "@/config";
+
+const gapi = window.gapi;
 
 export default {
   name: "login",
@@ -72,7 +74,7 @@ export default {
         .then(({ data }) => {
           this.notification = "";
           localStorage.setItem("access-token", data["access-token"]);
-          localStorage.setItem('idProvider', 'client')
+          localStorage.setItem("idProvider", "client");
           this.$emit("userLoggedIn", data);
           this.$router.push("/");
         })
@@ -81,6 +83,33 @@ export default {
         });
     },
 
+    gSignIn(googleUser) {
+      api
+        .request({
+          url: "/users/gsignin",
+          method: "POST",
+          data: {
+            id_token: googleUser.getAuthResponse().id_token
+          }
+        })
+        .then(({ data }) => {
+          localStorage.setItem("access-token", data["access-token"]);
+          localStorage.setItem("idProvider", "google");
+          this.$emit("userLoggedIn", data);
+          this.$router.push("/")
+        })
+        .catch(err => {
+          console.error(err.message);
+        });
+    },
+  },
+
+  mounted() {
+    gapi.signin2.render("g-signin2", {
+      scope: "profile email",
+      onsuccess: this.gSignIn,
+      onfailure: (err) => alert(err.message)
+    });
   }
 };
 </script>

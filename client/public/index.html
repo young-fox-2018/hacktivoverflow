@@ -12,8 +12,8 @@
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
-  <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
-  <!-- <script src="<%= BASE_URL %>oauth.js"></script> -->
+  <script src="<%= BASE_URL %>oauth.js"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 </head>
 
 <body>
@@ -22,6 +22,7 @@
   </noscript>
   <div id="app"></div>
   <!-- built files will be auto injected -->
+  <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
 </body>
 
 </html>

@@ -44,6 +44,8 @@
 <script>
 import { mapState } from "vuex";
 
+const gapi = window.gapi
+
 export default {
   name: "navbar",
 
@@ -68,7 +70,16 @@ export default {
       this.menuActive = !this.menuActive;
     },
 
+    gSignOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut()
+    },
+
     logout() {
+      if (localStorage.getItem("idProvider") === 'google') {
+        gapi.auth2.getAuthInstance().signOut()
+      }
+      localStorage.removeItem("idProvider")
       localStorage.removeItem("access-token");
       this.$store.dispatch("setUser", null);
     }
