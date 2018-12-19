@@ -11,10 +11,11 @@
             <input type="text" class="form-control input-group-lg" v-model="form.title"
             id="questionTitle" aria-describedby="emailHelp" placeholder="Title">
         </div>
-        <div class="form-group" id="form-content">
-            <textarea type="text" class="form-control" v-model="form.content"
-            id="questionContent" rows="10" placeholder="Start typing ......"/>
-        </div>
+        <!-- <div class="form-group" id="form-content"> -->
+            <!-- <textarea type="text" class="form-control" v-model="form.content"
+            id="questionContent" rows="10" placeholder="Start typing ......"/> -->
+            <wysiwyg v-model="form.content" />
+        <!-- </div> -->
         <b-form-group label="Button style checkboxes with variant <code>primary</code> and large buttons">
           <b-form-checkbox-group v-model="form.tags"
                                 buttons
@@ -38,7 +39,7 @@ export default {
     return {
       form: {
         title: '',
-        body: '',
+        content: '',
         tags: [],
       },
       dismissCountDown: 0,
@@ -75,6 +76,8 @@ export default {
 </script>
 
 <style scoped>
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
+
 #newQuestion{
     display: flex;
     justify-content: center;

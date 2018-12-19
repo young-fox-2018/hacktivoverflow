@@ -3,8 +3,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
+import wysiwyg from 'vue-wysiwyg'
+
 
 Vue.use(BootstrapVue);
+Vue.use(wysiwyg, {})
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
