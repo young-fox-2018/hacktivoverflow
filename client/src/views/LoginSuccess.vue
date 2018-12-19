@@ -8,10 +8,10 @@
           <div class="list-card mt-2 mb-2">
             <div>
              <span class="title">{{question.title}}</span>
-             <span class="float-right">Upvote {{upVote}}</span>
+             <span class="float-right">Upvote {{question.totalVotes}}</span>
             </div>
-            <p class="list-content"> {{question.content.substring(0, 80)}} </p>
-            <router-link :to="{path: `${question._id}`}">(more)</router-link>
+            <p class="list-content" v-html="question.content.substring(0, 80)"></p>
+            <router-link class="link-props" :to="{path: `${question._id}`}">(more)</router-link>
           </div>
        </div> 
       </div>
@@ -30,18 +30,33 @@ export default {
   components: {
   },
   mounted() {
+     if (localStorage.getItem('token')) {
+      this.$store.dispatch('checkToken', localStorage.getItem('token'))
+      .then(({data: { user } }) => {
+        this.$store.commit('changeLoginState', true)
+        this.$store.commit('getUserInfo', user)     
+      })
+      .catch((err) => {
+        this.$store.commit('changeLoginState', false)
+      })
+    } 
+
     this.$store.dispatch('getAllQuestions')
+      .then(({ data: { questions } }) => {
+        this.$store.dispatch('getAllQuestionVotes', questions)
+      })
+      .catch((err) => {
+        this.$store.commit('showAlert', {
+          message: 'Please try again later',
+          countDownTime: 3,
+          type: 'danger'
+        })
+    })
   },
   computed: {
     ...mapState({
       questions: state => state.questions
-    }),
-
-    upVote() {
-      this.questions.array.forEach(element => {
-        
-      });
-    }
+    })
   }
 }
 </script>
@@ -51,6 +66,7 @@ export default {
     box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08);
     min-height: 20vh;
     max-height: 30vh;
+    position: relative;
     padding: 15px !important;
   }
 
@@ -64,5 +80,10 @@ export default {
     width: 100%;
     font-size: 16px;
     word-wrap: break-word;
+  }
+
+  .link-props {
+    position: absolute;
+    bottom: 0;
   }
 </style>

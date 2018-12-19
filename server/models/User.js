@@ -14,9 +14,11 @@ let userSchema = new Schema({
     type: String,
     required: true
   },
+  status: {
+    type: String
+  },
   password: {
-    type: String,
-    required: true
+    type: String
   }
 })
 

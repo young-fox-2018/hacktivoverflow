@@ -19,7 +19,8 @@
     <div slot="modal-footer" class="mt-4">
         <b-btn type="submit" size="sm" class="float-right" variant="primary">
           Sign in
-        </b-btn>    
+        </b-btn> 
+        <div id="google-signin-button"></div>
     </div>
     </b-form>
   </b-modal>
@@ -44,7 +45,40 @@ export default {
       type: ''
     }
   },
+  mounted() {
+     gapi.signin2.render('google-signin-button', {
+      onsuccess: this.onSignIn
+    })
+  },
   methods: {
+     onSignIn (user) {
+      var id_token = user.getAuthResponse().id_token
+      axios({
+        method: 'post',
+        url: '/users/gLogin',
+        data: {
+          idToken: id_token
+        }
+      })
+      .then(({data: { token } }) => {
+        localStorage.setItem('token', token)
+        this.$refs.loginRef.hide()
+        this.$store.commit('showAlert', {
+          countDownTime: 3,
+          message: 'Succesfully sign in',
+          type: 'success'
+        })
+
+        this.$store.commit('changeLoginState', true)
+        this.$router.push('/questions')
+      })
+      .catch(({response: { data: { err }}}) => {
+        this.countDownTime = 3
+        this.message = err
+        this.type = 'danger'
+      })
+
+    },
     clear() {
       this.firstName = ''
       this.lastName = ''

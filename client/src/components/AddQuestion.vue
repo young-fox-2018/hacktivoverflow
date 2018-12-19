@@ -1,16 +1,12 @@
 <template>
-  <b-modal :id="modal" ref="questionRef" fade hide-footer title="Add Question">
+  <b-modal :id="modal" ref="questionRef" @hide="clear" fade hide-footer title="Add Question">
     <b-form @submit.prevent="addQuestion">
         <b-form-input type="text"
                       v-model="title"
                       required
                       placeholder="Start your question with who,why,and etc">
         </b-form-input>
-         <b-form-textarea type="text"
-                          v-model="content"
-                          class="mt-3"
-                          placeholder="content">
-         </b-form-textarea>    
+         <wysiwyg v-model="content" class="mt-2" />
     <div slot="modal-footer" class="mt-4">
         <b-btn type="submit" size="sm" class="float-right" variant="primary">
           Add Question
@@ -30,6 +26,10 @@ export default {
     }
   },
   methods: {
+    clear() {
+      this.title = ''
+      this.content = ''
+    },
     addQuestion() {
       axios({
         method: 'post',
@@ -50,8 +50,11 @@ export default {
           type: 'success'
         })
 
-        this.$store.dispatch('getAllQuestions')
-      })
+        return this.$store.dispatch('getAllQuestions')
+    })
+      .then(({ data: { questions } }) => {
+        this.$store.commit('insertQuestions', questions)
+        })
       .catch(({ response: { data: { err } } }) => {
        this.$refs.questionRef.hide()
         this.$store.commit('showAlert', {

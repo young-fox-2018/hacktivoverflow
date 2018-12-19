@@ -7,17 +7,21 @@
     "dev": "DB=hacktiv8 nodemon ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bcrypt": "^3.0.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
+    "cron": "^1.6.0",
     "debug": "~2.6.9",
     "dotenv": "^6.2.0",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.4.0",
+    "kue": "^0.11.6",
     "mongoose": "^5.4.0",
-    "morgan": "~1.9.0"
+    "morgan": "~1.9.0",
+    "nodemailer": "^4.7.0"
   },
   "main": "app.js",
   "keywords": [],

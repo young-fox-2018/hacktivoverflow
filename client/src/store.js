@@ -42,12 +42,11 @@ export default new Vuex.Store({
     },
 
     insertQuestion(state, payload) {
-      console.log(state.userInfo, 'biji kuda')
+      console.log('kentut kuda', state.userInfo._id)
+      console.log('bijii', payload)
       if (state.userInfo._id === payload.userId) {
         state.ownQuestion = true
-        console.log('masuk sini')
       } else {
-        console.log(state.userInfo._id, payload.userId)
         state.ownQuestion = false
       }
 
@@ -55,16 +54,34 @@ export default new Vuex.Store({
     },
 
     addAnswersData(state, payload) {
+      payload.forEach((element) => {
+
+      })
+
       state.answers = payload
-    },
-
-    showVotes(state, payload) {
-
     }
   },
   actions: {
-    getVotes({ commit }, payload) {
-      
+    getAllQuestionVotes({ commit }, payload) {
+        firebase.database().ref(`/questions`).on('value', (snapshot, err) => {
+          let result = payload.map(item => ({
+            ...item,
+            ...snapshot.child(item._id).val()
+          }))
+
+          result.forEach((element) => {
+            if (element.votes) {
+              let count = 0
+
+              for (let i in element.votes) {
+                count += element.votes[i].count
+              }
+              element.totalVotes = count
+            }
+          })
+
+          commit('insertQuestions', result)
+      })
     },
     getAnswers({ commit }, payload) {
       firebase.database().ref(`/questions/${payload}/answers`).on('value',(snapshot, err) => {
@@ -76,6 +93,15 @@ export default new Vuex.Store({
               obj.userId = childNode.val().userId
               obj.answer = childNode.val().answer
               obj.author = childNode.val().author
+              
+              if (childNode.val().votes) {
+                let votes = 0
+                for (let i in childNode.val().votes) {
+                  votes+= childNode.val().votes[i].count
+                }
+
+                obj.votes = votes
+              }
 
               answers.push(obj)         
             })
@@ -86,21 +112,9 @@ export default new Vuex.Store({
     },
 
     getAllQuestions({ commit }, payload) {
-      console.log('sini ga')
-      axios({
+      return axios({
         method:'get',
         url:'/questions'
-      })
-      .then(({ data: { questions } }) => {
-        commit('insertQuestions', questions)
-      })
-      .catch(({response:{data: {err}}}) => {
-        console.log(err)
-        commit('showAlert', {
-          message: 'Please try again later',
-          countDownTime: 3,
-          type: 'danger'
-        })
       })
     },
 
@@ -110,25 +124,27 @@ export default new Vuex.Store({
         url:`/questions/${payload}`
       })
       .then(({ data: { question } }) => {
+        console.log
         commit('insertQuestion', question)
       })
     },  
 
     checkToken({ commit }, payload) {
-      axios({
+      return axios({
         method: 'get',
         url: '/users/check',
         headers: {
           token: payload
         }
       })
-      .then(({data: { user } }) => {
-        commit('changeLoginState', true)
-        commit('getUserInfo', user)
-      })
-      .catch((err) => {
-        commit('changeLoginState', false)
-      })
+      // .then(({data: { user } }) => {
+      //   commit('changeLoginState', true)
+      //   commit('getUserInfo', user)
+
+      // })
+      // .catch((err) => {
+      //   commit('changeLoginState', false)
+      // })
     }
   }
 })

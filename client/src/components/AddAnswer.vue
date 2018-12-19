@@ -2,11 +2,7 @@
   <b-modal :id="modal" ref="questionRef" fade hide-footer title="Add Answer">
     <Alert :message="message" :type="type" :countDownTime="countDownTime" @count-down-finish="countDownFinish" />
     <b-form @submit.prevent="addAnswer">
-      <b-form-textarea type="text"
-                      v-model="answer"
-                      required
-                      placeholder="Your Answer">
-      </b-form-textarea>  
+      <wysiwyg v-model="answer" class="mt-2" />
     <div slot="modal-footer" class="mt-4">
         <b-btn type="submit" size="sm" class="float-right" variant="primary">
           Add Answer

@@ -15,9 +15,12 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "firebase": "^5.7.0",
     "i": "^0.3.6",
+    "kue": "^0.11.6",
+    "nodemailer": "^4.7.0",
     "npm": "^6.5.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
+    "vue-wysiwyg": "^1.7.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

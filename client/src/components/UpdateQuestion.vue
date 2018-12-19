@@ -2,16 +2,12 @@
   <b-modal :id="modal" ref="updateRef" fade hide-footer title="Update Question">
     <Alert :message="message" :type="type" :countDownTime="countDownTime" @count-down-finish="countDownFinish" />
     <b-form @submit.prevent="updateQuestion">
-        <b-form-input type="text"
+      <b-form-input   type="text"
                       v-model="title"
                       required
                       placeholder="Start your question with who,why,and etc">
         </b-form-input>
-         <b-form-textarea type="text"
-                          v-model="content"
-                          class="mt-3"
-                          placeholder="content">
-         </b-form-textarea>    
+      <wysiwyg v-model="content" class="mt-2" />  
     <div slot="modal-footer" class="mt-4">
         <b-btn type="submit" size="sm" class="float-right" variant="primary">
           Update Question

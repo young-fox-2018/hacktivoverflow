@@ -2,11 +2,7 @@
   <b-modal :id="modalName" ref="updateAnswerRef" fade hide-footer title="Update Answer">
     <Alert :message="message" :type="type" :countDownTime="countDownTime" @count-down-finish="countDownFinish" />
     <b-form @submit.prevent="updateAnswer">
-      <b-form-textarea type="text"
-                      v-model="answer.answer"
-                      required
-                      placeholder="Your Answer">
-      </b-form-textarea>  
+     <wysiwyg v-model="answer.answer" />
     <div slot="modal-footer" class="mt-4">
         <b-btn type="submit" size="sm" class="float-right" variant="primary">
           Update Answer
@@ -43,7 +39,6 @@ export default {
       this.countDownTime = payload
     },
     updateAnswer() {
-      console.log(this.answer.answer, 'makan tai')
       firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${this.answer.answerId}`).update({
         answer: this.answer.answer
       })
@@ -64,3 +59,6 @@ export default {
   }
 }
 </script>
+<style>
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
+</style>

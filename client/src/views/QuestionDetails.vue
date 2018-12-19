@@ -4,21 +4,21 @@
       <div class="col-lg-3">
       </div>  
       <div class="col-lg-6">
-        <div class="question-card mt-2 mb-5">
+        <div class="questions-card mt-2 mb-5">
           <p class="title">{{question.title}} </p>
-          <p class="content">{{question.content}}</p>
+          <p class="content" v-html="question.content"></p>
           <div class="bottom-menu">
-            <div v-if="!ownQuestion">
-              <b-button class="mr-2" size="sm" @click="upVote">Upvote</b-button>
-              <b-button class="mr-2" size="sm" @click="downVote">Downvote</b-button>
-              <b-dropdown  no-caret variant="link" size="lg" dropup>
-              <template slot="button-content">
-                <span class="fas fa-ellipsis-h dots"></span>
-              </template>
-                <b-dropdown-item v-b-modal="'addAnswerModal'">Answer</b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div v-else>
+            <div v-if="!ownQuestion && isLogin">
+                <a href="#" @click.prevent="upVote" v-b-tooltip.hover title="Click to upvote!" class="mr-4"><i class="fas fa-angle-double-up"></i></a>
+                <a href="#" class="mr-2" size="sm" v-b-tooltip.hover title="Click to downvote!"  @click.prevent="downVote"><i class="fas fa-angle-double-down"></i></a>
+                <b-dropdown  no-caret variant="link" size="lg" dropup>
+                <template slot="button-content">
+                  <span class="fas fa-ellipsis-h dots"></span>
+                </template>
+                  <b-dropdown-item v-b-modal="'addAnswerModal'">Answer</b-dropdown-item>
+                </b-dropdown>
+              </div>
+            <div v-else-if="isLogin">
               <b-dropdown  no-caret variant="link" size="lg" dropup>
                 <template slot="button-content">
                   <span class="fas fa-ellipsis-h dots"></span>
@@ -54,7 +54,15 @@ export default {
     UpdateQuestion
   },
   mounted() {
-      this.$store.dispatch('getOneQuestion', this.$route.params.questionId)
+     this.$store.dispatch('checkToken', localStorage.getItem('token'))
+      .then(({data: { user } }) => {
+        this.$store.commit('changeLoginState', true)
+        this.$store.commit('getUserInfo', user)
+        this.$store.dispatch('getOneQuestion', this.$route.params.questionId)
+      })
+      .catch((err) => {
+        this.$store.commit('changeLoginState', false)
+      })
   },
   data() {
     return {
@@ -88,7 +96,8 @@ export default {
     ...mapState({
       question: state => state.question,
       ownQuestion: state => state.ownQuestion,
-      userInfo: state => state.userInfo
+      userInfo: state => state.userInfo,
+      isLogin: state => state.isLogin
     }),
   },
   methods: {
@@ -180,7 +189,7 @@ export default {
 }
 </script>
 <style>
-  .question-card {
+  .questions-card {
     border: 0 solid #dae1e7;
     box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08);
     min-height: 50vh;

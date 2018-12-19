@@ -4,12 +4,16 @@
       <div class="col-lg-3">
       </div>  
       <div class="col-lg-6">
-        <div class="question-card mt-2 mb-2">
-          <p>kentut kuda </p>
-        </div>
-        <div class="question-card mt-2 mb-2">
-          <p>kentut kuda </p>
-        </div>
+        <div v-for="(question, index) in questions" :key="index">
+          <div class="list-card mt-2 mb-2">
+            <div>
+             <span class="title">{{question.title}}</span>
+             <span class="float-right">Upvote {{question.totalVotes}}</span>
+            </div>
+            <p class="list-content"> {{question.content.substring(0, 80)}} </p>
+            <router-link class="link-props" :to="{path: `${question._id}`}">(more)</router-link>
+          </div>
+       </div> 
       </div>
       <div class="col-lg-3">
       </div>
@@ -18,19 +22,56 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import HelloWorld from '@/components/HelloWorld.vue'
 export default {
   name: 'home',
-  components: {
+  mounted() {
+    this.$store.dispatch('getAllQuestions')
+      .then(({ data: { questions } }) => {
+        this.$store.dispatch('getAllQuestionVotes', questions)
+      })
+      .catch(({response:{data: {err}}}) => {
+        commit('showAlert', {
+          message: 'Please try again later',
+          countDownTime: 3,
+          type: 'danger'
+        })
+      })
+  },
+  computed: {
+    ...mapState({
+      questions: state => state.questions
+    })
   },
   methods: {
   }
 }
 </script>
 <style>
-  .question-card {
+  .list-card {
     border: 0 solid #dae1e7;
     box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08);
-    min-height: 15vh;
+    min-height: 20vh;
+    max-height: 30vh;
+    position: relative;
+    padding: 15px !important;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+
+  .list-content {
+    width: 100%;
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  .link-props {
+    position: absolute;
+    bottom: 0;
   }
 </style>

@@ -5,5 +5,6 @@ let userController = require('../controllers/userController')
 router.post('/register', userController.register)
 router.post('/login', userController.login)
 router.get('/check', userController.check)
+router.post('/gLogin', userController.gLogin)
 
 module.exports = router;

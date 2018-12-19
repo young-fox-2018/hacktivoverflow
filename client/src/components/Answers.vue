@@ -2,19 +2,26 @@
 <div>
   <div v-for="(answer, index) in answers" :key="index">
     <div class="answer-card mt-5 mb-2">
-      <p class="title">{{answer.author}} answered:</p>
-      <p class="content">{{answer.answer}}</p>
+      <div>
+        <span class="title">{{answer.author}} answered:</span>
+        <span class="float-right">Upvote {{answer.votes}}</span>
+      </div>
+      <p class="content" v-html="answer.answer"></p>
       <div class="bottom-menu">
-        <div v-if="isOwnAnswer(answer)">
+        <div v-if="isOwnAnswer(answer) && isLogin">
           <b-dropdown  no-caret variant="link" size="lg" dropup>
                   <template slot="button-content">
                     <span class="fas fa-ellipsis-h dots"></span>
                   </template>
                     <b-dropdown-item @click.prevent="deleteQuestion(answer)">Delete</b-dropdown-item>
                       <b-dropdown-item v-b-modal="'updateAnswerModal' + index">Update</b-dropdown-item>
-                </b-dropdown>
+          </b-dropdown>
         </div>
+        <div v-else-if="isLogin" class="mb-2">
+          <a href="#" class="mr-3" v-b-tooltip.hover title="Click to upvote!"  @click.prevent="upVote(answer)"><i class="fas fa-angle-double-up"></i></a>
+          <a href="#" class="mr-3" v-b-tooltip.hover title="Click to downvote!"  @click.prevent="downVote(answer)"><i class="fas fa-angle-double-down"></i></a>
         </div>
+      </div>
     </div>
       <UpdateAnswer :modal-name="myUpdateModal + index" :answer="answer" />
   </div>
@@ -35,10 +42,84 @@ export default {
     }
   },
   mounted() {
+     if (localStorage.getItem('token')) {
+      this.$store.dispatch('checkToken', localStorage.getItem('token'))
+    } 
+
     this.$store.dispatch('getAnswers', this.$route.params.questionId)
-    this.$store.dispatch('checkAnswerAction')
   },
   methods: {
+    upVote(answer) {
+      firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).once('value')      
+      .then((snapshot) => {
+        if(snapshot.val()) {
+          if(snapshot.val().voted && !snapshot.val().unvoted) {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+                voted: false,
+                count: 0
+            })
+          } else if (snapshot.val().downVoted) {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+                count: 1,
+                voted: true,
+                downVoted: false 
+              })
+          } else if(!snapshot.val().voted) {
+             return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+                count: 1,
+                voted: true
+              })
+          }
+        } else {
+          return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+            count: 1,
+            voted: true
+          })
+        }
+      })
+      .then(() => {
+        
+      })
+      .catch((err) => {
+
+      })
+    },
+    downVote(answer) {
+      firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).once('value')      
+      .then((snapshot) => {
+        if(snapshot.val()) {
+          if(snapshot.val().downVoted && !snapshot.val().voted) {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+                count: 0
+            })
+          } else if (snapshot.val().voted) {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+              count: -1,
+              voted: false,
+              downVoted: true 
+              })
+          } else if(!snapshot.val().downVoted) {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+              count: -1,
+              downVoted: true 
+            })
+          }
+
+        } else {
+            return firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}/votes/${this.userInfo._id}`).update({
+            count: -1,
+            downVoted: true
+          })
+        }
+      })
+      .then(() => {
+
+      })
+      .catch((err) => {
+
+      })
+    },
+
     deleteQuestion(answer) {
       firebase.database().ref(`/questions/${this.$route.params.questionId}/answers/${answer.answerId}`)
       .remove((err) => {
@@ -69,7 +150,8 @@ export default {
   computed: {
     ...mapState({
       userInfo: state => state.userInfo,
-      answers: state => state.answers
+      answers: state => state.answers,
+      isLogin: state => state.isLogin
     })
   }
 }
