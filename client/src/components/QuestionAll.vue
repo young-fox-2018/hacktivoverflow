@@ -21,21 +21,33 @@
         <a href="#" class="title-thumb" @click="viewDetail(question._id)">
           {{question.title}}
         </a>
-        <div class="row d-flex justify-content-end">
-        <small class="mx-4">answered by rangga</small>
+        <div class="row justify-content-end">
+          <small class="mx-4">Asked by {{question.userId.name}}</small>
         </div>
+        <div class="row justify-content-end">
+          <small class="mx-4">{{question.createdDate | myDate}}</small>
+        </div>
+        
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'listquestion',
   props: ['question'],
   methods: {
     viewDetail(id) {
       this.$router.push('/'+id)
+    }
+  },
+  filters: {
+    myDate(val) {
+      console.log(val)
+      return moment(val).startOf('hour').fromNow(); 
     }
   }
 }

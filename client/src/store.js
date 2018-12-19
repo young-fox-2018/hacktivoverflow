@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import myApi from '@/api/myApi'
+import router from './router'
 // import { stat } from 'fs';
 
 Vue.use(Vuex)
@@ -67,6 +68,20 @@ export default new Vuex.Store({
         .then(({ data }) => {
           state.myQuestionList = data
         }).catch((err) => {
+          console.log(err.response.data.message)
+        })
+    },
+    searchQuestion ({ state }, payload) {
+      console.log(payload, 'dari action')
+      myApi({
+        method: 'get',
+        url: 'question/search?q=' + payload
+      })
+        .then(({ data }) => {
+          state.questionList = data
+          router.push('/')
+        }).catch((err) => {
+          console.log(err)
           console.log(err.response.data.message)
         })
     }

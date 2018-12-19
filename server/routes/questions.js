@@ -5,6 +5,7 @@ const {authentication, authorQuestion, notAuthorQuestion} = require('../middlewa
 
 router.post('/', authentication, questionController.create);
 router.get('/', questionController.findAll);
+router.get('/search', questionController.search);
 router.get('/my', authentication, questionController.findMy);
 router.get('/:questionId', questionController.findOne);
 router.get('/:questionId/upvote', authentication, notAuthorQuestion, questionController.upVote);

@@ -55,6 +55,7 @@ export default {
     onSignIn (googleUser) {
       // do stuff, for example
       console.log('kesini kah?')
+      
       const profile = googleUser.getBasicProfile()
       var id_token = googleUser.getAuthResponse().id_token;
       // console.log(id_token)

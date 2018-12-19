@@ -17,9 +17,9 @@
       </div>
       </router-link>
 
-      <form class="mx-3 my-0 d-inline w-100 px-5">
+      <form class="mx-3 my-0 d-inline w-100 px-5" @submit.prevent="searchQuestion">
           <div class="input-group align-item-center">
-              <input type="text" class="form-control" placeholder="Search something">
+              <input type="text" class="form-control" placeholder="Search something" v-model="search">
               <div class="input-group-append">
                   <button class="btn btn-danger" type="submit">
                   <span class="input-group-addon" style="width:1%;"><i class="fa fa-search"></i></span>
@@ -31,7 +31,7 @@
         <router-link v-if="!isLogin" to="/login" tag="div"><b-nav-item href="#">Login</b-nav-item></router-link>
         <router-link v-if="!isLogin" to="/register" tag="div"><b-nav-item href="#">Register</b-nav-item></router-link>
         <router-link v-if="isLogin" to="/my" tag="div"><b-nav-item href="#" class="w-100">MyQuestion</b-nav-item></router-link>
-        <b-nav-item href="#" v-if="isLogin" @click="logoutSend">Logout</b-nav-item>
+        <b-nav-item href="#" id="logoutButton" v-if="isLogin" @click="logoutSend">Logout</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     
@@ -49,6 +49,11 @@ import FooterPage from '@/components/FooterPage.vue'
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      search: ''
+    }
+  },
   components: {
     FooterPage
   },
@@ -62,15 +67,23 @@ export default {
   },
   methods: {
     logoutSend() {
-      // var auth2 = gapi.auth2.getAuthInstance();
-      //   auth2.signOut().then(function () {
-      //   console.log('User signed out.');
-      // });
+
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut()
+      });
+      
       this.$store.dispatch('logoutSend')
     },
     successLogin() {
       this.$store.dispatch('checkLogin')
       this.$router.push({name: 'home'})
+    },
+    searchQuestion() {
+      // console.log(this.search)
+      this.$store.dispatch('searchQuestion', this.search)
+      // this.search = ''
     }
   }
 }

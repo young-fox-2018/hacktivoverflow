@@ -10,16 +10,16 @@
     <div class="row  mx-2 border-top">
       <div class="col-1 ">
         <div class="row d-flex justify-content-center">
-          <a href="#" v-if="voteStatus == 'up'" @click="upVote(question._id)" class="noGreen"><i class="fa fa-arrow-up fa-2x" aria-hidden="true"></i></a>
+          <a href="#" v-if="voteStatus == 'up'" @click.prevent="upVote(question._id)" class="noGreen"><i class="fa fa-angle-up fa-3x" aria-hidden="true"></i></a>
           
-          <a href="#" v-else-if="voteStatus != 'up'" @click="upVote(question._id)" class="noHover"><i class="fa fa-arrow-up fa-2x" aria-hidden="true"></i></a>
+          <a href="#" v-else-if="voteStatus != 'up'" @click.prevent="upVote(question._id)" class="noHover"><i class="fa fa-angle-up fa-3x" aria-hidden="true"></i></a>
         </div>
         <div class="row d-flex justify-content-center">
           <span class="voted-value">{{question.voted}}</span>
         </div>
         <div class="row d-flex justify-content-center">
-          <a href="#" v-if="voteStatus == 'down'" @click="downVote(question._id)" class="noGreen"><i class="fa fa-arrow-down fa-2x" aria-hidden="true"></i></a>
-          <a href="#" v-else-if="voteStatus != 'down'" @click="downVote(question._id)" class="noHover"><i class="fa fa-arrow-down fa-2x" aria-hidden="true"></i></a>
+          <a href="#" v-if="voteStatus == 'down'" @click.prevent="downVote(question._id)" class="noGreen"><i class="fa fa-angle-down fa-3x" aria-hidden="true"></i></a>
+          <a href="#" v-else-if="voteStatus != 'down'" @click.prevent="downVote(question._id)" class="noHover"><i class="fa fa-angle-down fa-3x" aria-hidden="true"></i></a>
 
           <!-- <i class="fa fa-arrow-down fa-2x" aria-hidden="true"></i> -->
         </div>
@@ -45,7 +45,19 @@
         </div>
       </div>
     </div>
-    
+    <div class="row">
+      <div class="col-11 d-flex justify-content-between ">
+        <span style="font-size: 20px;" v-if="question.answerId">{{question.answerId.length}} Answer</span>
+        <small v-if="question.userId">asked: {{question.userId.name}}</small>
+        <!-- <small>date</small> -->
+      </div>
+    </div>
+
+    <div  class="row">
+      <div class="col-11 d-flex justify-content-end ">
+        <small>{{question.createdDate | myDate}}</small>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -53,6 +65,7 @@
 import myApi from '@/api/myApi'
 import { mapState } from 'vuex'
 import FailAlert from '@/components/FailAlert.vue'
+import moment from 'moment'
 
 export default {  
   components: {
@@ -159,6 +172,12 @@ export default {
       this.checkVote()
       // console.log(val)
       // this.questionDetail = val
+    }
+  },
+  filters: {
+    myDate(val) {
+      console.log(val)
+      return moment(val).startOf('hour').fromNow(); 
     }
   }
 }

@@ -21,7 +21,12 @@ class questionController {
 
   static findAll(req, res) {
     // res.json('test findAll')
-    Question.find({}).populate('userId').sort('-createdDate')
+    Question.find({}).populate('userId').populate({
+      path: 'answerId',
+      populate: {
+        path: 'userId'
+      }
+    }).sort('-createdDate')
       .then((result_quest) => {
         res.status(200).json(result_quest)
       }).catch((err) => {
@@ -36,7 +41,12 @@ class questionController {
 
     Question.find({
       userId: userId
-    }).populate('userId').sort('-createdDate')
+    }).populate('userId').populate({
+      path: 'answerId',
+      populate: {
+        path: 'userId'
+      }
+    }).sort('-createdDate')
       .then((result_quest) => {
         res.status(200).json(result_quest)        
       }).catch((err) => {
@@ -51,7 +61,12 @@ class questionController {
     let id = req.params.questionId
     Question.findOne({
       _id: id
-    }).populate('userId')
+    }).populate('userId').populate({
+      path: 'answerId',
+      populate: {
+        path: 'userId'
+      }
+    })
     .then((result_quest) => {
       res.status(200).json(result_quest)      
     }).catch((err) => {
@@ -217,6 +232,21 @@ class questionController {
       res.status(200).json(result_quest)
     })
     .catch((err) => {
+      res.status(400).json({
+        message: err.message
+      })
+    });
+  }
+
+  static search(req, res) {
+    let query = req.query.q
+    // res.json('test search')
+    Question.find({
+      title: {$regex: query, $options: 'i'}
+    })
+    .then((result) => {
+      res.status(200).json(result)
+    }).catch((err) => {
       res.status(400).json({
         message: err.message
       })

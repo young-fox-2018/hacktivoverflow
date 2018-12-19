@@ -22,8 +22,7 @@ const questionSchema = new Schema({
   }],
   voted: {
     type: Number,
-    default: 0,
-    ref: 'User'
+    default: 0
   },
   userId:{
     type: ObjectId,

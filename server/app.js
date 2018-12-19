@@ -13,6 +13,7 @@ mongoose.connect('mongodb://localhost/HacktivOverflow', { useNewUrlParser: true 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const questionRouter = require('./routes/questions')
+const answerRouter = require('./routes/answers')
 
 var app = express();
 app.use(cors())
@@ -24,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/question', questionRouter)
-
+app.use('/answer', answerRouter);
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   next(createError(404));

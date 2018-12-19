@@ -7,7 +7,7 @@
             <li>Menu item..</li>
         </ul> -->
         <div class="list-group sticky-offset" id="list-tab" role="tablist">
-          <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+          <a @click.prevent="$router.push('/')" class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
           <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
           <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
           <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
@@ -15,6 +15,8 @@
       </div>
       <div class="col-10">
         <QuestionDetail :question="questionDetail" @modifieddata="modifiedData"/>
+        <AnswerDetail v-for="(answer, i) in questionDetail.answerId" :key="i" :answer="answer" @modifieddata="modifiedData"/>
+        <AnswerAdd @addanswer="addAnswer" />
       </div>
     </div>
   </div>
@@ -22,6 +24,8 @@
 
 <script>
 import QuestionDetail from '@/components/QuestionDetail.vue'
+import AnswerAdd from '@/components/AnswerAdd.vue'
+import AnswerDetail from '@/components/AnswerDetail.vue'
 import myApi from '@/api/myApi'
 
 export default {
@@ -31,7 +35,9 @@ export default {
     }
   },
   components: {
-    QuestionDetail
+    QuestionDetail,
+    AnswerDetail,
+    AnswerAdd
   },
   name: 'questiondetail',
   methods: {
@@ -46,6 +52,9 @@ export default {
         }).catch((err) => {
           console.log(err.response.data.message)
         });
+    },
+    addAnswer() {
+      this.readData()
     },
     modifiedData() {
       console.log('kesini lah')

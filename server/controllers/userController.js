@@ -4,6 +4,7 @@ const axios = require('axios')
 const {checkPassword, generateToken, verifyToken} = require('../helpers/helper')
 const kue = require('kue')
   , queue = kue.createQueue();
+const fs = require('fs')
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -15,12 +16,15 @@ var transporter = nodemailer.createTransport({
 
 
 queue.process('email', function({ data }, done){
+  let htmlTemplate = fs.readFileSync('./helpers/email-template.html', 'utf8');
+  // console.log(html, 'harusnya ada nih')
   console.log(data.to)
   transporter.sendMail({
     from: 'gamecowok12345@gmail.com',
     to: data.to,
     subject: data.title,
-    html: '<b>Congratulation! you have been registered to Hacktiv Overflow</b>'
+    // html: '<b>Congratulation! you have been registered to Hacktiv Overflow</b>'
+    html: htmlTemplate
   }, function(error, info){
     if (error) {
       console.log(error);

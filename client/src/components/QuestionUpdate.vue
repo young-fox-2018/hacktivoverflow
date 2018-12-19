@@ -9,12 +9,13 @@
           </div>
           <div class="form-group">
             <label for="description">Description: </label>
-            <b-form-textarea id="description"
+            <!-- <b-form-textarea id="description"
               v-model="description"
               placeholder="Enter something"
               :rows="3"
               :max-rows="6">
-            </b-form-textarea>
+            </b-form-textarea> -->
+            <wysiwyg v-model="description" />
           </div>
           <div class="row">
             <div class="col-12 d-inline-flex justify-content-between">
@@ -87,5 +88,5 @@ export default {
 </script>
 
 <style>
-
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
 </style>
