@@ -3,7 +3,7 @@
     <nav class="navbar is-widescreen" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <router-link :to="'/'" class="navbar-item">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+          <img src="https://cdn5.vectorstock.com/i/1000x1000/97/09/dots-logo-points-star-logo-template-dotted-vector-16869709.jpg" width="40" height="28"> HacktivOverflowing
 
         </router-link>
 
@@ -27,7 +27,8 @@
         <div class="navbar-end">
           <div class="navbar-item has-dropdown is-hoverable" v-if="isLoggedIn">
             <a class="navbar-link is-arrowless">
-              <img src="https://via.placeholder.com/150" alt="" srcset="">
+              <i class="fas fa-user fa-lg"></i>
+              <!-- <img src="https://via.placeholder.com/150" alt="" srcset=""> -->
             </a>
             <div class="navbar-dropdown">
               <a class="navbar-item">
@@ -273,6 +274,10 @@ export default {
 }
 .navbar-link.is-arrowless img {
   border-radius: 50%;
+}
+.navbar-brand {
+  border: 0;
+  margin-right: .5rem;
 }
 
 </style>

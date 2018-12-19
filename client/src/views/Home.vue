@@ -34,7 +34,9 @@ export default {
   /* height: 100vh; */
 }
 .column {
-  border: 1px solid black;
+  border-right: 1px solid rgb(175, 175, 175);
+  border-left: 1px solid rgb(175, 175, 175);
+  height: 80vh;
   /* padding: 2rem; */
 }
 </style>

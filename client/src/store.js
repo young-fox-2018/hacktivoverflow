@@ -33,7 +33,39 @@ export default new Vuex.Store({
     postAnswer({ commit }, payload) {
       database.ref(`/answers/${payload.questionId}`).push({
         answer: payload.answer,
+        name: payload.name,
         userId: payload.userId,
+      });
+    },
+    upvoteAnswer({ commit }, payload) {
+      database.ref(`downvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
+        if(!snapshot.val()) {
+          database.ref(`/upvoteAnswers/${payload.answerId}/${payload.userId}`).once('value').then((snapshot) => {
+            if(!snapshot.val()) {
+              database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).push(`${payload.name}`);
+            } else {
+              database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
+            }
+          });
+        } else {
+          database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
+        }
+      });
+    },
+    downvoteAnswer({ commit }, payload) {
+      database.ref(`upvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
+        if(!snapshot.val()) {
+          database.ref(`/downvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
+            if(!snapshot.val()) {
+
+              database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).push(`${payload.name}`);
+            } else {
+              database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
+            }
+          });
+        } else {
+          database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
+        }
       });
     },
     upvoteQuestion({ commit }, payload) {
