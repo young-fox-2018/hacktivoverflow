@@ -43,6 +43,7 @@ export default new Vuex.Store({
     // },
     decode_Mutate(state, data) {
       state.decoded = data
+      state.isLoggedin = true
     },
     removeQuestion_Mutate(state, data) {
       let newArray = state.questionList.filter(list => String(list._id) != data._id)
@@ -75,7 +76,7 @@ export default new Vuex.Store({
       state.loading = true
       return axios({
         method: "get",
-        url: "http://localhost:3000/ho/question",
+        url: "https://xavier-ho-server.thenile.online/ho/questions",
         })
         .then(response => {
           commit('storeQuestions_Mutate', response.data.data)
@@ -92,7 +93,7 @@ export default new Vuex.Store({
       let token = localStorage.getItem("token");
       axios({
         method: "post",
-        url: "http://localhost:3000/ho/decode",
+        url: "https://xavier-ho-server.thenile.online/ho/decode",
         headers: { token: token }
       })
         .then(response => {
@@ -106,7 +107,7 @@ export default new Vuex.Store({
       let token = localStorage.getItem("token");
       return axios({
         method: "delete",
-        url: "http://localhost:3000/ho/question/delete",
+        url: "https://xavier-ho-server.thenile.online/ho/questions/delete",
         headers: { token: token },
         data: data
       })
@@ -121,7 +122,7 @@ export default new Vuex.Store({
       let token = localStorage.getItem("token");
       axios({
         method: "post",
-        url: "http://localhost:3000/ho/question/add",
+        url: "https://xavier-ho-server.thenile.online/ho/questions/add",
         headers: { token: token },
         data: data
       })
@@ -131,20 +132,39 @@ export default new Vuex.Store({
       })
       .catch(err => {
         console.log(err.response);
+        let timerInterval
         Swal({
           title: err.response.data.message,
-          text: 'This message will close in 3 seconds',
+          html: 'Auto close in <b></b> seconds.',
           type: 'error',
           confirmButtonText: 'Ok',
           backdrop: false,
+          allowOutsideClick: false,
           timer: 3000,
-        })
+          onBeforeOpen: () => {
+            timerInterval = setInterval(() => {
+            Swal.getContent().querySelector('b')
+                .textContent = (Swal.getTimerLeft()/1000)
+                  .toFixed(0)
+            }, 100)
+            },
+            onClose: () => {
+                clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            if (
+                // Read more about handling dismissals
+                result.dismiss === Swal.DismissReason.timer
+            ) {
+                console.log('I was closed by the timer')
+            }
+          })
       });
     },
     getAllAnswers(context) {
       axios({
         method: "get",
-        url: "http://localhost:3000/ho/answer"
+        url: "https://xavier-ho-server.thenile.online/ho/answers"
       })
       .then(response => {
         context.commit('getAllAnswers_Mutata', response.data.data)
@@ -157,7 +177,7 @@ export default new Vuex.Store({
       let token = localStorage.getItem("token");
       axios({
         method: "put",
-        url: "http://localhost:3000/ho/answer/edit",
+        url: "https://xavier-ho-server.thenile.online/ho/answers/edit",
         headers: { token: token },
         data: data
       })
@@ -174,12 +194,12 @@ export default new Vuex.Store({
     updatePopularUser(context) {
       axios({
         method: "PUT",
-        url: "http://localhost:3000/ho/users"
+        url: "https://xavier-ho-server.thenile.online/ho/users"
       })
       .then(() => {
           return axios({
               method: "GET",
-              url: "http://localhost:3000/ho/users"
+              url: "https://xavier-ho-server.thenile.online/ho/users"
           })
           .then(response => {
               let counter = 0
@@ -200,7 +220,7 @@ export default new Vuex.Store({
     getAllTags(context) {
       axios({
         method: "GET",
-        url: "http://localhost:3000/ho/question/tags"
+        url: "https://xavier-ho-server.thenile.online/ho/questions/tags"
       })
       .then(response => {
         context.commit("getAllTags", response.data)
@@ -212,7 +232,7 @@ export default new Vuex.Store({
     filterQuestions(context, data) {
       axios({
         method: "GET",
-        url: `http://localhost:3000/ho/question/tags/search?search=${data}`
+        url: `https://xavier-ho-server.thenile.online/ho/questions/tags/search?search=${data}`
       })
       .then(response => {
         context.commit('storeQuestions_Mutate', response.data)

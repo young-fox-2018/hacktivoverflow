@@ -10,7 +10,7 @@
 HacktivOverflow is a website inspired by Stack Overflow. The main purpose is to train the skills learned in Phase 2 of Hacktiv8
 
 ## <a id="url"></a>URL
-http://localhost:3000/ho
+https://xavier-ho-server.thenile.online/ho
 
 ## <a id="method"></a> Method:
 #<a id="signup"></a> Route | HTTP | Description
@@ -118,7 +118,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/question | GET | get all questions
+/ho/questions | GET | get all questions
 
 ## Data Params
 None
@@ -150,7 +150,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/question/add | POST | post a question
+/ho/questions/add | POST | post a question
 
 ## Data Params
 title:
@@ -189,7 +189,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/question/delete | DELETE | delete a question
+/ho/questions/delete | DELETE | delete a question
 
 ## Data Params
 title:
@@ -232,7 +232,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/question/edit | PUT | edit a question
+/ho/questions/edit | PUT | edit a question
 
 ## Data Params
 questionId:
@@ -267,7 +267,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/answer | GET | get all answers
+/ho/answers | GET | get all answers
 
 ## Data Params
 None
@@ -299,7 +299,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/answer/add | POST | post an answer
+/ho/answers/add | POST | post an answer
 
 ## Data Params
 title:
@@ -338,7 +338,7 @@ Content:
 
 # Route | HTTP | Description
 ------|------|------------
-/ho/answer/edit | PUT | edit an answer
+/ho/answers/edit | PUT | edit an answer
 
 ## Data Params
 title:

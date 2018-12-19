@@ -105,7 +105,7 @@ export default {
       let token = localStorage.getItem("token");
       axios({
         method: "put",
-        url: "http://localhost:3000/ho/answer/edit",
+        url: "https://xavier-ho-server.thenile.online/ho/answers/edit",
         headers: { token: token },
         data: data
       })

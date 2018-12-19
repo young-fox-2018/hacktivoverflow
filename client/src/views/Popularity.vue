@@ -70,12 +70,12 @@ export default {
         this.loading = true
         axios({
             method: "PUT",
-            url: "http://localhost:3000/ho/users"
+            url: "https://xavier-ho-server.thenile.online/ho/users"
         })
         .then(() => {
             return axios({
                 method: "GET",
-                url: "http://localhost:3000/ho/users"
+                url: "https://xavier-ho-server.thenile.online/ho/users"
             })
             .then(response => {
                 let counter = 0

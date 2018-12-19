@@ -54,7 +54,7 @@ export default {
       }
       axios({
         method: "put",
-        url: "http://localhost:3000/ho/question/edit",
+        url: "https://xavier-ho-server.thenile.online/ho/questions/edit",
         headers: { token: token },
         data: data
       })
@@ -68,7 +68,7 @@ export default {
     getQuestion() {
       axios({
         method: "get",
-        url: "http://localhost:3000/ho/question"
+        url: "https://xavier-ho-server.thenile.online/ho/questions"
       })
       .then(response => {
         console.log(response.data.data);

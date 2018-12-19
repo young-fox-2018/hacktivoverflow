@@ -50,7 +50,7 @@ export default {
 
       axios({
         method: "Post",
-        url: "http://localhost:3000/ho/Gsignin",
+        url: "https://xavier-ho-server.thenile.online/ho/Gsignin",
         data: {google_token: google_token}
       })
       .then((response) => {
@@ -63,7 +63,8 @@ export default {
       })
     }
   },
-    mounted() {
+  mounted() {
+    onLoad()
     gapi.signin2.render('google-signin-button', {
       onsuccess: this.onSignIn
     })
@@ -76,13 +77,14 @@ export default {
 #nav {
   padding: 20px;
   margin-bottom: 20px;
-  background-color: #D8BFD8	
+  background-color: indigo;
+  color: white
 
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 #nav a.router-link-exact-active {
@@ -93,7 +95,7 @@ export default {
   height: 200px
 }
 h3#nav {
-  color:#2c3e50; 
+  color:white; 
   font-size:16px; 
   display:inline;
   padding: 0px

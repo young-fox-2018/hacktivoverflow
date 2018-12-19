@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer')
 
-function sendEmail(to, subject, body) {
-    console.log(to, subject, body)
+function sendEmail(to, subject, body, done) {
     const smtpTransport = nodemailer.createTransport({
         service: "gmail",
         secure: false,
@@ -21,8 +20,10 @@ function sendEmail(to, subject, body) {
     smtpTransport.sendMail(mailOptions, (error, response) => {
         if (error) {
             console.log(error)
+            return done(new Error('Error in sending email'))
         } else {
-            console.log('email sent', response)
+            console.log('email sent')
+            done()
         }
     });
 }

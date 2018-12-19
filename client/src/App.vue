@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <NavBar :status="loggedStatus" v-on:loggedin="changeStatus"></NavBar>
-    <Error v-if="error_status" v-bind:error="error_msg"/>
+    <!-- <Error v-if="error_status" v-bind:error="error_msg"/> -->
     <router-view v-on:loggedin="changeStatus"/>
   </div>
 </template>
@@ -9,13 +9,14 @@
 <script>
 import axios from 'axios';
 import NavBar from '@/components/NavBar.vue'
-import Error from '@/components/Error.vue';
+// import Error from '@/components/Error.vue';
 import {mapState} from 'vuex'
 
 export default {
+  name: 'App',
   components: {
     NavBar,
-    Error,
+    // Error,
   },
   data () {
     return {
@@ -43,8 +44,7 @@ export default {
     this.$store.dispatch("decode");
   },
   computed: mapState({
-    error_status: state => state.error_status,
-    error_msg: state => state.error_msg,
+
   }),
   created: function() {
     this.$store.dispatch('storeQuestions_Action')
@@ -68,13 +68,17 @@ export default {
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 #nav a.router-link-exact-active {
   color: #42b983;
 }
 body {
-  background-color: lightgoldenrodyellow
+  background-color: white
+}
+.subtitle {
+  font-size: 14px;
+  color: lightslategray;
 }
 </style>

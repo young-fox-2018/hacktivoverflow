@@ -77,7 +77,7 @@ export default {
   mounted: function() {
     axios({
       method: "get",
-      url: "http://localhost:3000/ho/question",
+      url: "https://xavier-ho-server.thenile.online/ho/questions",
     })
       .then(response => {
         console.log(response.data.data)

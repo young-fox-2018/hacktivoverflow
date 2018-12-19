@@ -16,7 +16,7 @@
       :validation="validation"
       placeholder= "please use lowercase only | 8 letters max "
       :autocomplete-items="filteredItems"
-      style="height:30px"
+      style="height:30px;"
       />
     </div>
 
@@ -26,9 +26,9 @@
       <!-- <input type="text" class="form-control" v-model="addQ_description" id="question_description" placeholder="Description . . ."> -->
     </div>
 
-    <button v-if="token" type="submit" class="btn" style="background-color:#D8BFD8" @click.prevent="addQuestion()">Submit</button>
+    <button v-if="token" type="submit" class="btn" style="background-color:#6610f2; color:white" @click.prevent="addQuestion()">Submit</button>
     <div v-else>
-      <button disabled class="btn" style="background-color:#D8BFD8">Submit</button>
+      <button disabled class="btn" style="background-color:#6610f2; color: white">Submit</button>
       <p>Only registered user may submit a Question!</p>
     </div>
   </form>
@@ -94,6 +94,15 @@ export default {
         this.autocompleteItems.push(obj)
       });
     }
+  },
+  mounted: function() {
+    this.autocompleteItems = []
+      this.$store.state.tagsList.forEach(tag => {
+        let obj = {
+          text: tag
+        }
+        this.autocompleteItems.push(obj)
+      });
   }
 }
 </script>

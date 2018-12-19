@@ -62,7 +62,7 @@ export default {
       this.loading = true
       axios({
         method: "GET",
-        url: "http://localhost:3000/ho/answer"
+        url: "https://xavier-ho-server.thenile.online/ho/answers"
       })
       .then(response => {
         response.data.data.forEach(element => {

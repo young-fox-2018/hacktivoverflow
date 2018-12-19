@@ -34,7 +34,7 @@ export default {
         let password = this.input.password
         axios({
             method:"post",
-            url: "http://localhost:3000/ho/signin",
+            url: "https://xavier-ho-server.thenile.online/ho/signin",
             data: {
                 email:email,
                 password:password
@@ -48,13 +48,32 @@ export default {
         })
         .catch((err) => {
             console.log(err.response)
+            let timerInterval
             Swal({
                 title: err.response.data.message,
-                text: 'This message will close in 3 seconds',
+                html: 'Auto close in <b></b> seconds.',
                 type: 'error',
                 confirmButtonText: 'Ok',
                 backdrop: false,
+                allowOutsideClick: false,
                 timer: 3000,
+                onBeforeOpen: () => {
+                    timerInterval = setInterval(() => {
+                    Swal.getContent().querySelector('b')
+                        .textContent = (Swal.getTimerLeft()/1000)
+                          .toFixed(0)
+                    }, 100)
+                },
+                onClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                if (
+                    // Read more about handling dismissals
+                    result.dismiss === Swal.DismissReason.timer
+                ) {
+                    console.log('I was closed by the timer')
+                }
             })
       })
     }

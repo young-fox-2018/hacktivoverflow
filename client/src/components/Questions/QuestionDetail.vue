@@ -16,13 +16,14 @@
       <div class="col-11">
         <h1>{{questionDetail.title}}</h1>
         <p class="subtitle">
-          <font-awesome-icon icon="user"/> {{questionDetail.op.name}}
+          <span v-if="topUser" title="This user is in the Top 5"><font-awesome-icon icon="star" style="color:yellow"/></span>
+          <font-awesome-icon v-else icon="user"/> {{questionDetail.op.name}}
           &nbsp;
           <font-awesome-icon icon="calendar-alt"/> {{questionDetail.createdDate}}
         </p>
       </div>
       <div class="col-1"> 
-
+        <!--Intentionally blank-->
       </div>
 
       <div class="col-11">
@@ -61,9 +62,9 @@
           <wysiwyg v-model="addA_description" style="background-color:white"/>
         </div>
 
-        <button v-if="token" type="submit" class="btn" style="background-color:#D8BFD8" @click.prevent="addAnswer()">Submit</button>
+        <button v-if="token" type="submit" class="btn" style="background-color:#6610f2; color: white" @click.prevent="addAnswer()">Submit</button>
         <div v-else>
-          <button disabled class="btn" style="background-color:#D8BFD8">Submit</button>
+          <button disabled class="btn" style="background-color:#6610f2; color: white">Submit</button>
           <p>Only registered user may submit an Answer!</p>
         </div>
       </form>
@@ -130,7 +131,8 @@ export default {
       questionDetail: {},
       questionUpVote: 0,
       questionDownVote: 0,
-      tag: ""
+      tag: "",
+      topUser : false
     }
   },
   computed: mapState({
@@ -155,11 +157,10 @@ export default {
           questionId: this.questionDetail._id,
           vote: vote,
           token: token,
-          route: 'question' 
         }
         axios({
           method: "post",
-          url: `http://localhost:3000/ho/${data.route}/vote`,
+          url: `https://xavier-ho-server.thenile.online/ho/questions/vote`,
           headers: { token: data.token },
           data: {
             questionId: data.questionId,
@@ -167,13 +168,33 @@ export default {
           },
         })    
         .then(response => {
+          Swal({
+            title: response.data.message,
+            type: 'success',
+            position:'top-end',
+            toast: true,
+            timer: 3000,
+          })
           this.getQuestionDetail()
         })   
         .catch(err => {
           console.log(err.response)
+          Swal({
+            title: err.response.data.message ,
+            type: 'warning',
+            position:'top-end',
+            toast: true,
+            timer: 3000,
+          })
         }) 
       } else {
-        alert('Only Registered user can vote')
+        Swal({
+          title: 'Only Registered user can vote' ,
+          type: 'warning',
+          position:'top-end',
+          toast: true,
+          timer: 3000,
+        })
       }
     },
 
@@ -185,11 +206,10 @@ export default {
           answerId: id,
           vote: vote,
           token: token,
-          route: 'answer' 
         }
         axios({
           method: "post",
-          url: `http://localhost:3000/ho/${data.route}/vote`,
+          url: `https://xavier-ho-server.thenile.online/ho/answers/vote`,
           headers: { token: data.token },
           data: {
             answerId: data.answerId,
@@ -197,13 +217,33 @@ export default {
           },
         })
         .then(response => {
+          Swal({
+            title: response.data.message,
+            type: 'success',
+            position:'top-end',
+            toast: true,
+            timer: 3000,
+          })
           this.getQuestionDetail()
         })   
         .catch(err => {
           console.log(err.response)
+          Swal({
+            title: err.response.data.message ,
+            type: 'warning',
+            position:'top-end',
+            toast: true,
+            timer: 3000,
+          })
         })
       } else {
-        alert('Only Registered user can vote')
+        Swal({
+          title: 'Only Registered user can vote' ,
+          type: 'warning',
+          position:'top-end',
+          toast: true,
+          timer: 3000,
+        })
       }
     },
     addAnswer: function() {
@@ -215,24 +255,50 @@ export default {
       let token = localStorage.getItem("token");
       axios({
         method: "post",
-        url: "http://localhost:3000/ho/answer/add",
+        url: "https://xavier-ho-server.thenile.online/ho/answers/add",
         headers: { token: token },
         data: data
       })
       .then((response) => {
+        Swal({
+          title: response.data.message,
+          type: 'success',
+          position:'top-end',
+          toast: true,
+          timer: 3000,
+        })
         this.getQuestionDetail()
         this.addA_title = "",
         this.addA_description = "" 
       })
       .catch(err => {
         console.log(err.response);
+        let timerInterval
         Swal({
           title: err.response.data.message,
-          text: 'This message will close in 3 seconds',
+          html: 'Auto close in <b></b> seconds.',
           type: 'error',
           confirmButtonText: 'Ok',
           backdrop: false,
+          allowOutsideClick: false,
           timer: 3000,
+          onBeforeOpen: () => {
+            timerInterval = setInterval(() => {
+              Swal.getContent().querySelector('b')
+                  .textContent = (Swal.getTimerLeft()/1000)
+                    .toFixed(0)
+              }, 100)
+          },
+          onClose: () => {
+              clearInterval(timerInterval)
+          }
+          }).then((result) => {
+          if (
+              // Read more about handling dismissals
+              result.dismiss === Swal.DismissReason.timer
+          ) {
+              console.log('I was closed by the timer')
+          }
         })
       });
     },
@@ -248,10 +314,10 @@ export default {
       });
     },
     getQuestionDetail() {
-      this.loading = true
+      // this.loading = true
       axios({
         method: "GET",
-        url: "http://localhost:3000/ho/question"
+        url: "https://xavier-ho-server.thenile.online/ho/questions"
       })
       .then(response => {
         let allQuestion = response.data.data
@@ -278,12 +344,22 @@ export default {
     this.$store.dispatch("updatePopularUser")      
   },
   mounted: function() {
+    this.loading = true
     this.getQuestionDetail()
   },
   watch: {
     $route() {
+      this.topUser = false
+      this.loading = true
       this.getQuestionDetail()
     },
+    top5Users() {
+      this.top5Users.forEach(user => {
+        if(user._id == this.questionDetail.op._id) {
+          this.topUser = true
+        }
+      })
+    }
   }
 };
 </script>

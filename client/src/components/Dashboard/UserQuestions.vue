@@ -77,7 +77,7 @@ export default {
       this.$store.dispatch("decode");
       axios({
         method: "get",
-        url: "http://localhost:3000/ho/question"
+        url: "https://xavier-ho-server.thenile.online/ho/questions"
       })
         .then(response => {
           this.$store.dispatch("storeQuestions_Action").then(() => {

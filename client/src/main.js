@@ -14,6 +14,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 //WYSIWYG
 import wysiwyg from "vue-wysiwyg";
@@ -25,6 +26,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 library.add(faUser)
+library.add(faStar)
 library.add(faEye)
 library.add(faTrash)
 library.add(faSmile)
