@@ -88,7 +88,7 @@ export default {
 }
 .column {
   text-align: left;
-  margin: .1rem;
+  margin: .3rem;
   /* border: 1px solid black */
 }
 .detailQuestion .column {

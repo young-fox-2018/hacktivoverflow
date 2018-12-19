@@ -28,13 +28,9 @@
           <div class="navbar-item has-dropdown is-hoverable" v-if="isLoggedIn">
             <a class="navbar-link is-arrowless">
               <i class="fas fa-user fa-lg"></i>
-              <!-- <img src="https://via.placeholder.com/150" alt="" srcset=""> -->
             </a>
             <div class="navbar-dropdown">
-              <a class="navbar-item">
-                Profile
-              </a>
-              <!-- <hr class="navbar-divider"> -->
+              <router-link to="/profile" class="navbar-item">Profile</router-link>
               <a class="navbar-item" @click="userLogout">
                 Log Out
               </a>
@@ -49,7 +45,6 @@
             <div class="buttons">
               <a class="button" @click="showLoginModal = true">Log In</a>
               <a class="button is-info" @click="showRegisterModal = true">Sign Up</a>
-              <!-- <router-link to="/signup" class="button is-info">Sign Up</router-link> -->
             </div>
           </div>
         </div>
@@ -217,11 +212,6 @@ export default {
             password: this.loginForm.password,
           })
         .then(({ data }) => {
-          // this.$store.dispatch('userData', {
-          //   token: data.token,
-          //   name: data.name,
-          //   userId: data.userId
-          // });
           localStorage.setItem('token', data.token);
           localStorage.setItem('current_user', data.userId);
           localStorage.setItem('name', data.name);

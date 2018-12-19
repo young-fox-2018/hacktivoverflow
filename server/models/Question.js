@@ -11,7 +11,7 @@ const questionSchema = new Schema({
     required: [true, 'If the content is empty, then what are you trying to ask?']
   },
   authorId: {type: Schema.Types.ObjectId, ref: 'User'},
-  category: String,
+  category: [String],
   posted_at: Date,
   updated_at: Date,
 });

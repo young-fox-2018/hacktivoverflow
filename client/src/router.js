@@ -23,6 +23,11 @@ export default new Router({
           name: 'question',
           component: () => import(/* webpackChunkName: "question" */ './components/Question.vue'),
         },
+        {
+          path: '/profile',
+          name: 'myProfile',
+          component: () => import(/* webpackChunkName: "myProfile" */ './components/MyProfile.vue'),
+        },
       ],
     },
     {

@@ -2,7 +2,12 @@ const Question = require('../models/Question');
 
 module.exports = {
   getAllQuestion: function(req, res, next) {
-    Question.find({}).populate('authorId').exec()
+    if(req.query.category) {
+      var query = {category: req.query.category};
+    } else {
+      var query = {};
+    }
+    Question.find(query).populate('authorId').exec()
     .then(questions => {
       res.status(200).json({
         msg: 'List of questions:',
@@ -68,12 +73,13 @@ module.exports = {
     });
   },
   updateQuestion: function(req, res, next) {
-    const {content} = req.body;
+    const {title, content} = req.body;
     const {questionId} = req.params;
 
     Question.findById(questionId)
     .then(question => {
       if(question.authorId == req.current_user) {
+        question.title = title;
         question.content = content;
         question.updated_at = new Date();
         question.save();
@@ -100,7 +106,7 @@ module.exports = {
     Question.findById(questionId)
     .then(question => {
       if(question.authorId == req.current_user) {
-        console.log('masuk sini')
+        question.remove();
         res.status(200).json({
           msg: 'Question deleted',
           question,

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <input v-model="questionTitle" class="input" type="text" placeholder="Question Summary...">
-    <wysiwyg v-model="myHTML" />
+    <wysiwyg v-model="questionContent" />
     <!-- <div id="editor">
     </div> -->
     <a class="button is-info is-outlined is-fullwidth" @click.prevent="addNewQuestion">Add Question</a>
@@ -17,7 +17,6 @@ export default {
     return {
       questionTitle: '',
       questionContent: '',
-      myHTML: '',
     };
   },
   methods: {
@@ -26,7 +25,7 @@ export default {
         .post('/questions',
           {
             title: this.questionTitle,
-            content: this.myHTML,
+            content: this.questionContent,
           },
           {
             headers: { token: localStorage.token },
