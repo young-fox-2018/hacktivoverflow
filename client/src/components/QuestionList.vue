@@ -16,15 +16,15 @@
                             <div class="col-4 ">
                                 <div class="row justify-content-between">
                                     <div class="col-4">
-                                        {{Number(question.upvoteSum) - Number(question.downvoteSum)}}<br>
+                                        {{(question.upvoteSum - question.downvoteSum) || 0}}<br>
                                         votes    
                                     </div>
                                     <div class="col-4">
-                                        {{question.answersSum}} <br>
+                                        {{question.answersSum || 0}} <br>
                                         answer
                                     </div>
                                     <div class="col-4">
-                                        {{question.viewsSum}} <br>
+                                        {{question.viewsSum || 0}} <br>
                                         views
                                     </div>
                                 </div>
@@ -75,8 +75,36 @@ export default {
                 url: '/questions',
             })
             .then(({data}) =>{
-                this.questions = data.questions
-                this.fetchQuestionDetail()
+                
+                const self = this;
+
+                db
+                    .ref('/')
+                    .on('value', (snapshot) => {
+
+                        const firebaseData = snapshot.val();
+                        self.questions = data.questions;
+
+                        for (let i = 0; i < self.questions.length; i++) {
+                            const question = self.questions[i];
+                            for (let key in firebaseData) {
+                                if (key === question._id) {
+                                    const questionDetail = firebaseData[key];
+                                    question.answersSum = questionDetail.answers ? Object.keys(questionDetail.answers).length : 0;
+                                    question.upvoteSum = questionDetail.upvote ? Object.keys(questionDetail.upvote).length : 0;
+                                    question.downvoteSum = questionDetail.downvote ? Object.keys(questionDetail.downvote).length : 0;
+                                    question.viewsSum = questionDetail.views || 0;
+                                }
+                            }
+
+                        } 
+
+                        // answersSum
+                        // upvoteSum
+                        // downvoteSum
+                        // viewsSum
+                    });
+
             })
             .catch(({response}) =>{
                 console.log(response.data)
@@ -97,36 +125,6 @@ export default {
             this.$router.push(`/questions/${questionId}`);
         },
         fetchQuestionDetail(){
-            let self = this
-
-
-            this.questions.map(element =>{
-                db.ref(element._id +'/answers')
-                .on('value', (snapshot) =>{
-                    element.answersSum = snapshot.numChildren()
-                })
-            })
-
-            this.questions.map(element =>{
-                db.ref(element._id +'/upvote')
-                .on('value', (snapshot) =>{
-                    element.upvoteSum = snapshot.numChildren()
-                })
-            })
-
-            this.questions.map(element =>{
-                db.ref(element._id +'/downvote')
-                .on('value', (snapshot) =>{
-                    element.downvoteSum = snapshot.numChildren()
-                })
-            })
-
-            this.questions.map(element =>{
-                db.ref(element._id +'/views')
-                .on('value', (snapshot) =>{
-                    element.viewsSum = snapshot.val()
-                })
-            })
         }
     }
 }
