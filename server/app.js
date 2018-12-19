@@ -11,7 +11,8 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/hacktivOverflow')
+// mongoose.connect('mongodb://localhost/hacktivOverflow')
+mongoose.connect(`mongodb://overflowdb:${process.env.MLAB_PASS}@ds111244.mlab.com:11244/overflow-db`)
 
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'));
