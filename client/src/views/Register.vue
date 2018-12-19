@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns">
-      <div class="box column is-one-quarter">
+      <div class="box column is-one-third">
         <div v-if="success" class="notification column is-success">
           <button class="delete"></button>
           Congratulation, you are successfully registered.

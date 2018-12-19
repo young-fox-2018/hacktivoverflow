@@ -32,7 +32,7 @@ export default {
           return question;
         })
         .reverse()
-        .sort((a, b) => a.voteCount < b.voteCount);
+        .sort((a, b) => b.voteCount - a.voteCount);
     });
   }
 };

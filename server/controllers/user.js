@@ -1,3 +1,4 @@
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/user')
 const { apiError, getToken } = require('../helpers')
 const { createEmailQueue } = require('../helpers/background')
@@ -44,4 +45,32 @@ module.exports = {
   info(req, res) {
     res.status(200).json(req.currentUser)
   },
+
+  gSignIn(req, res) {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    client.verifyIdToken({ idToken: req.body.id_token })
+      .then(ticket => {
+        return User
+          .findOne({
+            email: ticket.payload.email
+          }).exec()
+      })
+      .then(user => {
+        if (user) {
+          return getToken({ id: user.id })
+        } else {
+          return User.create(req.body)
+            .then(user => {
+              return getToken({ userId: user.id })
+            })
+        }
+      })
+      .then(token => {
+        res.status(200).json({ 'access-token': token })
+      })
+      .catch(err => {
+        res.status(err.httpCode || 500).json({ error: err.message })
+      })
+  },
+
 }

@@ -4,3 +4,4 @@ hacktivoverflow-server.pem
 ec2.tlp
 **/config
 server/.env
+client/test.html

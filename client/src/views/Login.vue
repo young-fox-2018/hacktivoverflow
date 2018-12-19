@@ -1,6 +1,6 @@
 <template>
   <div class="columns">
-    <div class="box column is-one-quarter">
+    <div class="box column is-one-third">
       <div v-if="!success && notification" class="notification column is-warning">
         <button @click="notification = ''" class="delete"></button>
         {{ notification }}
@@ -34,6 +34,9 @@
           <router-link to="/">
             <button class="button is-text">Cancel</button>
           </router-link>
+        </div>
+        <div class="control">
+          <div class="g-signin2" data-onsuccess="gOnSignIn"></div>
         </div>
       </div>
     </div>
@@ -69,13 +72,15 @@ export default {
         .then(({ data }) => {
           this.notification = "";
           localStorage.setItem("access-token", data["access-token"]);
+          localStorage.setItem('idProvider', 'client')
           this.$emit("userLoggedIn", data);
           this.$router.push("/");
         })
         .catch(err => {
           this.notification = err.message;
         });
-    }
+    },
+
   }
 };
 </script>

@@ -31,7 +31,7 @@ export default {
           return answer;
         })
         .reverse()
-        .sort((a, b) => a.voteCount < b.voteCount);
+        .sort((a, b) => b.voteCount - a.voteCount);
     });
   }
 };

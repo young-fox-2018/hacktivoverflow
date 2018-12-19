@@ -116,25 +116,6 @@ export default {
     },
 
     voteQuestion(vote) {
-      // if (this.user) {
-      //   if (this.question.user.id !== this.user.id) {
-      //     database
-      //       .ref(`/questions/${this.question.id}/votes/${this.user.id}`)
-      //       .transaction(currentVote => {
-      //         if (currentVote && currentVote + vote >= -1 && currentVote + vote <= 1) {
-      //           currentVote = currentVote + vote || null;
-      //         } else {
-      //           currentVote = vote;
-      //         }
-      //         return currentVote;
-      //       });
-      //   } else {
-      //     alert(`Sorry, you can't vote your own question`);
-      //   }
-      // } else {
-      //   alert(`Please login first`);
-      // }
-
       if (this.user) {
         if (this.question.user.id !== this.user.id) {
           database
