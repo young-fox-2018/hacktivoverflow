@@ -49,6 +49,17 @@
                         <div>
                             <wysiwyg v-model="question.content" />
                         </div>
+                        <div>
+                            <b-form-group label="Add Category">
+                                <b-form-checkbox-group v-model="question.tags"
+                                                        buttons
+                                                        button-variant="primary"
+                                                        size="sm"
+                                                        name="buttons2"
+                                                        :options="tags">
+                                </b-form-checkbox-group>
+                            </b-form-group>
+                        </div>
                         <!-- <button type="submit" class="btn btn-primary" style="display:none" ></button> -->
                     </form>
                     <div slot="modal-footer" class="w-100">
@@ -112,6 +123,9 @@ export default {
     computed: {
         votes(){
             return this.upvoters.length - this.downvoters.length
+        },
+        tags(){
+            return this.$store.state.tags
         }
     },
     created(){
@@ -254,7 +268,8 @@ export default {
         editQuestion(){
             let input = {
                 title: this.question.title,
-                content: this.question.content
+                content: this.question.content,
+                tags: this.question.tags
             }
 
             axios({

@@ -1,12 +1,13 @@
 <template>
     <div>
-        <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex justify-content-between mb-3 mt-2">
             <h2>Question</h2>
             <router-link to="/addquestion">
                 <button class="btn btn-primary mr-3" > Ask a Question</button>
             </router-link>
         </div>
         <hr>
+        
 
         <div class="question-list">
             <div v-for="(question) in filteredQuestions" :key="question.id" >

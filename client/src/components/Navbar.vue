@@ -79,8 +79,18 @@ export default {
             }
         },
         logOut() {
-            localStorage.clear();
-            this.$store.dispatch('checkLog',false)
+            if(localStorage.provider){
+                var auth2 = gapi.auth2.getAuthInstance();
+
+                auth2.signOut().then(function () {
+                    console.log('User signed out.');
+                })
+                localStorage.clear()
+            }
+            else {
+                localStorage.clear();
+                this.$store.dispatch('checkLog',false)
+            }
         },
         searchArticle(){
             this.$router.push('/?search='+ this.searchQuery )

@@ -20,8 +20,10 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+            <div id="google-signin-button"></div>
     </b-modal>
 </template>
+
 
 
 <script>
@@ -40,11 +42,40 @@ export default {
       isLoggedIn: this.$store.state.isLoggedIn,
     };
   },
+  mounted() {
+    gapi.signin2.render('google-signin-button', {
+      onsuccess: this.onSignIn
+    })
+  },
   methods: {
+    onSignIn (user) {
+      const profile = user.getBasicProfile()
+      console.log("---- onSignIn",profile)
+      axios({
+        method: 'POST',
+        data: {
+          email: profile.U3,
+          name: profile.ig
+        },
+        url: '/users/googleSignIn'
+      })
+      .then(({ data }) => {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', data.user.email);
+        localStorage.setItem('userName', data.user.name);
+        this.$store.dispatch('checkLog',true)
+        this.hideModal();
+      })
+      .catch(({ response: { data } }) => {
+        this.errorMessage = data.message;
+        this.countDownChanged(3);
+      });
+    },
     countDownChanged(errDismissCountDown) {
       this.errDismissCountDown = errDismissCountDown;
     },
     submitSignIn() {
+      console.log('----submit signin')
       axios({
         method: 'POST',
         data: this.form,
