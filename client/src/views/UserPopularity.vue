@@ -3,7 +3,7 @@
         <h3 style="font-family: 'Lobster', cursive;">User Popularity</h3>
         <hr>
         <table class="table">
-            <thead class="thead-dark">
+            <thead class="thead-light">
                 <tr>
                     <th scope="col">No.</th>
                     <th scope="col">Name</th>

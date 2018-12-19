@@ -26,12 +26,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-// mongoose.connect(`mongodb://${process.env.USER_MONGODB}:${process.env.PASSWORD_MONGODB}@ds113134.mlab.com:13134/hacktivoverflow`, {
-//     useNewUrlParser: true,
-// });
-mongoose.connect('mongodb://localhost:27017/hacktivoverflow', {
-    useNewUrlParser: true
+mongoose.connect(`mongodb://${process.env.USER_MONGODB}:${process.env.PASSWORD_MONGODB}@ds113134.mlab.com:13134/hacktivoverflow`, {
+    useNewUrlParser: true,
 });
+// mongoose.connect('mongodb://localhost:27017/hacktivoverflow', {
+//     useNewUrlParser: true
+// });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
