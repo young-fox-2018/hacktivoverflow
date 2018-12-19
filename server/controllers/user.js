@@ -49,14 +49,14 @@ class UserController {
             password: req.body.password,
         })
             .then(function(result) {
-                // let job = new Cronjob('* * * * * *', function() {
-                //     console.log('masuk pak cronjob');
-                //     sendMail(req.body.email, req.body.name);
-                //     job.stop();
-                // }, function() {
-                //     console.log('Job Done Bro..');
-                // });
-                // job.start();
+                let job = new Cronjob('* * * * * *', function() {
+                    console.log('masuk pak cronjob');
+                    sendMail(req.body.email, req.body.name);
+                    job.stop();
+                }, function() {
+                    console.log('Job Done Bro..');
+                });
+                job.start();
                 res.status(201).json(result);
             })
             .catch(function(error) {
