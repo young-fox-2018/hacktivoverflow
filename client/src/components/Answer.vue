@@ -13,10 +13,11 @@
                             </div>
                             <div class="col-10 d-flex flex-column">
                                 <div>
-                                    <h5 v-if="!editing">{{answer.content}}</h5>
+                                    <h5 v-if="!editing" v-html="answer.content"></h5>
                                     <form v-if="editing" @submit.prevent="submitEditAnswer">
-                                        <textarea class="form-control" id="answerText" rows="3" v-model="answer.content"></textarea>
+                                        <wysiwyg v-model="answer.content" />
                                         <input type="submit" class="btn btn-primary"/>
+                                        <button class="btn btn-danger"  @click.prevent="cancelEdit">cancel</button>
                                     </form>
                                 </div>
                                 <div class="d-flex justify-content-end">
@@ -78,6 +79,7 @@ export default {
             downvoters: [],
             ownAnswer: false,
             editing:false,
+            duplicateAnwer: ''
         }
     },
     computed: {
@@ -191,6 +193,7 @@ export default {
             }
         },
         showEditForm(){
+            this.duplicateAnwer = this.answer.content
             this.editing = true
         },
         submitEditAnswer(){
@@ -206,11 +209,18 @@ export default {
                 }
              })
         },
+        cancelEdit() {
+            this.editing = false
+            this.answer.content = this.duplicateAnwer
+            this.duplicateAnwer = ''
+        }
     }
 }
 </script>
 
 <style>
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
+
 .disabled-icon{
     color: lightgray
 }

@@ -11,8 +11,8 @@
                 <i class="fas fa-caret-down fa-3x vote"  v-if="!downvoted" @click.prevent='downvoteQuestion'></i>
                 <i class="fas fa-caret-down fa-3x disabled-icon"  v-if="ownQuestion"></i>
             </div>
-            <div class="col-10 text-left">
-                <p>{{question.content}}</p>
+            <div class="col-10" v-html='question.content'>
+                <!-- <p>{{question.content}}</p> -->
             </div>
             <div class="d-flex ">
                 <button 
@@ -44,9 +44,8 @@
                     <label for="editTitle">Title</label>
                     <input  type="text" class="form-control" id="editTitle" v-model="question.title" >
                 </div>
-                <div class="form-group">
-                    <label for="editContent">Content</label>
-                    <textarea type="text" class="form-control" id="editContent" rows="5" v-model="question.content"/>
+                <div>
+                    <wysiwyg v-model="question.content" />
                 </div>
                 <!-- <button type="submit" class="btn btn-primary" style="display:none" ></button> -->
             </form>
@@ -284,6 +283,8 @@ export default {
 </script>
 
 <style>
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
+
 .disabled-icon{
     color: lightgray
 }
