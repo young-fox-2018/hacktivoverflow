@@ -57,6 +57,7 @@ export default {
 					this.email = ''
 					this.password = ''
 					$('#login').modal('hide')
+					this.$store.dispatch('isLoginAction', true)
         })
         .catch(response => {
           console.log(response)

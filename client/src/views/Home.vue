@@ -53,7 +53,6 @@ export default {
       return this.$store.state.statusRegister
     } 
   },
-
   watch: {
     $route() {
       if (this.route) this.route = false

@@ -8,13 +8,12 @@ export default new Vuex.Store({
     dataUser: null,
     statusLogin: false,
     statusRegister: false,
-    isLogin: false
+    isLogin: null
   },
   mutations: {
     loginMutation (state, data) {
       if (localStorage.getItem('access_token')) {
         state.statusLogin = false
-        state.isLogin = true
       } else {
         state.statusLogin = data
         if (!localStorage.getItem('access_token')) {
@@ -32,6 +31,9 @@ export default new Vuex.Store({
     },
     dataUserMutation (state, data) {
       state.dataUser = data
+    },
+    isLoginMutation (state, data) {
+      state.isLogin = data
     }
   },
   actions: {
@@ -43,9 +45,9 @@ export default new Vuex.Store({
     },
     setDataUser (context, data) {
       context.commit('dataUserMutation', data)
+    },
+    isLoginAction (context, data) {
+      context.commit('isLoginMutation', data)
     }
-    // isLoginAct (context, data) {
-    //   context.commit
-    // }
   }
 })

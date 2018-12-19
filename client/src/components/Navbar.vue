@@ -21,7 +21,7 @@
           <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
         </div>
       </form>
-      <ul v-if="!loginState" class="nav navbar-nav navbar-right ml-auto">			
+      <ul v-if="!isLogin" class="nav navbar-nav navbar-right ml-auto">			
         <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="login">Login</a>
         </li>
@@ -42,7 +42,7 @@
 export default {
   data() {
     return {
-      loginState: null,
+      isLogin: null,
     }
   },
   methods: {
@@ -53,8 +53,26 @@ export default {
       this.$store.dispatch('registerState', true)
     },
     logout() {
-
+			localStorage.removeItem('access_token')
+			this.$store.dispatch('isLoginAction', false)
     }
+	},
+	computed: {
+		statusLogin() {
+			return this.$store.state.isLogin
+		}
+	},
+	watch: {
+		statusLogin() {
+			this.isLogin = this.$store.state.isLogin
+		}
+	},
+  created() {
+    if(localStorage.getItem('access_token')) {
+      this.$store.dispatch('isLoginAction', true)
+    } else {
+			this.$store.dispatch('isLoginAction', false)
+		}
   }
 }
 </script>
