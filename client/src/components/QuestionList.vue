@@ -31,7 +31,17 @@
                             </div>
                             <div class="col-8 text-left">
                                 <h5 class="card-title">{{ question.title }}</h5>
-                                <p>by: {{ question.author.name }}</p>
+                                
+                                <div class="d-flex align-items-baseline justify-content-between">
+                                    <div class="d-flex flex-col">
+                                        <i class="fas fa-tag text-grey mr-2"></i>
+                                        <p class="text-grey ml-2" v-for="(tag, index) in question.tags" :key="index">{{tag}}</p>
+                                    </div>
+                                    <div class="flex-col">
+                                        <p>Created at: {{question.created_at}}</p>
+                                        <p class="text-right">{{question.author.name}}</p>
+                                    </div>
+                                </div>
                                 <!-- <p>created_at: {{ question.created_at }}</p> -->
                             </div>
                         </div>
