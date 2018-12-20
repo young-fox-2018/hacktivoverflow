@@ -20,8 +20,7 @@ mlab_password=Adm1n1strator
 
 email_pass=< password used to send email>
 
-googleClientId=< google client id>
-
+googleClientId=< google client id> / 948254138064-hh07f9ka4k2kgbs0spgqoho7lhvgvb4v.apps.googleusercontent.com
 
 ## Link Deploy
 https://xavier-ho-client.thenile.online/
@@ -32,3 +31,7 @@ https://xavier-ho-client.thenile.online/
 
 ## Bugs
 - When deleting question, the loading animation seems to load twice 
+- Google (gapi) might not be loaded: try refreshing if that happens.
+
+## Obstacles
+- Managing time between potfolio and livecode
