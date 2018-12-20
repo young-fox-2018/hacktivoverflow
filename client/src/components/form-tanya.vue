@@ -33,6 +33,7 @@
 <script>
 import { mapActions } from 'vuex'
 import VueTagsInput from '@johmun/vue-tags-input';
+import request from '@/axios.js'
 export default {
     components :{
         VueTagsInput
@@ -60,11 +61,8 @@ export default {
             this.tag = ''
         },
         add_question : function(){
-            axios({
-                method : 'POST',
-                url : 'http://localhost:3000/pertanyaan',
-                headers : { jtoken : localStorage.getItem('token')},
-                data : { title : this.form_add_question.title, description : this.form_add_question.description, tags : this.tags}
+            request.post('/pertanyaan',{ title : this.form_add_question.title, description : this.form_add_question.description, tags : this.tags},{
+                headers : { jtoken : localStorage.getItem('token')}
             })
             .then( ({ data }) => {
                 this.clear()

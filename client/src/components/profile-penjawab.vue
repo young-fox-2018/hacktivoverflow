@@ -66,16 +66,20 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import request from '@/axios.js'
 export default {
   props :['jawab', 'jtoken','user_id'],
   methods : {
     ...mapActions(['initializePertanyaan']),
     delete_answer : function(id){
-      axios({
-        method : 'DELETE',
-        url :`http://localhost:3000/jawaban/${this.$route.params.id}/${id}`,
-        headers: { jtoken : this.jtoken}
+      request.delete(`/jawaban/${this.$route.params.id}/${id}`,{
+         headers: { jtoken : this.jtoken}
       })
+      // axios({
+      //   method : 'DELETE',
+      //   url :`http://localhost:3000/jawaban/${this.$route.params.id}/${id}`,
+      //   headers: { jtoken : this.jtoken}
+      // })
       .then( ({ data }) => {
         this.initializePertanyaan()
         this.$emit('deleteAnswer', this.$route.params.id)

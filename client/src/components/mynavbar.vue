@@ -29,7 +29,7 @@
                 <button v-if="!jtoken" class="btn btn-outline-default my-2 my-sm-0 mx-2" type="submit" data-toggle="modal" data-target="#modalRegister">Register</button>
                 <mymodalregister id="modalRegister"></mymodalregister>
                 <button v-if="jtoken" @click="logout" class="btn btn-outline-default my-2 my-sm-0 mx-2" type="submit">Log Out</button>
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
             </div>
         </div>
     </nav>
@@ -39,6 +39,7 @@
 
 <script>
 import mymodalregister from '@/components/modal-register.vue'
+import request from '@/axios.js'
 export default {
     props : ['jtoken'],
     components : { mymodalregister},
@@ -54,7 +55,7 @@ export default {
     },
     methods : {
         onSignIn(response){
-            console.log('ini adalah methods in components :', response)
+
         },
         clear : function(){
             this.form_login.email = ''
@@ -64,7 +65,7 @@ export default {
         },
         login : function(){
              let data = { email : this.form_login.email, password : this.form_login.password }
-            axios.post('http://localhost:3000/users/signin', data)
+            request.post('/users/signin', data)
             .then( ({data }) => {
                 let token = data.token
                 localStorage.setItem('token', token)

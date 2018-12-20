@@ -38,6 +38,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { format } from 'url';
+import request from '@/axios.js'
 export default {
     props : ['tanya', 'jtoken', 'user_id','index'],
     data(){
@@ -48,10 +49,7 @@ export default {
     methods : {
       ...mapActions(['initializePertanyaan']),
       delete_question : function(id){
-       
-        axios({
-          method : 'DELETE',
-          url : `http://localhost:3000/pertanyaan/${id}`,
+        request.delete('/pertanyaan/'+id,{
           headers : { jtoken : this.jtoken}
         })
         .then( ({ data}) => {
