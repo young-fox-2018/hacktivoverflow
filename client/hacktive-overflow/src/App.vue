@@ -6,6 +6,7 @@
         <li class="nav-item" ><router-link to="/">Home</router-link></li>
         <li class="nav-item" v-if="!localStorageToken"><a href="#" data-toggle="modal" data-target="#registerModal">Register</a></li>
         <li class="nav-item" v-if="!localStorageToken"><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+        <li class="nav-item" v-if="!localStorageToken"><fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button></li>
         <li class="nav-item" v-if="localStorageToken"><a href="#" @click.prevent="logout">Log Out</a></li>
         <RegisterModal></RegisterModal>
         <LoginModal @resetToken="localStorageToken = $event"></LoginModal>
@@ -37,6 +38,11 @@ export default {
       localStorage.clear()
       this.localStorageToken = ""
     },
+    checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
   }
 };
 </script>
