@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>H-logo2.png">
+    <title>HacktivOverflow</title>
+    <meta name="google-signin-client_id" content="828992207061-gs9c21tstsirf52de5io3i6bopr6ijls.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+      function init() {
+        gapi.load('auth2', function() { 
+          gapi.auth2.init()
+        })
+      }
+    </script>
+
+  </head>
+  <body>
+
+    <noscript>
+      <strong>We're sorry but client doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+
+  </body>
+</html>
