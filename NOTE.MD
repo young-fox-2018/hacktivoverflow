@@ -15,6 +15,6 @@ kefile cloud storage :
 JWT_SECRET = "123"
 BUCKET_NAME = 'e-commerce-product-image'
 SENDGRID_API_KEY="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"
-MLAB_USERNAME="hokandre1"
-MLAB_PASSWORD="hokandre1"
+MLAB_USERNAME="insert"
+MLAB_PASSWORD="insert"
 
