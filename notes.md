@@ -5,6 +5,10 @@
     kesulitan:
     -saat di deploy error semua padahal di localhost lancar
 
+    Added Feature:
+    -nodemailer saat register
+    -upload avatar untuk user
+
     keyfile.json:
 
     "type": "service_account",
