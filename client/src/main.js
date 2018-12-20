@@ -5,9 +5,6 @@ import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import wysiwyg from 'vue-wysiwyg'
 import moment from 'moment'
-import GSignInButton from 'vue-google-signin-button'
-
-Vue.use(GSignInButton)
 
 Vue.use(wysiwyg, {
   hideModules: { 'table': true }
