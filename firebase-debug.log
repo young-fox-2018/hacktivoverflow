@@ -1,0 +1,47 @@
+[debug] [2018-12-19T12:07:46.738Z] ----------------------------------------------------------------------
+[debug] [2018-12-19T12:07:46.742Z] Command:       /usr/bin/node /home/desy/.npm-global/bin/firebase init
+[debug] [2018-12-19T12:07:46.742Z] CLI Version:   6.1.2
+[debug] [2018-12-19T12:07:46.742Z] Platform:      linux
+[debug] [2018-12-19T12:07:46.742Z] Node Version:  v10.12.0
+[debug] [2018-12-19T12:07:46.743Z] Time:          Wed Dec 19 2018 19:07:46 GMT+0700 (Western Indonesia Time)
+[debug] [2018-12-19T12:07:46.743Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-12-19T12:07:46.758Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-12-19T12:07:46.758Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /media/desy/Data/projects/hacktiv8/phase02/week4/hacktivoverflow
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2018-12-19T12:08:08.965Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-12-19T12:08:08.966Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2018-12-19T12:08:09.132Z] <<< HTTP RESPONSE 200
+[debug] [2018-12-19T12:08:09.173Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects?page_size=100  
+ 
+[debug] [2018-12-19T12:08:09.770Z] <<< HTTP RESPONSE 200
+[info] i  Using project hacktivoverflow-a60a5 (hacktivOverflow)
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
