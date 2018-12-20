@@ -15,7 +15,9 @@ app.use(cors())
 const UserRoute = require('./routes/user-routes')
 const PertanyaanRoute = require('./routes/pertanyaan-routes')
 const JawabanRoute = require('./routes/jawaban-routes')
-
+app.get('/', (req, res) => {
+    res.send("Masuk Pak Eko")
+})
 app.use('/users', UserRoute)
 app.use('/pertanyaan', PertanyaanRoute)
 app.use('/jawaban', JawabanRoute)
