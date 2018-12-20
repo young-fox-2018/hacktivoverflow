@@ -209,6 +209,52 @@ class QuestionController {
                 res.status(400).json({errors: err.errors || {answer: {message: err.message}}})
             })
     }
+
+    static update(req,res){
+        let newTags = req.body.tags.map(tag=> tag.text)
+        Question.findOneAndUpdate({
+            _id: req.params.id
+        }, {
+            author : req.currentUser.id,
+            body: req.body.body,
+            title: req.body.title,
+            tags: newTags
+        }, {new: true})
+            .then(updatedQuestion => {
+                res.status(201).json(updatedQuestion)
+            })
+            .catch(err=> {
+                res.status(400).json({errors: err.errors || err.message})
+            })
+    }
+
+    static destroy(req,res){
+        Question.findOneAndDelete({
+            _id: req.params.id
+        })
+            .then(deleted=> {
+                res.status(200).json(deleted)
+            })
+            .catch(err=> [
+                res.status(400).json({errors: err.message})
+            ])
+    }
+
+    static updateAnswer(req, res){
+        Answer.findOneAndUpdate({
+            _id: req.params.answerId
+        }, {
+            body: req.body.body,
+            author: req.currentUser.id
+        }, {new: true})
+        .then(updatedAnswer=>{
+            res.status(200).json(updatedAnswer)
+        })
+        .catch(err=> {
+            res.status(400).json({errors: err.errors || err.message})
+        })
+    }
+
 }
 
 module.exports = QuestionController

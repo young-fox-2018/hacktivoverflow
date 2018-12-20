@@ -25,7 +25,7 @@
                 </div>
                 <div class="mt-2">
                     <small v-if="usage == 'question'">asked by {{item.author.name}}</small>
-                    <small v-else >answered by {{item.author.name}}</small>
+                    <small v-if="usage == 'answer'" >answered by {{item.author.name}}</small>
                 </div>
             </div>
         </div>
