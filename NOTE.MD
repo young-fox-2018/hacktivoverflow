@@ -1,4 +1,7 @@
-kesulitan : boostrap, css, semua yang berlaku dengan element html ukuran dan penempatan
+kesulitan : 
+1.boostrap, css, semua yang berlaku dengan element html ukuran dan penempatan
+2.dns setting https
+
 kefile cloud storage :
   "type": "service_account",
   "project_id": "e-commerce-222212",
@@ -18,3 +21,7 @@ SENDGRID_API_KEY="SG.kGnDfqQkT1KqEPHU5gQwWg.l5yKCdG_-SsJROGaDhjXbEOAHGDwHFrElCcg
 MLAB_USERNAME="insert"
 MLAB_PASSWORD="insert"
 
+
+
+LINK DEPLOY :
+client-hacktiv.bearbrand.club
