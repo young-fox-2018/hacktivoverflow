@@ -4,8 +4,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose')
 const cors = require('cors')
+require('dotenv').config()
 
-mongoose.connect('mongodb://localhost:27017/pollGSPoint', { useNewUrlParser: true })
+
+mongoose.connect(`mongodb://${process.env.mName}:${process.env.mSecret}@ds135844.mlab.com:35844/polloverflowpoint`, { useNewUrlParser: true })
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {

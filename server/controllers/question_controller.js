@@ -37,7 +37,6 @@ class QuestionController {
                 res.status(200).json( questions )
             })
             .catch( error => {
-                console.log(`error di read all question`)
                 console.log(error)
                 res.status(500).json( error.message )
             })
@@ -50,7 +49,6 @@ class QuestionController {
             res.status(200).json( questions )
         })
         .catch( error => {
-            console.log(`error di read all question`)
             console.log(error)
             res.status(500).json( error.message )
         })
@@ -58,11 +56,14 @@ class QuestionController {
 
     static readDetailQuestions (req, res){
         Question.findOne({ slug : req.params.slug})
+        .populate({
+            path: 'UserId',
+            select: 'name'
+        })
         .then( questions => {
             res.status(200).json( questions )
         })
         .catch( error => {
-            console.log(`error di read all question`)
             console.log(error)
             res.status(500).json( error.message )
         })
@@ -81,13 +82,11 @@ class QuestionController {
                 res.status(200).json( questions )
             })
             .catch( error => {
-                console.log(`error di read all question`)
                 console.log(error)
                 res.status(500).json( error.message )
             })
         })
         .catch( error => {
-            console.log(`error di read all update`)
             console.log(error)
             res.status(500).json( error.message )
         })

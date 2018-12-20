@@ -5,6 +5,7 @@ const   express = require('express'),
         authentication = require('../middlewares/authentication');
 
 router.post('/gSignIn', UserController.gSignIn );
+router.post('/fSignIn', UserController.fSignIn );
 router.post('/signin', UserController.signIn );
 router.get('/best', UserController.readBestContributor );
 router.get('/', authentication, UserController.readOne );

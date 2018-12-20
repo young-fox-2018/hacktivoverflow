@@ -10,6 +10,7 @@ const questionSchema = new mongoose.Schema({
     downvote: [{ type:Schema.Types.ObjectId, ref: 'User'}],
     dateCreate: {type:Date},
     tags: [],
+    AnswerId: [{ type:Schema.Types.ObjectId, ref: 'Answer'}]
 })
 
 const Question = mongoose.model('Question', questionSchema)

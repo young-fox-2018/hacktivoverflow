@@ -43,28 +43,27 @@ class UserController {
     }
 
     static signIn ( req, res ) {
-        console.log(req.body)
         User.findOne({ name : req.body.name})
             .then( user => {
                 if ( user !== null ){
                     let hash = Helper.encryp( req.body.password, user.salt)
                     if ( user.password === hash ){
                         let data = { id : user._id}
-                        let id = user._id
                         let jToken = jwt.sign( data, process.env.jSecret)
-                        res.status(200).json( {jToken, id} )
+                        let message = "Success logged in!"
+                        res.status(200).json( {jToken, message} )
                     } else {
                         console.log(err)
-                        res.status(500).json( {error : err, message : "your email address or password is incorrect"} )  
+                        res.status(500).json( "your email address or password is incorrect" )  
                     }
                     
                 } else {
-                    res.status(500).json( {error : 'err', message : "your email address or password is incorrect"} ) 
+                    res.status(500).json( "your email address or password is incorrect" ) 
                 }
             })
             .catch( err => {
                 console.log(err)
-                res.status(500).json( {error : err, message : "your email address or password is incorrect"} )
+                res.status(500).json( err.message )
             })
     }
 
@@ -99,52 +98,80 @@ class UserController {
         })
     }
 
-    static gSignIn ( req, res ) {
-        console.log(`masuk gSignIn`)
-        const {OAuth2Client} = require('google-auth-library');
-        const client = new OAuth2Client(process.env.gSecret);
-        client.verifyIdToken({
-            idToken: req.headers.gtoken
-        },( err, result ) => {
-            if ( err ) {
-                res.status(500).json( err )
-            } else {
-                User.findOne({ email : result.payload['email']})
-                .then( user => {
-                    if ( user !== null ){
-                        console.log(`usernya udah ada`)
+    static fSignIn ( req, res ) {
+        let randomPassword = Math.random().toString(36).slice(-8);
+        User.findOne({ email : req.body.email})
+        .then( user => {
+            if ( user !== null ){
+                let data = { id : user._id}
+                let jToken = jwt.sign( data, process.env.jSecret)
+                let message = "Success logged in!"
+                res.status(200).json( {jToken, message} )
+
+            } 
+            else {
+
+                let user = new User ({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: randomPassword
+                })
+                user.save( (err, data) => {
+                    if (err) {
+                        console.log( err )
+                        res.status(500).json (err.message )
+                    } if ( data ) {
                         let data = { id : user._id}
-                        let jToken = jwt.sign( data, process.env.jSecret )
-                        //gimana kirim jToken sambil redirect
-                        //res.status(200).json( {jToken} )
-                        if ( user.role === 'admin' ) {
-                            res.status(200).json( {jToken} )
-                        }
-                    } 
-                    else {
-                        console.log(`usernya belum ada`)
-                        let user = new User ({
-                            email: result.payload['email'],
-                            password: req.headers.gtoken
-                        })
-                        user.save( (err, data) => {
-                            if (err) {
-                                console.log( err )
-                                res.status(500).json({ "error found" : err})
-                            } if ( data ) {
-                                let data = { id : user._id}
-                                let jToken = jwt.sign( data, process.env.jSecret)
-                                res.status(200).json( {jToken} )
-                            }
-                        })
+                        let jToken = jwt.sign( data, process.env.jSecret)
+                        let message = "Success logged in!"
+                        res.status(200).json( {jToken, message} )
                     }
                 })
-                .catch( err => {
-                    console.log(err)
-                    res.status(500).json( {"Upps something wrong.." : err} )
+            }
+        })
+        .catch( err => {
+            console.log(err)
+            res.status(500).json( err.message )
+        })
+
+    }
+
+    static gSignIn ( req, res ) {
+        let randomPassword = Math.random().toString(36).slice(-8);
+        User.findOne({ email : req.body.email})
+        .then( user => {
+            if ( user !== null ){
+                let data = { id : user._id}
+                let jToken = jwt.sign( data, process.env.jSecret)
+                let message = "Success logged in!"
+                res.status(200).json( {jToken, message} )
+
+            } 
+            else {
+
+                let user = new User ({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: randomPassword
+                })
+                user.save( (err, data) => {
+                    if (err) {
+                        console.log( err )
+                        res.status(500).json (err.message )
+                    } if ( data ) {
+                        let data = { id : user._id}
+                        let jToken = jwt.sign( data, process.env.jSecret)
+                        let message = "Success logged in!"
+                        res.status(200).json( {jToken, message} )
+                    }
                 })
             }
-        });
+        })
+        .catch( err => {
+            console.log(err)
+            res.status(500).json( err.message )
+        })
+
     }
 
     static readOne ( req, res ) {

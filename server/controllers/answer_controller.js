@@ -14,9 +14,16 @@ class AnswerController {
                 console.log(err)
                 res.status(500).json( {error : err, message : "Something went wrong, please call developer!"} )
             } else {
-                console.log(`setelah save data`)
-                console.log(data)
-                res.status(200).json( data )
+                Question.findByIdAndUpdate({ _id : req.body.questionId}, {
+                    $push: { QuestionId: data._id }     
+                },{new: true})
+                .then( questions => {
+                    res.status(200).json( data )
+                })
+                .catch( error => {
+                    console.log(error)
+                    res.status(500).json( error.message )
+                })
             }
         })
     }
@@ -24,12 +31,9 @@ class AnswerController {
     static readOne (req, res){
         Answer.findById(req.params.id)
         .then( answer => {
-            console.log(`masuk read all answer`)
-            console.log(answer)
             res.status(200).json( answer )
         })
         .catch( error => {
-            console.log(`error di read all question`)
             console.log(error)
             res.status(500).json( {error : error, message : "Something went wrong, please call developer!"} )
         })
@@ -75,7 +79,6 @@ class AnswerController {
                     select : ['name'] 
                 })
                 .then(answerArr => {
-                    console.log(answerArr)
                     res.status(200).json( answerArr )
                 })
             })
@@ -87,8 +90,6 @@ class AnswerController {
     }
 
     static update (req, res){
-        console.log(`===================================`)
-        console.log(req.params)
         Answer.updateOne({ _id : req.params.id}, {
             description: req.body.description          
         })

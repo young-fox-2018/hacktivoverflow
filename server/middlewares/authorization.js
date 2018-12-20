@@ -6,14 +6,13 @@ function checkAuthorize ( req, res, next ) {
     User.findById(decode.id)
     .then( user => {
         if ( user.role === 'admin' ) {
-            console.log(`lewat checkAuthorize`)
             next()
         } else {
             res.status(500).json("error, please contact developer!")
         }  
     })
     .catch( err => {
-        console.log( err )
+        res.status(500).json( err.message )
     })  
 }
 
