@@ -31,7 +31,7 @@ const mongoose = require('mongoose')
 
 const DB_TYPE = process.env.NODE_ENV || "development"
 
-mongoose.connect(`mongodb://localhost/hacktiv_overflow_${ DB_TYPE }`, { useNewUrlParser: true })
+mongoose.connect(`mongodb://${process.env.MLAB_USERNAME}:${process.env.MLAB_PASSWORD}@ds135844.mlab.com:35844/hacktivoverflow`, { useNewUrlParser: true })
 
 const db = mongoose.connection;
 
