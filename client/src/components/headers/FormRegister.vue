@@ -15,7 +15,6 @@
             <input type="password" class="form-control form-control-sm mb-2" placeholder="Password" v-model="form.password" ref="password" />
             <input type="password" class="form-control form-control-sm mb-2" placeholder="Retype Password" v-model="form.password2" ref="password2" />
             <button class="btn btn-outline-success btn-sm mr-2">Register</button>
-            <button>Facebook</button>
         </form>
         <hr>
         <loading v-if="loading" width="30px" />

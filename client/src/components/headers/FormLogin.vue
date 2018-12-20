@@ -13,7 +13,13 @@
             <input type="text" class="form-control form-control-sm mb-2" placeholder="E-mail" v-model="form.email" ref="email" />
             <input type="password" class="form-control form-control-sm mb-2" placeholder="Password" v-model="form.password" ref="password" />
             <button class="btn btn-outline-success btn-sm mr-2">Login</button>
-            <button>Facebook</button>
+            <!-- <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div> -->
+            <!-- https://github.com/phanan/vue-facebook-signin-button -->
+            <fb-signin-button
+                :params="fbSignInParams"
+                @success="onSignInSuccess"
+                @error="onSignInError"
+            >Sign in with Facebook</fb-signin-button>
         </form>
         <hr>
         <loading v-if="loading" width="30px" />
@@ -24,6 +30,26 @@
     import apiHacktiv from '@/config/api-hacktivoverflow.js';
     import Loading from '@/components/Loading.vue';
     import { mapActions } from 'vuex';
+
+    window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '266928807286927',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v3.2'
+    });
+        
+    FB.AppEvents.logPageView();   
+        
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
     
     export default {
         name: 'FormLogin',
@@ -43,9 +69,22 @@
                     value: '',
                     variant: '',
                 },
+                fbSignInParams: {
+                    scope: 'email',
+                    return_scopes: true
+                },
             };
         },
         methods: {
+            onSignInSuccess (response) {
+                FB.api('/me', dude => {
+                    console.log('masuk=====', dude)
+                    console.log(`Good to see you, ${dude.name}, ${dude.email}.`)
+                })
+            },
+            onSignInError (error) {
+                console.log('OH NOES', error)
+            },
             ...mapActions(['checkToken']),
             saveLogin() {
                 if (this.form.email === '') {
@@ -94,3 +133,14 @@
         },
     };
 </script>
+
+<style>
+.fb-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #4267b2;
+  color: #fff;
+}
+</style> 
