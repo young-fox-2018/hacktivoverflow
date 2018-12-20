@@ -19,6 +19,8 @@ mlab_user=admin
 mlab_password=Adm1n1strator
 
 email_pass=< password used to send email>
+ * Note that the email address used to send email is harcoded in "helpers/nodemailer.js"
+ * Please use own email if you want to test the nodemailer function.
 
 googleClientId=< google client id> / 948254138064-hh07f9ka4k2kgbs0spgqoho7lhvgvb4v.apps.googleusercontent.com
 
