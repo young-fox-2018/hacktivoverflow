@@ -181,7 +181,7 @@ module.exports = {
         .catch( err => {
             res.status(500).json({
                 msg:"Error di Axios gToken",
-                details: err.response.message
+                details: err.message
             })
         })
         
