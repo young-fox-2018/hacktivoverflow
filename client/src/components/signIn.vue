@@ -31,6 +31,7 @@
 
 <script>
 const IP = `http://35.240.198.92`
+const localhost = `http://localhost:3000`
 export default {
     name: 'signIn',
     data () {
@@ -48,7 +49,7 @@ export default {
         login () {
             axios({
                 method: `POST`,
-                url: `${IP}/users/sign`,
+                url: `${localhost}/users/sign`,
                 data: {
                     email: this.email,
                     password: this.password
@@ -73,7 +74,7 @@ export default {
             const token = user.getAuthResponse().id_token
             axios({
                 method: `POST`,
-                url:`${IP}/users/sign`,
+                url:`${localhost}/users/sign`,
                 data: {
                     googleToken: token
                 }

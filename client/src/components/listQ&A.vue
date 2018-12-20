@@ -171,6 +171,7 @@
 import {mapState} from 'vuex'
 import moment from 'moment'
 const IP = `http://35.240.198.92`
+const localhost = `http://localhost:3000`
 export default {
     data () {
         return {
@@ -208,7 +209,7 @@ export default {
         findOneQuestion (id) {
             axios({
                 method: `GET`,
-                url: `${IP}/questions/${id}`,
+                url: `${localhost}/questions/${id}`,
             })
             .then((question) => {
                 this.questionId = id
@@ -224,7 +225,7 @@ export default {
         postAnswer (id) {
             axios({
                 method: `POST`,
-                url: `${IP}/answers/${id}`,
+                url: `${localhost}/answers/${id}`,
                 data: {
                     content: this.content
                 },
@@ -243,7 +244,7 @@ export default {
         upVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `${IP}/questions/upvote/${id}`,
+            url: `${localhost}/questions/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -258,7 +259,7 @@ export default {
         downVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `${IP}/questions/downvote/${id}`,
+            url: `${localhost}/questions/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -274,7 +275,7 @@ export default {
         upVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `${IP}/answers/upvote/${id}`,
+            url: `${localhost}/answers/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -290,7 +291,7 @@ export default {
          downVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `${IP}/answers/downvote/${id}`,
+            url: `${localhost}/answers/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }

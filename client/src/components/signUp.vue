@@ -40,6 +40,7 @@
 
 <script>
 const IP = `http://35.240.198.92`
+const localhost = `http://localhost:3000`
 export default {
     name: 'signup',
     data () {
@@ -61,7 +62,7 @@ export default {
             formData.append('avatar', this.avatar)
             axios({
                 method: `POST`,
-                url: `${IP}/users`,
+                url: `${localhost}/users`,
                 data: formData
             })
             .then((user) => {

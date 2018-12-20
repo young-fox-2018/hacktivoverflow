@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+const localhost = `http://localhost:3000`
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -45,7 +45,7 @@ export default new Vuex.Store({
       getAllQuestionAction (context, listQuestions) {
         axios({
           method: `GET`,
-          url: `http://35.240.198.92/questions`
+          url: `${localhost}/questions`
         })
         .then((questions) => {
           context.commit('getQuestionMut', questions.data)
@@ -57,7 +57,7 @@ export default new Vuex.Store({
       getAllAnswerAction (context, questionId) {
         axios({
           method: `GET`,
-          url: `http://35.240.198.92/answers/${questionId}`
+          url: `${localhost}/answers/${questionId}`
         })
         .then((answers) => {
           context.commit('getAnswerMut', answers.data)
@@ -69,7 +69,7 @@ export default new Vuex.Store({
       getMyAllQuestion (context, token) {
         axios({
             method: `GET`,
-            url: `http://35.240.198.92/myquestion`,
+            url: `${localhost}/myquestion`,
             headers: {
                 token: token
             }
