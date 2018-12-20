@@ -6,7 +6,7 @@ var logger = require('morgan');
 require('dotenv').config()
 var cors = require('cors')
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/h8-overflow');
+mongoose.connect(process.env.MLAB);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
