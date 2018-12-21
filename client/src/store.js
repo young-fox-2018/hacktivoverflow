@@ -149,7 +149,7 @@ export default new Vuex.Store({
     }, 
     getQuestion({commit}, payload){
       
-      api.get(`/questions/${payload}`, {headers: {token: localStorage.token}})
+      return api.get(`/questions/${payload}`, {headers: {token: localStorage.token}})
         .then(({data})=> {
           commit('getQuestionMutation', data)
         })

@@ -13,5 +13,6 @@ router.patch('/:id/downvote', isLogin, isOwner.voteQuestion, isVote.isUpvote, Qu
 router.get('/:id', QuestionController.show)
 router.post('/:id/answer', isLogin, QuestionController.answer)
 router.delete('/:id', isLogin, isOwner.question, QuestionController.destroy)
+router.put('/:id', isLogin, isOwner.question, QuestionController.update)
 
 module.exports = router
