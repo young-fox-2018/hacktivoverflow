@@ -38,9 +38,9 @@
             </div>
         </div>
 
-        <!-- <FormComment :questionId="this.$route.params.id" @readone="readQuestion"></FormComment> -->
+        <AddAnswer></AddAnswer>
         <br>
-        <ul> Comments:
+        <ul> Answers:
             <li v-for="comment in question.commentList" :key="comment._id">
                 {{comment.content}}
             </li>
@@ -50,7 +50,7 @@
 
 <script>
 import axios from '@/apis/axios'
-// import FormComment from '@/components/FormComment.vue';
+import AddAnswer from '@/components/AddAnswer.vue';
 
 export default {
     name: 'QuestionDetail',
@@ -60,7 +60,7 @@ export default {
         }
     },
     components: {
-        // FormComment
+        AddAnswer
     },
     props: {    
     },
@@ -82,7 +82,7 @@ export default {
                 method: 'PUT',
                 url: `/questions/${this.$route.params.id}`,
                 headers: {
-                    token: localStorage.getItem("token")
+                    token: this.$store.state.token
                 },
                 data: {
                     title: this.question.title,

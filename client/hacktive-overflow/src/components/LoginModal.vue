@@ -47,7 +47,6 @@ export default {
         email: "",
         password: ""
       },
-      token: ""
     }
   },
   props: {
@@ -66,7 +65,7 @@ export default {
       .then(response => {
         this.shownError = ""
         localStorage.setItem("token", response.data)
-        this.$store.state.localStorageToken = response.data
+        this.$store.state.token = response.data
         this.inputLogin.email = ""
         this.inputLogin.password = ""
       })

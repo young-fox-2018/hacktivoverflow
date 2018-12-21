@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{err}}
     <div class="alert alert-danger" role="alert" v-if="shownError" style="width:100%; position:fixed; top:0;">
       {{shownError}}
     </div>
@@ -46,6 +47,7 @@ export default {
   name: 'RegisterModal',
   data() {
     return  {
+      err: "",
       shownError: "",
       inputRegister: {
         name: "",
@@ -76,9 +78,7 @@ export default {
       })
       .catch(err => {
         this.shownError = ''
-        if(err.response.data.message.name) this.shownError += err.response.data.message.name.message + ". "
-        if(err.response.data.message.email) this.shownError += err.response.data.message.email.message + ". "
-        if(err.response.data.message.password) this.shownError += err.response.data.message.password.message + ". "
+        if(err.response.data.message) this.shownError += err.response.data.message + ". "
         this.inputRegister.name = ""
         this.inputRegister.email = ""
         this.inputRegister.password = ""

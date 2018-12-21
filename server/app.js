@@ -4,7 +4,6 @@ var cors = require('cors')
 require('dotenv').config()
 const port = process.env.PORT || 3000;
 
-// mongoose.connect('mongodb://localhost/hacktiv-overflow');
 mongoose.connect('mongodb://ribka001:ribka001@ds249123.mlab.com:49123/hacktiv-overflow', { useNewUrlParser: true });
 
 var db = mongoose.connection;

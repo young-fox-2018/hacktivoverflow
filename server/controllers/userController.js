@@ -71,7 +71,7 @@ class UserController {
             .then((user) => {                        
                 if (!user) {
                     let user = new User({
-                        username: response.data.name,
+                        name: response.data.name,
                         email: response.data.email,
                         password: generator.generate({
                             length: 10
@@ -84,6 +84,7 @@ class UserController {
                         res.status(200).json(token)
                     })
                     .catch(err => {
+                        console.log("masuk catch")
                         res.status(400).json(err.message)
                     })        
                 }else {

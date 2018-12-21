@@ -4,21 +4,22 @@
     <div id="nav">
       <ul>
         <li class="nav-item" ><router-link to="/">Home</router-link></li>
-        <li class="nav-item" v-if="!localStorageToken"><a href="#" data-toggle="modal" data-target="#registerModal">Register</a></li>
-        <li class="nav-item" v-if="!localStorageToken"><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
-        <li class="nav-item" v-if="!localStorageToken"><fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button></li>
-        <li class="nav-item" v-if="localStorageToken"><a href="#" @click.prevent="logout">Log Out</a></li>
+        <li class="nav-item" v-if="!$store.state.token"><a href="#" data-toggle="modal" data-target="#registerModal">Register</a></li>
+        <li class="nav-item" v-if="!$store.state.token"><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+        <li class="nav-item" v-if="!$store.state.token"><fb:login-button scope="public_profile,email" onlogin="checkLoginState"></fb:login-button></li>
+        <li class="nav-item" v-if="$store.state.token"><a href="#" @click.prevent="logout">Log Out</a></li>
         <RegisterModal></RegisterModal>
-        <LoginModal @resetToken="localStorageToken = $event"></LoginModal>
+        <LoginModal></LoginModal>
       </ul>
     </div>
     <div>
-      <router-view :token="localStorageToken"/>
+      <router-view/>
     </div>
   </div>
 </template>
 
 <script>
+import axios from '@/apis/axios'
 import RegisterModal from './components/RegisterModal.vue';
 import LoginModal from './components/LoginModal.vue';
 
@@ -26,7 +27,7 @@ export default {
   name: 'app',
   data() {
     return {
-      localStorageToken: localStorage.getItem("token"),
+      localToken: localStorage.getItem('token')
     }
   },
   components: {
@@ -36,13 +37,8 @@ export default {
   methods: {
     logout() {
       localStorage.clear()
-      this.localStorageToken = ""
+      this.$store.state.token = ""
     },
-    checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-      });
-    }
   }
 };
 </script>
