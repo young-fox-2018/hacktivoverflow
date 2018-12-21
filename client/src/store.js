@@ -45,7 +45,7 @@ export default new Vuex.Store({
       getAllQuestionAction (context, listQuestions) {
         axios({
           method: `GET`,
-          url: `${localhost}/questions`
+          url: `http://35.240.198.92/questions`
         })
         .then((questions) => {
           context.commit('getQuestionMut', questions.data)
@@ -57,7 +57,7 @@ export default new Vuex.Store({
       getAllAnswerAction (context, questionId) {
         axios({
           method: `GET`,
-          url: `${localhost}/answers/${questionId}`
+          url: `http://35.240.198.92/answers/${questionId}`
         })
         .then((answers) => {
           context.commit('getAnswerMut', answers.data)
@@ -69,7 +69,7 @@ export default new Vuex.Store({
       getMyAllQuestion (context, token) {
         axios({
             method: `GET`,
-            url: `${localhost}/myquestion`,
+            url: `http://35.240.198.92/myquestion`,
             headers: {
                 token: token
             }

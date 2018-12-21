@@ -43,7 +43,6 @@ export default {
   },
   created () {
     this.isLoggedIn()
-    this.statusLogIn()
   },
   computed: {
     statusLogIn () {

@@ -42,7 +42,7 @@ export default {
         postQuestion () {
             axios({
                 method: `POST`,
-                url: `${localhost}/questions`,
+                url: `http://hacktivoverflow.vinco.icu/questions`,
                 data: {
                     title: this.title,
                     content: this.content

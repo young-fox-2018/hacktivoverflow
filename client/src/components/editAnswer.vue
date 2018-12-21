@@ -40,7 +40,7 @@ export default {
           editAnswer() {
             axios({
                 method: `PUT`,
-                url:`${localhost}/answers/one/${this.$route.params.id}`,
+                url:`http://hacktivoverflow.vinco.icu/answers/one/${this.$route.params.id}`,
                 data: {
                     content: this.content
                 },
@@ -59,7 +59,7 @@ export default {
         findAnswer() {
             axios({
                 method: `GET`,
-                url: `${localhost}/answers/${this.$route.params.id}`
+                url: `http://hacktivoverflow.vinco.icu/answers/${this.$route.params.id}`
             })
             .then((answer) => {
                 console.log(answer)

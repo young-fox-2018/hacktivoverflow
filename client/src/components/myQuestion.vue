@@ -55,7 +55,7 @@ export default {
         deleteQuestion (id) {
           axios({
             method: `DELETE`,
-            url: `${localhost}/questions/${id}`,
+            url: `http://hacktivoverflow.vinco.icu/questions/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }

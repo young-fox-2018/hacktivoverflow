@@ -39,7 +39,6 @@
 </template>
 
 <script>
-const IP = `http://35.240.198.92`
 const localhost = `http://localhost:3000`
 export default {
     name: 'signup',
@@ -62,14 +61,15 @@ export default {
             formData.append('avatar', this.avatar)
             axios({
                 method: `POST`,
-                url: `${localhost}/users`,
+                url: `http://hacktivoverflow.vinco.icu/users`,
                 data: formData
             })
             .then((user) => {
+                console.log(user)
                 this.$router.push('/signin')
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err.response)
             })
         },
         uploadAvatar: function (img) {

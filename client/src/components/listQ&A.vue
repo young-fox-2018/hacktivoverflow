@@ -209,7 +209,7 @@ export default {
         findOneQuestion (id) {
             axios({
                 method: `GET`,
-                url: `${localhost}/questions/${id}`,
+                url: `http://hacktivoverflow.vinco.icu/questions/${id}`,
             })
             .then((question) => {
                 this.questionId = id
@@ -225,7 +225,7 @@ export default {
         postAnswer (id) {
             axios({
                 method: `POST`,
-                url: `${localhost}/answers/${id}`,
+                url: `http://hacktivoverflow.vinco.icu/answers/${id}`,
                 data: {
                     content: this.content
                 },
@@ -244,7 +244,7 @@ export default {
         upVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `${localhost}/questions/upvote/${id}`,
+            url: `http://hacktivoverflow.vinco.icu/questions/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -259,7 +259,7 @@ export default {
         downVoteQuestion (id) {
           axios({
             method: `POST`,
-            url: `${localhost}/questions/downvote/${id}`,
+            url: `http://hacktivoverflow.vinco.icu/questions/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -275,7 +275,7 @@ export default {
         upVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `${localhost}/answers/upvote/${id}`,
+            url: `http://hacktivoverflow.vinco.icu/answers/upvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }
@@ -291,7 +291,7 @@ export default {
          downVoteAnswer (id) {
           axios({
             method: `POST`,
-            url: `${localhost}/answers/downvote/${id}`,
+            url: `http://hacktivoverflow.vinco.icu/answers/downvote/${id}`,
             headers: {
               token: localStorage.getItem('token')
             }

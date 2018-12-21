@@ -20,10 +20,6 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 
-kue.app.listen(4000, function() {
-  console.log('Kue Listen on Port: 4000')
-})
-
 queue.process('email', function(job, done) {
   nodeMailer(job.data.email, { header: job.data.title, main: job.data.template}, done)
 })
