@@ -7,7 +7,7 @@
     http://overflow.sendyakbar.space
 
 # KENDALA
-    Setelah di deploy, login jadi error, fitur lain belum di tes karena tdk bisa login
+    problem fixed, sudah bisa digunakan versi deployed nya
 
 # .ENV
     JWT_SECRET=<your_secret>
