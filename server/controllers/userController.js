@@ -27,8 +27,6 @@ module.exports = {
                     email: user.email,
                     template:`<h1> Welcome ${user.email}, Thanks for Register to our website!</h1>`
                 })
-
-                console.log(q)
                 q.save((err) => {
                     if (err) {
                         console.log(err)
