@@ -36,7 +36,6 @@ export default {
         let email = this.input.email
         let password = this.input.password
         let name = this.input.name
-        console.log(name, email,password)
         axios({
             method:"post",
             url: "https://xavier-ho-server.thenile.online/ho/signup",
@@ -47,8 +46,6 @@ export default {
             }
         })
         .then((response) => {
-            this.error_status = false
-            console.log(response.data)
             localStorage.setItem('token', response.data.token)
             this.$emit('loggedin')
             this.$store.dispatch("decode");

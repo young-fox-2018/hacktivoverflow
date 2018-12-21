@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <NavBar :status="loggedStatus" v-on:loggedin="changeStatus"></NavBar>
-    <!-- <Error v-if="error_status" v-bind:error="error_msg"/> -->
     <router-view v-on:loggedin="changeStatus"/>
   </div>
 </template>
@@ -9,14 +8,12 @@
 <script>
 import axios from 'axios';
 import NavBar from '@/components/NavBar.vue'
-// import Error from '@/components/Error.vue';
 import {mapState} from 'vuex'
 
 export default {
   name: 'App',
   components: {
     NavBar,
-    // Error,
   },
   data () {
     return {

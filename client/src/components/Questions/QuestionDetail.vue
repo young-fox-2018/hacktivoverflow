@@ -375,7 +375,7 @@ export default {
   margin: 10px
 }
 .pageContent {
-  margin-left: 180px
+  margin-left: 180px;
 }
 .votes {
   text-align: left;

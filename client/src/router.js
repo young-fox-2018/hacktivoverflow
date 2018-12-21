@@ -29,10 +29,6 @@ export default new Router({
           path: ':slug',
           component: () => import(/* webpackChunkName: "questions" */ './components/Questions/QuestionDetail.vue'),
         },
-        // {
-        //   path: ':questionId',
-        //   component: () => import(/* webpackChunkName: "questions" */ './components/Questions/QuestionDetail.vue'),
-        // },
       ]
     },
     {
@@ -62,10 +58,6 @@ export default new Router({
           {
             path: 'questions',
             component: () => import(/* webpackChunkName: "dashboard" */ './components/Dashboard/UserQuestions.vue'),
-          },
-          {
-            path: 'questions/view/:slug',
-            component: () => import(/* webpackChunkName: "dashboard" */ './components/Dashboard/ViewQuestion.vue'),
           },
           {
             path: 'questions/edit/:slug',

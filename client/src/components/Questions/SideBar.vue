@@ -1,28 +1,27 @@
 <template>
-<div id="mySidenav" class="sidenav">
-    <div>
-        <h3 style="font-size:24px"> Search by Tag </h3>
-        <div class="row" style="justify-content: space-evenly">
-            <button v-for="(tag, index) in tagsList" :key="index" class="col-5 tags" @click="filterbyTag(tag)">
-                {{tag}}
-            </button>
+    <div class="sidenav">
+        <div>
+            <h3 style="font-size:24px"> Search by Tag </h3>
+            <div class="row" style="justify-content: space-evenly">
+                <button v-for="(tag, index) in tagsList" :key="index" class="col-5 tags" @click="filterbyTag(tag)">
+                    {{tag}}
+                </button>
+            </div>
         </div>
-    </div>
-    <button class="clearTag" @click="getQuestion"> Clear Tags </button>
-    <hr>
-    <div v-if="loading">
-        <img src="../../assets/loading_small.gif" alt="loading" style="width:100%">
-    </div>
-    <ul id="left" v-else>
-        <li><router-link to="/questions">Questions</router-link></li>
-        <ul>
-            <li v-for="(list, index) in questionList" :key="index" @click="sendQuestiontoParent(list)">
-                <router-link :to="`/questions/${list.slug}`" style="font-size:12px">{{list.title}}</router-link>
-            </li>
+        <button class="clearTag" @click="getQuestion"> Clear Tags </button>
+        <hr>
+        <div v-if="loading">
+            <img src="../../assets/loading_small.gif" alt="loading" style="width:100%">
+        </div>
+        <ul id="left" v-else>
+            <li><router-link to="/questions">Questions</router-link></li>
+            <ul>
+                <li v-for="(list, index) in questionList" :key="index" @click="sendQuestiontoParent(list)">
+                    <router-link :to="`/questions/${list.slug}`" style="font-size:12px">{{list.title}}</router-link>
+                </li>
+            </ul>
         </ul>
-    </ul>
-    
-</div>
+    </div>
 </template>
 
 <script>
@@ -70,9 +69,11 @@ export default {
     height: 100%;
     width: 180px;
     position: absolute;
+    top: 120px;
     left: 0;
     transition: 0.5s;
-    border-right: 2px solid lightgray
+    border-right: 2px solid lightgray;  
+    margin: 0px
 }
 ul#left {
     list-style: none;

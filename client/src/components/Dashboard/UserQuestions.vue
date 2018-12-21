@@ -38,7 +38,6 @@
 <script>
 import axios from "axios";
 import Error from "@/components/Error.vue";
-import { loadavg } from 'os';
 
 export default {
   name: "user_Questions",

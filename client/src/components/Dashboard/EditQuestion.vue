@@ -3,9 +3,7 @@
     <img src="../../assets/loading.gif" alt="loading">
   </div>
   <div v-else class="content">
-      <Error v-if="error_status" v-bind:error="error_msg"/>
       <h1>Edit Question</h1>
-    <!-- <h1>{{this.$route.params.article}}</h1> -->
      <div id="questionEditor">
       <form>
         <div class="form-group">
@@ -24,18 +22,13 @@
 
 <script>
 import axios from "axios";
-import Error from "@/components/Error.vue";
+import Swal from 'sweetalert2'
 
 export default {
   name: "edit_article",
   props: ["user_data"],
-  components: {
-    Error
-  },
   data() {
     return {
-      error_status: false,
-      error_msg: "",
       questionList: {},
       question_title: "",
       question_description: "",
@@ -63,7 +56,27 @@ export default {
       })
       .catch(err => {
         console.log(err);
-      });
+        let timerInterval
+        Swal({
+          title: err.response.data.message,
+          html: 'Auto close in <b></b> seconds.',
+          type: 'error',
+          confirmButtonText: 'Ok',
+          backdrop: false,
+          allowOutsideClick: false,
+          timer: 3000,
+          onBeforeOpen: () => {
+              timerInterval = setInterval(() => {
+              Swal.getContent().querySelector('b')
+                  .textContent = (Swal.getTimerLeft()/1000)
+                    .toFixed(0)
+              }, 100)
+          },
+          onClose: () => {
+              clearInterval(timerInterval)
+          }
+        });
+      })
     },
     getQuestion() {
       axios({
@@ -71,7 +84,6 @@ export default {
         url: "https://xavier-ho-server.thenile.online/ho/questions"
       })
       .then(response => {
-        console.log(response.data.data);
         response.data.data.forEach(datum => {
           if (datum.slug == this.$route.params.slug) {
             this.questionList = datum;

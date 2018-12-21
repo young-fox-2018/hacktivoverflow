@@ -3,7 +3,6 @@
     <img src="../../assets/loading.gif" alt="loading">
   </div>
   <div v-else class="content">
-     <Error v-if="error_status" v-bind:error="error_msg"/>
      <div class="container-fluid">
             <div class="row" style="justify-content: flex-start">
               <table id="table_task" class="table table-striped">
@@ -29,9 +28,7 @@
             </div>
           </div>
     
-  
-
-          <!-- Modal -->
+            <!-- Modal -->
           <div class="modal fade" id="viewAnswer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -58,28 +55,19 @@
             </div>
           </div>
   
-  
-  
-  
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import Error from "@/components/Error.vue";
 import {mapState} from 'vuex'
 
 export default {
   name: "user_Answers",
-  components: {
-    Error
-  },
   props: [""],
   data() {
     return {
       answerList: [],
-      error_status: false,
-      error_msg: "",
       loading: true,
       answer_title: '',
       answer_description: '',

@@ -64,7 +64,6 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data);
           localStorage.setItem("token", response.data.token);
           this.$store.dispatch("decode");
           this.$emit("loggedin");
