@@ -118,7 +118,7 @@ class QuestionController {
             .then( result => {
                 //cek apakah question tesebut dibuat oleh user yang akan vote, jika iya, maka jangan berikan akses
                 if (result.UserId == req.myId){
-                    res.status(500).json({"error":"can't vote for your own article or comment! "})
+                    res.status(500).json("can't vote for your own article or comment! ")
                 } else {
                     //bila bukan, maka cek apakah sudah ada upvote dari user tersebut, kalo belum ada maka push ke upvote user tersebut
                     let upvoteArr = result.upvote
@@ -130,6 +130,42 @@ class QuestionController {
                                 User.findById(result.UserId)
                                 .then( user => {
                                     user.popularity +=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
+                                })
+                                .catch( error => {
+                                    console.log(error)
+                                    res.status(500).json(error.message)
+                                })
+                            })
+                            .catch( error => {
+                                res.status(500).json( error.message )
+                            })
+                    } 
+                    else if (downvote.indexOf(req.myId) !== -1 ){
+                        result.update({$push: {upvote: req.myId}, $pull: {downvote: req.myId}})
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity +=2
                                     user.save(function (err) {
 
                                         if(err) {
@@ -207,10 +243,9 @@ class QuestionController {
         //cari questionnya
         Question.findById(req.body.questionId)
             .then( result => {
-            console.log(result)
                 //cek apakah question tesebut dibuat oleh user yang akan vote, jika iya, maka jangan berikan akses
                 if (result.UserId == req.myId){
-                    res.status(500).json( error.message )
+                    res.status(500).json( "can't vote for your own article or comment!" )
                 } else {
                     //bila bukan, maka cek apakah sudah ada upvote dari user tersebut, kalo belum ada maka push ke upvote user tersebut
                     let downvote = result.downvote
@@ -221,7 +256,43 @@ class QuestionController {
                                 //cari user yang punya artikel
                                 User.findById(result.UserId)
                                 .then( user => {
-                                    user.popularity +=1
+                                    user.popularity -=1
+                                    user.save(function (err) {
+
+                                        if(err) {
+                                            console.log(error)
+                                            res.status(500).json(error.message)
+                                        } else {
+                                            Question.find()
+                                            .populate('UserId', 'name')
+                                            .sort({dateCreate: -1})
+                                            .then( questions => {
+                                                res.status(200).json( questions )
+                                            })
+                                            .catch( error => {
+                                                console.log(error)
+                                                res.status(500).json(error.message)
+                                            })
+                                        }
+                                    });
+                                })
+                                .catch( error => {
+                                    console.log(error)
+                                    res.status(500).json(error.message)
+                                })
+                            })
+                            .catch( error => {
+                                res.status(500).json( error.message )
+                            })
+                    }
+                    else if (upvote.indexOf(req.myId) !== -1 ){
+                        result.update({$push: {downvote: req.myId}, $pull: {upvote: req.myId}})
+                            .then( resultUpdate => {
+
+                                //cari user yang punya artikel
+                                User.findById(result.UserId)
+                                .then( user => {
+                                    user.popularity -=2
                                     user.save(function (err) {
 
                                         if(err) {
