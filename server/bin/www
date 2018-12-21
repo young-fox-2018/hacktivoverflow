@@ -10,9 +10,9 @@ var http = require('http')
 var kue = require('kue')
 var queue = kue.createQueue()
 var emailSender = require('../helpers/emailSender')
-kue.app.listen(4000, function() {
-  console.log('redis listening on port 4000')
-})
+// kue.app.listen(4000, function() {
+//   console.log('redis listening on port 4000')
+// })
 
 queue.process('email', function(job, done) {
   emailSender(job.data.email, {header: job.data.title, main: job.data.template}, done)
