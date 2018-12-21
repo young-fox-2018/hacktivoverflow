@@ -6,6 +6,7 @@ const queue = kue.createQueue()
 
 module.exports = {
     register(req, res, next) {
+        console.log('masuk register')
         let newUser = {
             name: req.body.name,
             birthday: req.body.birthday,
@@ -30,6 +31,7 @@ module.exports = {
     },
 
     login (req, res, next) {
+        console.log('masuk login')
         if (req.gLogin) {
             console.log('masuk glogin')
             User.findOne({email: req.gLogin.email})
@@ -72,6 +74,7 @@ module.exports = {
     },
 
     findOne(req, res, next) {
+        console.log('masuk findOne')
         User.findOne({_id: req.currentUser._id})
             .then(user => { 
                 res.status(200).json(user)
