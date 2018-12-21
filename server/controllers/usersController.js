@@ -186,9 +186,6 @@ module.exports = {
         })
         
     },
-    gToken: function(req, res, next){
-        
-    },
     sendCron: function(req, res, next){
         User.find({}, function(err, users){
             if(err){
@@ -198,9 +195,7 @@ module.exports = {
                 })
             }
             else{
-                console.log("cronnya ga error euy")
                 users.forEach(user => {
-                    console.log(user,"ini semua data user")
                     let input = {
                         to: user.email,
                         from: 'gamecowo12345@gmail.com',

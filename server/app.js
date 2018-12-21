@@ -2,6 +2,7 @@ require('dotenv').config()
 const cors = require('cors')
 const express  = require('express');
 const app      = express();
+const port = process.env.PORT || 3000;
 const CronJob = require('cron').CronJob
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const {sendCron} = require('./controllers/usersController')
@@ -20,13 +21,12 @@ app.use(express.urlencoded({ limit: '3MB', extended: false }));
 app.use('/', indexRouter);
 app.use('/questions', questionRouter);
 
-new CronJob('0 8 19 12 *', function(){
-    console.log("cronnya jalan")
+new CronJob('0 9 25 12 *', function(){
     sendCron()
-})
+}, null, true, 'Asia/Jakarta')
 
-app.listen(3000, function(){
-  console.log("You're in port 3000")
+app.listen(port, function(){
+  console.log(`You're in port ${port}`)
 })
 
 module.exports = app;
