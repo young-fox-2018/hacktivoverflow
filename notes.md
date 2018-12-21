@@ -1,5 +1,5 @@
     Link Deploy URL:
-    hacktivoverflow.vinco.icu
+    https://hacktivoverflow.vinco.icu
 
 
     kesulitan:

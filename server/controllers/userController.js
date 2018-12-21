@@ -11,6 +11,7 @@ const client = new OAuth2Client(process.env.GClientId);
 
 module.exports = {
     signUp: function (req, res) {
+        
         let newUser = {
             name: req.body.name,
             email: req.body.email,
@@ -21,12 +22,14 @@ module.exports = {
         User
             .create(newUser)
             .then((user) => {
-                queue.create('email', {
+                let  q = queue.create('email', {
                     title: `Welcome To Hacktivoverflow8!`,
                     email: user.email,
                     template:`<h1> Welcome ${user.email}, Thanks for Register to our website!</h1>`
                 })
-                .save((err) => {
+
+                console.log(q)
+                q.save((err) => {
                     if (err) {
                         console.log(err)
                     } else {

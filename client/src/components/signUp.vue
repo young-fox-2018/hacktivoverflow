@@ -53,6 +53,7 @@ export default {
     },
     methods: {
         register () {
+            console.log('masuk')
             let formData = new FormData()
             formData.append('name', this.name)
             formData.append('email', this.email)
@@ -61,7 +62,7 @@ export default {
             formData.append('avatar', this.avatar)
             axios({
                 method: `POST`,
-                url: `http://hacktivoverflow.vinco.icu/users`,
+                url: `https://hacktivoverflowapi.vinco.icu/users`,
                 data: formData
             })
             .then((user) => {
@@ -69,7 +70,8 @@ export default {
                 this.$router.push('/signin')
             })
             .catch((err) => {
-                console.log(err.response)
+                console.log('masuk errorrr')
+                console.log(err)
             })
         },
         uploadAvatar: function (img) {

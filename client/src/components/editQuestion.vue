@@ -42,7 +42,7 @@ export default {
         editQuestion () {
             axios({
                 method: `PUT`,
-                url: `http://hacktivoverflow.vinco.icu/questions/${this.$route.params.id}`,
+                url: `https://hacktivoverflowapi.vinco.icu/questions/${this.$route.params.id}`,
                 data: {
                     title: this.title,
                     content: this.content
