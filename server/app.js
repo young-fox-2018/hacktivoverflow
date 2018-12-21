@@ -9,6 +9,7 @@ const {sendCron} = require('./controllers/usersController')
 console.log(process.env.NODE_ENV,"ini node env-nya")
 
 const mongoose = require('mongoose');
+console.log(process.env.DB_URL,"========== ini DB URL")
 mongoose.connect(process.env.DB_URL);
 
 var indexRouter = require('./routes/index');
