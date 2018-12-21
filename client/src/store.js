@@ -74,6 +74,10 @@ export default new Vuex.Store({
     },
     statusLoginFalse: (state)=>{
       state.loginStatus = false
+      state.userLoggedIn = {
+        name: '',
+        id: ''
+      }
     }, 
     newQuestion: (state, payload)=>{
       state.allQuestions.push(payload)
@@ -84,7 +88,7 @@ export default new Vuex.Store({
   },
   actions: {
     login({commit}, payload){
-      api.post('/login', {
+     return  api.post('/login', {
         email: payload.email,
         password: payload.password
       })

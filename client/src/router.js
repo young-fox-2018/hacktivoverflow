@@ -30,6 +30,11 @@ export default new Router({
       path: '/questions/:id/:slug',
       name: 'single',
       component: () => import(/*webpackChunkName: "single" */ './views/Single.vue')
+    },
+    {
+      path: '/ask/:id/edit', 
+      name: 'edit',
+      component: () => import(/* webpackChunkName: "ask" */ './views/Ask.vue')
     }
   ]
 })

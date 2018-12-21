@@ -26,6 +26,7 @@
                 <div class="mt-2">
                     <small v-if="usage == 'question'">asked by {{item.author.name}}</small>
                     <small v-if="usage == 'answer'" >answered by {{item.author.name}}</small>
+                    <small v-if="usage == 'answer' && item.author._id == userLoggedIn.id">delete</small>
                 </div>
             </div>
         </div>
@@ -58,48 +59,84 @@ export default {
     methods: {
         ...mapActions(['getQuestion']),
         upVoteQuestion(){
-            if(this.item.author._id == this.userLoggedIn.id){
+            if(!this.userLoggedIn.id){
                 this.$swal({
-                    type: 'warning', 
-                    title: 'Can not upvote your own question'
+                    type: 'warning',
+                    title: 'please login to vote',
+                    time: 2000
                 })
             } else {
-                api.patch(`/questions/${this.$route.params.id}/upvote`, {}, {headers: {token: localStorage.token}})
-                    .then(({data})=> {
-                        // console.log(data)
-                        // this.$emit('get-vote')
-                        this.getQuestion(this.$route.params.id)
+                if(this.item.author._id == this.userLoggedIn.id){
+                    this.$swal({
+                        type: 'warning', 
+                        title: 'Can not upvote your own question'
                     })
-                    .catch(err=> {
-                        console.log(err.response)
-                    })
+                } else {
+                    api.patch(`/questions/${this.$route.params.id}/upvote`, {}, {headers: {token: localStorage.token}})
+                        .then(({data})=> {
+                            // console.log(data)
+                            // this.$emit('get-vote')
+                            this.getQuestion(this.$route.params.id)
+                        })
+                        .catch(err=> {
+                            console.log(err.response)
+                        })
+                }
             }
+            
         },
         downVoteQuestion(){
-            if(this.item.author._id == this.userLoggedIn.id){
+            if(!this.userLoggedIn.id){
                 this.$swal({
-                    type: 'warning', 
-                    title: 'Can not downvote your own question'
+                    type: 'warning',
+                    title: 'please login to vote'
                 })
+            } else {
+                if(this.item.author._id == this.userLoggedIn.id){
+                    this.$swal({
+                        type: 'warning', 
+                        title: 'Can not downvote your own question'
+                    })
+                } else {
+                    api.patch(`/questions/${this.$route.params.id}/downvote`, {}, { headers: {token: localStorage.token}})
+                    .then(({data})=> {
+                        this.getQuestion(this.$route.params.id)
+                    })
+                }
             }
         }, 
         upVoteAnswer(){
-            if(this.item.author._id == this.userLoggedIn.id){
+            if(!this.userLoggedIn.id){
                 this.$swal({
                     type: 'warning',
-                    title: 'Error!',
-                    text: 'Can not upvote your own answer'
+                    title: 'please login to vote'
                 })
-            }
+            } else {
+                if(this.item.author._id == this.userLoggedIn.id){
+                    this.$swal({
+                        type: 'warning',
+                        title: 'Error!',
+                        text: 'Can not upvote your own answer'
+                    })
+                }
+            } 
         },
         downVoteAnswer(){
-            if(this.item.author._id == this.userLoggedIn.id){
+            if(!this.userLoggedIn.id){
                 this.$swal({
                     type: 'warning',
-                    title: 'Error!',
-                    text: 'Can not downvote your own answer'
+                    title: 'please login to vote'
                 })
+            } else {
+                if(this.item.author._id == this.userLoggedIn.id){
+                    this.$swal({
+                        type: 'warning',
+                        title: 'Error!',
+                        text: 'Can not downvote your own answer'
+                    })
+                }
             }
+            
         }
     },
     computed: {

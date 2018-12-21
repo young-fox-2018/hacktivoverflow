@@ -63,6 +63,16 @@ questionSchema.pre('save', function(next){
     })
 })
 
+questionSchema.post('remove', function(doc, next){
+    mongoose.model('Answer').deleteMany({ _id: {$in : doc.answers}})
+        .then(deleted=> {
+            next()
+        })
+        .catch(err=> {
+            next(err)
+        })
+})
+
 
 
 module.exports = Question

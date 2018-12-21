@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions(['login', 'isLogin']),
     ...mapMutations(['toAlert']),
     handleOk (evt) {
       // Prevent modal from closing
@@ -58,7 +58,9 @@ export default {
       }
     },
     handleSubmit () {
-      this.login(this.user)
+      this.login(this.user).then(data=> {
+        this.isLogin()
+      })
       this.$refs.modal.hide()
       
     },

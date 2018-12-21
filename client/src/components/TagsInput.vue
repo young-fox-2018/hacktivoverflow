@@ -4,7 +4,13 @@
       v-model="tag"
       :tags="tags"
       :autocomplete-items="filteredItems"
-      @tags-changed="newTags => tags = newTags">
+      @tags-changed="newTags => tags = newTags" v-if="usage== 'create'">
+    </vue-tags-input>
+    <vue-tags-input
+      v-model="tag"
+      :tags="currentTags"
+      :autocomplete-items="filteredItems"
+      @tags-changed="newTags => tags = newTags" v-if="usage== 'edit'">
     </vue-tags-input>
   </div>
 </template>
@@ -35,7 +41,6 @@ export default {
   },
   computed: {
     filteredItems: function(){
-        
         this.autocompleteItems.filter(i => {
           return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1;
         });
@@ -45,6 +50,13 @@ export default {
         tags(){
             this.$emit('get-tags', this.tags)
         }
+    },
+    props: {
+      currentTags: Array, 
+      usage: {
+        type: String,
+        default: 'create'
+      }
     } 
 };
 </script>

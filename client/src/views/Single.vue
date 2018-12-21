@@ -18,7 +18,7 @@
             </div>
         </div>
         <h3>Answers : </h3>  
-        <card-detail :usage="'answer'" v-for="(answer, index) in currentQuestion.answers" :key="index" :item="answer"></card-detail>
+        <card-detail :usage="'answer'" v-for="(answer, index) in currentQuestion.answers" :key="index" :item="answer" class="mb-2"></card-detail>
         
     </div>
 </template>
@@ -42,6 +42,14 @@ export default {
                 .then(({data})=> {
                     let answeredQuestion = data
                     this.getQuestion(this.$route.params.id)
+                    this.answer={
+                        body: ''
+                    }
+                    this.$swal({
+                        type: 'success',
+                        title: 'Answer Successfully Added',
+                        text: 'Thanks for your answer',
+                    })
                 })
                 .catch(err=> {
                     console.log(err.response)

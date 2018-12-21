@@ -7,4 +7,6 @@ SENDGRID_API_KEY=SG.Im2FGx7pRaak7XnZUKQ6GA.7Y50JcbVYNhVa2moYC_6if9p3kvtemFpoleFX
 MLAB=mongodb://admin:admin123@ds121014.mlab.com:21014/hacktiv-overflow
 ```
 
-##
+## Deployment
+* Server : https://api-hacktivoverflow.abdev.icu
+* Client: 

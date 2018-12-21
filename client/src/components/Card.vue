@@ -27,6 +27,10 @@
                     <div style="display: inline">
                         <button class="btn btn-default btn-sm mr-1" v-for="(tag, index) in question.tags" :key="index">{{tag}}</button>
                     </div>
+                    <div v-if="question.author._id == userLoggedIn.id" style="text-align: right !important;">
+                        <a href="" @click.prevent="toUpdate(question._id)" class="btn btn-info btn-sm mr-2">update</a>
+                        <a href="" @click.prevent="toDelete(question._id)" class="btn btn-danger btn-sm">delete</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,6 +39,7 @@
 
 <script>
 import {mapActions, mapState} from 'vuex'
+import api from '../assets/api-server.js'
 
 export default {
     data(){
@@ -43,13 +48,43 @@ export default {
         }
     },
     computed: {
-        
+        ...mapState(['userLoggedIn']),
     },
     created(){
-
+        
     }, 
     methods: {
-        
+        ...mapActions(['getQuestions']),
+        toDelete(id){
+            this.$swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        api.delete(`/questions/${id}`, {headers: {token: localStorage.token}})
+                            .then(({data})=> {
+                                // console.log(data)
+                                this.$swal(
+                                    'Deleted!',
+                                    'Your Question has been deleted.',
+                                    'success'
+                                    )
+                                    this.getQuestions()
+                            })
+                            .catch(err=> {
+                                console.log(err)
+                            })
+                    }
+            })
+        }, 
+        toUpdate(id){
+            this.$router.push(`/ask/${id}/edit`)
+        }
     },
     props: {
         question: Object
