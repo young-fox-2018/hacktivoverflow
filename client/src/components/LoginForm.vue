@@ -82,6 +82,7 @@ export default {
           setTimeout(() => {
             this.$store.commit('setUserLoggedIn', true);
             this.dialog = false;
+            this.$router.push('/');
           }, 2000);
         })
         .catch((err) => {

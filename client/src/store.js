@@ -17,7 +17,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setUserLoggedIn(state, bool) {
-      if(!bool) {
+      if (!bool) {
         localStorage.clear();
       }
       state.isLoggedIn = bool;

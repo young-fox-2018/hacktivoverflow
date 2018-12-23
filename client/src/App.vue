@@ -2,7 +2,7 @@
   <v-app>
     <v-layout column>
       <navigation />
-      <router-view />
+        <router-view />
     </v-layout>
   </v-app>
 </template>
@@ -35,8 +35,6 @@ export default {
     getAll() {
       var allTask = [];
       database.ref('/answers').on('value', (snapshot) => {
-        // const allAnswers = ;
-        // console.log('all answers,=======', allAnswers);
         this.$store.dispatch('getAllAnswers', snapshot.val());
       });
       database.ref('/upvoteQuestions').on('value', (snapshot) => {
@@ -58,6 +56,7 @@ export default {
 
 
 <style>
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

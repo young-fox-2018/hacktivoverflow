@@ -11,7 +11,9 @@
         </ul>
       </div>
       <div class="column is-7">
+        <transition name="router-anim" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <router-view />
+      </transition>
       </div>
       <div class="column is-3">Hot Questions of the month</div>
     </div>
@@ -29,6 +31,7 @@ export default {
 </script>
 
 <style scoped>
+@import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
 .container {
   /* border: 1px solid black; */
   /* height: 100vh; */

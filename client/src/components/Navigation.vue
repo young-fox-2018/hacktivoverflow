@@ -187,6 +187,7 @@ export default {
     },
     userLogout() {
       this.$store.commit('setUserLoggedIn', false);
+      this.$router.push('/');
     }
   },
 };
