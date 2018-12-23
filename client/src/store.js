@@ -11,8 +11,29 @@ export default new Vuex.Store({
     questionDownvotes: {},
     answerUpvotes: {},
     answerDownvotes: {},
+    errorMessage: '',
+    successMessage: '',
+    isLoggedIn: false,
   },
   mutations: {
+    setUserLoggedIn(state, bool) {
+      if(!bool) {
+        localStorage.clear();
+      }
+      state.isLoggedIn = bool;
+    },
+    setSuccessMessage(state, msg) {
+      state.successMessage = msg;
+      setTimeout(() => {
+        state.successMessage = '';
+      }, 3000);
+    },
+    setErrorMessage(state, msg) {
+      state.errorMessage = msg;
+      setTimeout(() => {
+        state.errorMessage = '';
+      }, 3000);
+    },
     saveAnswersMutations(state, payload) {
       state.answers = payload || {};
     },

@@ -43,66 +43,13 @@
           </div>
           <div class="navbar-item" v-if="!isLoggedIn">
             <div class="buttons">
-              <a class="button" @click="showLoginModal = true">Log In</a>
+              <login-form/>
               <a class="button is-info" @click="showRegisterModal = true">Sign Up</a>
             </div>
           </div>
         </div>
       </div>
     </nav>
-
-    <div v-if="showLoginModal" id="modal-id" class="modal modal-fx-slideRight is-active">
-      <div class="modal-background" @click="closeModalLogin"></div>
-      <div class="modal-content modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Login Form</p>
-          <button class="modal-button-close delete" aria-label="close" @click="closeModalLogin"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="notification is-success" v-if="success">
-            <button class="delete" @click="success = false; successMsg = ''"></button>
-            {{ successMsg }}
-          </div>
-
-          <div class="notification is-danger" v-if="error">
-            <button class="delete" @click="error = false; errorMsg = ''"></button>
-            {{ errorMsg }}
-          </div>
-          <!-- <div id="google-signin-button"></div> -->
-          <g-signin-button
-            :params="googleSignInParams"
-            @success="onSignInSuccess"
-            @error="onSignInError">
-            Sign in with Google
-          </g-signin-button>
-          <form class="box" v-on:submit.prevent="loginUser()">
-            <div class="field">
-              <p class="control has-icons-left has-icons-right">
-                <input v-model="loginForm.email" class="input" type="email" placeholder="Email" required>
-                <span class="icon is-small is-left">
-                  <i class="fas fa-envelope"></i>
-                </span>
-                <span class="icon is-small is-right">
-                  <i class="fas fa-check"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input v-model="loginForm.password" class="input" type="password" placeholder="Password" required>
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
-              </p>
-            </div>
-          </form>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="modal-button-close button is-info" @click="loginUser">Login</button>
-          <button class="modal-button-close button" @click="closeModalLogin">Cancel</button>
-        </footer>
-      </div>
-    </div>
 
     <div v-if="showRegisterModal" id="modal-id" class="modal modal-fx-slideRight is-active">
       <div class="modal-background" @click="closeModalRegister"></div>
@@ -168,12 +115,17 @@
 <script>
 import axios from '@/assets/dotapi';
 import store from "../store.js";
+import LoginForm from '@/components/LoginForm.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Navigation',
+  components: {
+    LoginForm,
+  },
   data() {
     return {
-      isLoggedIn: false,
+      // isLoggedIn: false,
       showLoginModal: false,
       showRegisterModal: false,
       error: false,
@@ -189,56 +141,12 @@ export default {
         email: '',
         password: '',
       },
-      googleSignInParams: {
-        client_id: '907636860373-hqmna18kfoam6f51f649462nup5amcha.apps.googleusercontent.com'
-      }
     };
   },
-  created() {
-    this.checkUserLogin();
+  computed: {
+    ...mapState(['isLoggedIn']),
   },
   methods: {
-    checkUserLogin() {
-      if (localStorage.token) {
-        this.isLoggedIn = true;
-      } else {
-        this.isLoggedIn = false;
-        this.$router.push('/');
-      }
-    },
-    onSignInSuccess (googleUser) {
-      // `googleUser` is the GoogleUser object that represents the just-signed-in user.
-      // See https://developers.google.com/identity/sign-in/web/reference#users
-      const profile = googleUser.getBasicProfile() // etc etc
-      console.log(googleUser, '----------------')
-      axios
-        .post('/login/socialaccount',
-        {
-          name: profile.ig,
-          email: profile.U3,
-          provider: 'google',
-          google_token: googleUser.Zi.id_token,
-        })
-        .then(({ data }) => {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('current_user', data.userId);
-          localStorage.setItem('name', data.name);
-          this.isLoggedIn = true;
-          this.showSuccessMessage(data.msg);
-        })
-        .catch((err) => {
-          this.showErrorMessage(err.response.data.msg);
-        });
-    },
-    onSignInError (error) {
-      // `error` contains any error occurred.
-      console.log('OH NOES', error)
-    },
-    closeModalLogin() {
-      this.showLoginModal = false;
-      this.loginForm.email = '';
-      this.loginForm.password = '';
-    },
     closeModalRegister() {
       this.showRegisterModal = false;
       this.registerForm.name = '';
@@ -259,27 +167,6 @@ export default {
           .catch((err) => {
             this.showErrorMessage(err.response.data.msg);
           });
-      // console.log('inside methods register user');
-      // console.log(this.registerForm);
-    },
-    loginUser() {
-      axios
-        .post('/login',
-          {
-            name: this.loginForm.name,
-            email: this.loginForm.email,
-            password: this.loginForm.password,
-          })
-        .then(({ data }) => {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('current_user', data.userId);
-          localStorage.setItem('name', data.name);
-          this.isLoggedIn = true;
-          this.showSuccessMessage( data.msg);
-        })
-        .catch((err) => {
-          this.showErrorMessage(err.response.data.msg);
-        });
     },
     showSuccessMessage(msg) {
       this.success = true;
@@ -299,8 +186,7 @@ export default {
       }, 3000);
     },
     userLogout() {
-      localStorage.clear();
-      this.checkUserLogin();
+      this.$store.commit('setUserLoggedIn', false);
     }
   },
 };
@@ -317,6 +203,7 @@ export default {
 }
 .container {
   margin-bottom: 2rem;
+  padding: 0;
 }
 .notification {
   padding: .5rem;
@@ -328,14 +215,4 @@ export default {
   border: 0;
   margin-right: .5rem;
 }
-.g-signin-button {
-  /* This is where you control how the button looks. Be creative! */
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 3px;
-  background-color: #3c82f7;
-  color: #fff;
-  box-shadow: 0 3px 0 #0f69ff;
-}
-
 </style>

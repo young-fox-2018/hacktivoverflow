@@ -1,11 +1,14 @@
 import Vue from 'vue';
 import wysiwyg from 'vue-wysiwyg';
 import GSignInButton from 'vue-google-signin-button';
+import Vuetify from 'vuetify';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import 'vuetify/dist/vuetify.min.css';
 
-Vue.use(GSignInButton)
+Vue.use(Vuetify);
+Vue.use(GSignInButton);
 Vue.use(wysiwyg, {});
 
 

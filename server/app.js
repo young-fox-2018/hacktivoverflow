@@ -8,6 +8,7 @@ const kue = require('kue');
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://admin:admin1@ds139534.mlab.com:39534/hacktivoverflowing');
+// mongoose.connect('mongodb://localhost/hacktivOverflor' + process.env.NODE_ENV);
 
 const indexRouter = require('./routes/user');
 const questionRouter = require('./routes/question');

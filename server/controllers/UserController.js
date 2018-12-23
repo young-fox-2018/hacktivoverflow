@@ -70,7 +70,11 @@ module.exports = {
     const {email, password} = req.body;
     User.findOne({email})
     .then(user => {
-      if(user && bcrypt.compareSync(password, user.password)) {
+      if(user.provider) {
+        res.status(400).json({
+          msg: 'Please login using your social account',
+        });
+      } else if(user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
         res.status(200).json({
           msg: 'User successfully login.',
