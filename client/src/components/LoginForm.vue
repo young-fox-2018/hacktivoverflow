@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-btn slot="activator" flat small>Login</v-btn>
+      <v-btn round slot="activator" color="primary" small>Login</v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">Login Form</span>
@@ -60,8 +60,8 @@ export default {
         password: '',
       },
       googleSignInParams: {
-        client_id: '907636860373-hqmna18kfoam6f51f649462nup5amcha.apps.googleusercontent.com'
-      }
+        client_id: '907636860373-hqmna18kfoam6f51f649462nup5amcha.apps.googleusercontent.com',
+      },
     };
   },
   methods: {
@@ -89,18 +89,18 @@ export default {
           this.$store.commit('setErrorMessage', err.response.data.msg);
         });
     },
-    onSignInSuccess (googleUser) {
+    onSignInSuccess(googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
-      const profile = googleUser.getBasicProfile() // etc etc
+      const profile = googleUser.getBasicProfile();
       axios
         .post('/login/socialaccount',
-        {
-          name: profile.ig,
-          email: profile.U3,
-          provider: 'google',
-          google_token: googleUser.Zi.id_token,
-        })
+          {
+            name: profile.ig,
+            email: profile.U3,
+            provider: 'google',
+            google_token: googleUser.Zi.id_token,
+          })
         .then(({ data }) => {
           this.$store.commit('setSuccessMessage', data.msg);
 
@@ -117,9 +117,9 @@ export default {
           this.$store.commit('setErrorMessage', err.response.data.msg);
         });
     },
-    onSignInError (error) {
+    onSignInError(error) {
       // `error` contains any error occurred.
-      console.log('OH NOES', error)
+      console.log('OH NOES', error);
     },
   },
 };
@@ -136,6 +136,10 @@ export default {
   box-shadow: 0 3px 0 #0f69ff;
 }
 .v-card__text, .v-text-field {
+  padding: 0;
+}
+button {
+  margin: 0;
   padding: 0;
 }
 </style>

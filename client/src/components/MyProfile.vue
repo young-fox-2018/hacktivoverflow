@@ -173,10 +173,10 @@ export default {
     },
     getMyAnswers() {
       this.myAnswers = [];
-      for(let key in this.getAllAnswers) {
-        for(let moreKey in this.getAllAnswers[key]) {
-          if(this.getAllAnswers[key][moreKey].userId == localStorage.current_user) {
-            let newObj = {...this.getAllAnswers[key][moreKey]};
+      for (let key in this.getAllAnswers) {
+        for (let moreKey in this.getAllAnswers[key]) {
+          if (this.getAllAnswers[key][moreKey].userId == localStorage.current_user) {
+            const newObj = { ...this.getAllAnswers[key][moreKey] };
             newObj.questionId = key;
             newObj.answerId = moreKey;
             this.myAnswers.push(newObj);
@@ -185,20 +185,18 @@ export default {
       }
     },
     formatDate(dateInput) {
-      let date = new Date(dateInput).toISOString().substring(0, 10);
-      return date;
+      return new Date(dateInput).toISOString().substring(0, 10);
     },
     editQuestion() {
       axios
-      .put(`/questions/${this.questionSelected._id}`,
-        {
-          title: this.questionSelected.title,
-          content: this.questionSelected.content,
-        },
-        {
-          headers: { token: localStorage.token }
-        },
-        )
+        .put(`/questions/${this.questionSelected._id}`,
+          {
+            title: this.questionSelected.title,
+            content: this.questionSelected.content,
+          },
+          {
+            headers: { token: localStorage.token },
+          })
         .then(({ data }) => {
           this.showSuccessMessage(data.msg);
         })
@@ -214,13 +212,12 @@ export default {
     },
     deleteQuestion(question) {
       this.questionSelected = question;
-      if(confirm('Are you sure you want to delete this question?')) {
+      if (confirm('Are you sure you want to delete this question?')) {
         axios
           .delete(`/questions/${this.questionSelected._id}`,
-          {
-            headers: { token: localStorage.token }
-          }
-          )
+            {
+              headers: { token: localStorage.token },
+            })
           .then(({ data }) => {
             this.showSuccessMessage(data.msg);
             this.getMyQuestions();
@@ -255,8 +252,8 @@ export default {
   computed: {
     getAllAnswers() {
       return this.$store.state.answers;
-    }
-  }
+    },
+  },
 };
 </script>
 

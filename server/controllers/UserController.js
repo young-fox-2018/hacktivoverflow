@@ -38,6 +38,7 @@ queue.process('register', function({ data }, done) {
 module.exports = {
   registerUser: function(req, res, next) {
     const {name, email, password} = req.body;
+    console.log(req.body, '==============')
 
     if(name && email && password) {
       User.create({name, email, password})
@@ -62,7 +63,7 @@ module.exports = {
     } else {
       res.status(400).json({
         msg: 'Invalid user input',
-        errors: errors,
+        // errors: errors,
       });
     }
   },

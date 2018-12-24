@@ -44,69 +44,12 @@
           <div class="navbar-item" v-if="!isLoggedIn">
             <div class="buttons">
               <login-form/>
-              <a class="button is-info" @click="showRegisterModal = true">Sign Up</a>
+              <register-form/>
             </div>
           </div>
         </div>
       </div>
     </nav>
-
-    <div v-if="showRegisterModal" id="modal-id" class="modal modal-fx-slideRight is-active">
-      <div class="modal-background" @click="closeModalRegister"></div>
-      <div class="modal-content modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Register Form</p>
-          <button class="modal-button-close delete" aria-label="close" @click="closeModalRegister"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="notification is-success" v-if="success">
-            <button class="delete" @click="success = false; successMsg = ''"></button>
-            {{ successMsg }}
-          </div>
-
-          <div class="notification is-danger" v-if="error">
-            <button class="delete" @click="error = false; errorMsg = ''"></button>
-            {{ errorMsg }}
-          </div>
-          <form class="box" v-on:submit.prevent="registerUser()">
-            <div class="field">
-              <div class="control has-icons-left has-icons-right">
-                <input v-model="registerForm.name" class="input" type="text" placeholder="Display Name" required>
-                <span class="icon is-small is-left">
-                  <i class="fas fa-user"></i>
-                </span>
-                <span class="icon is-small is-right">
-                  <i class="fas fa-check"></i>
-                </span>
-              </div>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left has-icons-right">
-                <input v-model="registerForm.email" class="input" type="email" placeholder="Email" required>
-                <span class="icon is-small is-left">
-                  <i class="fas fa-envelope"></i>
-                </span>
-                <span class="icon is-small is-right">
-                  <i class="fas fa-check"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input v-model="registerForm.password" class="input" type="password" placeholder="Password" required>
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
-              </p>
-            </div>
-          </form>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="modal-button-close button is-info" @click="registerUser">Register</button>
-          <button class="modal-button-close button" @click="closeModalRegister">Cancel</button>
-        </footer>
-      </div>
-    </div>
 
   </div>
 
@@ -116,75 +59,19 @@
 import axios from '@/assets/dotapi';
 import store from "../store.js";
 import LoginForm from '@/components/LoginForm.vue';
+import RegisterForm from '@/components/RegisterForm.vue';
 import { mapState } from 'vuex';
 
 export default {
   name: 'Navigation',
   components: {
     LoginForm,
-  },
-  data() {
-    return {
-      // isLoggedIn: false,
-      showLoginModal: false,
-      showRegisterModal: false,
-      error: false,
-      errorMsg: '',
-      success: false,
-      successMsg: '',
-      loginForm: {
-        email: '',
-        password: '',
-      },
-      registerForm: {
-        name: '',
-        email: '',
-        password: '',
-      },
-    };
+    RegisterForm,
   },
   computed: {
     ...mapState(['isLoggedIn']),
   },
   methods: {
-    closeModalRegister() {
-      this.showRegisterModal = false;
-      this.registerForm.name = '';
-      this.registerForm.email = '';
-      this.registerForm.password = '';
-    },
-    registerUser() {
-      axios
-        .post('/register',
-          {
-            name: this.registerForm.name,
-            email: this.registerForm.email,
-            password: this.registerForm.password
-          })
-          .then(({ data }) => {
-            this.showSuccessMessage(data.msg);
-          })
-          .catch((err) => {
-            this.showErrorMessage(err.response.data.msg);
-          });
-    },
-    showSuccessMessage(msg) {
-      this.success = true;
-      this.successMsg = msg;
-      setTimeout(() => {
-        this.success = false;
-        this.successMsg = '';
-        this.closeModalLogin();
-      }, 2000);
-    },
-    showErrorMessage(msg) {
-      this.error = true;
-      this.errorMsg = msg;
-      setTimeout(() => {
-        this.error = false;
-        this.errorMsg = '';
-      }, 3000);
-    },
     userLogout() {
       this.$store.commit('setUserLoggedIn', false);
       this.$router.push('/');
@@ -212,8 +99,9 @@ export default {
 .navbar-link.is-arrowless img {
   border-radius: 50%;
 }
-.navbar-brand {
+.navbar-brand, .navbar-end {
   border: 0;
   margin-right: .5rem;
 }
+
 </style>
