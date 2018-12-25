@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    allQuestions: {},
     answers: {},
     questionUpvotes: {},
     questionDownvotes: {},
@@ -34,6 +35,9 @@ export default new Vuex.Store({
         state.errorMessage = '';
       }, 3000);
     },
+    storeAllDataMutations(state, payload) {
+      state.allQuestions = payload || {};
+    },
     saveAnswersMutations(state, payload) {
       state.answers = payload || {};
     },
@@ -51,73 +55,86 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    postAnswer({ commit }, payload) {
-      database.ref(`/answers/${payload.questionId}`).push({
-        title: payload.questionTitle,
-        answer: payload.answer,
-        name: payload.name,
-        userId: payload.userId,
-      });
-    },
-    upvoteAnswer({ commit }, payload) {
-      database.ref(`downvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
-        if(!snapshot.val()) {
-          database.ref(`/upvoteAnswers/${payload.answerId}/${payload.userId}`).once('value').then((snapshot) => {
-            if(!snapshot.val()) {
-              database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).push(`${payload.name}`);
-            } else {
-              database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
-            }
-          });
-        } else {
-          database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
-        }
-      });
-    },
-    downvoteAnswer({ commit }, payload) {
-      database.ref(`upvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
-        if(!snapshot.val()) {
-          database.ref(`/downvoteAnswers/${payload.answerId}`).once('value').then((snapshot) => {
-            if(!snapshot.val()) {
-
-              database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).push(`${payload.name}`);
-            } else {
-              database.ref(`downvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
-            }
-          });
-        } else {
-          database.ref(`upvoteAnswers/${payload.answerId}/${payload.userId}`).remove();
-        }
-      });
-    },
     upvoteQuestion({ commit }, payload) {
-      database.ref(`/downvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+      database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
-          database.ref(`/upvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+          database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
             if (!snapshot.val()) {
-              database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+              database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).set({
+                name: payload.name,
+              });
             } else {
-              database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+              database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).remove();
             }
           });
         } else {
-          database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+          database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).remove();
         }
       });
     },
     downvoteQuestion({ commit }, payload) {
-      database.ref(`/upvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+      database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
-          database.ref(`/downvoteQuestions/${payload.questionId}`).once('value').then((snapshot) => {
+          database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
             if (!snapshot.val()) {
-              database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).push(`${payload.name}`);
+              database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).set({
+                name: payload.name,
+              });
             } else {
-              database.ref(`/downvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+              database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).remove();
             }
           });
         } else {
-          database.ref(`/upvoteQuestions/${payload.questionId}/${payload.userId}`).remove();
+          database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).remove();
         }
+      });
+    },
+    postAnswer({ commit }, payload) {
+      const newKey = database.ref(`${payload.questionId}/answers/`).push().key;
+      database.ref(`${payload.questionId}/answers/${newKey}/userId_${payload.userId}`).set({
+        title: payload.questionTitle,
+        answer: payload.answer,
+        name: payload.name,
+      });
+    },
+    upvoteAnswer({ commit }, payload) {
+      database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
+        if(!snapshot.val()) {
+          database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
+            if(!snapshot.val()) {
+              database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).set({
+                name: payload.name,
+              });
+            } else {
+              database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).remove();
+            }
+          });
+        } else {
+          database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).remove();
+        }
+      });
+    },
+    downvoteAnswer({ commit }, payload) {
+      database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
+        if(!snapshot.val()) {
+          database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
+            if(!snapshot.val()) {
+              database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).set({
+                name: payload.name,
+              });
+            } else {
+              database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).remove();
+            }
+          });
+        } else {
+          database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).remove();
+        }
+      });
+    },
+    getAllData({ commit }) {
+      console.log('inside getalldata actions');
+      database.ref('/').on('value', (snapshot) => {
+        commit('storeAllDataMutations', snapshot.val());
       });
     },
     getAllAnswers({ commit }, payload) {

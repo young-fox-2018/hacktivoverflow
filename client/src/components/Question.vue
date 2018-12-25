@@ -3,8 +3,8 @@
     <div id="outerBox" class="columns" v-for="question in questions" :key="question._id">
       <div class="column is-4">
         <div class="columns detailQuestion">
-          <div class="column">{{ countTotalVotes(question._id )}} Votes</div>
-          <div class="column">{{ countAnswers(question._id)}} Answers</div>
+          <div class="column">{{ countTotalVotes(allQuestions[question._id])}} Votes</div>
+          <div class="column">{{ countAnswers(allQuestions[question._id])}} Answers</div>
         </div>
       </div>
       <router-link :to="'/question/' + question._id" class="column"> {{question.title}} </router-link>
@@ -14,6 +14,7 @@
 
 <script>
 import axios from '@/assets/dotapi';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Question',
@@ -37,26 +38,42 @@ export default {
           console.log(err.response);
         });
     },
-    countTotalVotes(questionId) {
-      let upvotes = 0;
-      for (let key in this.getAllQuestionUpvotes[questionId]) {
-        upvotes++;
+    countTotalVotes(question) {
+      var thumbsup = 0;
+      var thumbsdown = 0;
+      // console.log(question)
+      if(question && question.thumbsup) {
+        thumbsup = Object.values(question.thumbsup).length;
       }
-      let downvotes = 0;
-      for (let key in this.getAllQuestionDownvotes[questionId]) {
-        downvotes++;
+      if(question && question.thumbsdown) {
+        thumbsdown = Object.values(question.thumbsdown).length;
       }
-      return upvotes - downvotes;
+
+      return thumbsup - thumbsdown;
+      // let upvotes = 0;
+      // for (let key in this.getAllQuestionUpvotes[questionId]) {
+      //   upvotes++;
+      // }
+      // let downvotes = 0;
+      // for (let key in this.getAllQuestionDownvotes[questionId]) {
+      //   downvotes++;
+      // }
+      // return upvotes - downvotes;
     },
-    countAnswers(questionId) {
-      let totalAnswers = 0;
-      for (let key in this.getAllAnswers) {
-        totalAnswers++;
+    countAnswers(question) {
+      // console.log('inside method countanswers========')
+      if(question) {
+        // console.log(question.answers);
+        // console.log(Object.values(question.answers));
+        // console.log(Object.keys(question.answers));
+        return Object.values(question.answers).length;
+      } else {
+        return 0;
       }
-      return totalAnswers;
     },
   },
   computed: {
+    ...mapState(['allQuestions']),
     getAllQuestionUpvotes() {
       return this.$store.state.questionUpvotes;
     },

@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       answers: {},
+      tesFireStore: [],
     };
   },
   created() {
@@ -33,22 +34,7 @@ export default {
       }
     },
     getAll() {
-      var allTask = [];
-      database.ref('/answers').on('value', (snapshot) => {
-        this.$store.dispatch('getAllAnswers', snapshot.val());
-      });
-      database.ref('/upvoteQuestions').on('value', (snapshot) => {
-        this.$store.dispatch('getQuestionUpvotes', snapshot.val());
-      });
-      database.ref('/downvoteQuestions').on('value', (snapshot) => {
-        this.$store.dispatch('getQuestionDownvotes', snapshot.val());
-      });
-      database.ref('/upvoteAnswers').on('value', (snapshot) => {
-        this.$store.dispatch('getAnswerUpvotes', snapshot.val());
-      });
-      database.ref('/downvoteAnswers').on('value', (snapshot) => {
-        this.$store.dispatch('getAnswerDownvotes', snapshot.val());
-      });
+      this.$store.dispatch('getAllData');
     },
   },
 };

@@ -99,6 +99,7 @@ export default {
         });
     },
     upvoteQuestion() {
+      console.log('inside method upvotequestion');
       if(this.questionDetail.authorId._id !== localStorage.current_user) {
         this.$store.dispatch('upvoteQuestion', {
           questionId: this.questionDetail._id,
