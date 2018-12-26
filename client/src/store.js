@@ -91,10 +91,11 @@ export default new Vuex.Store({
     },
     postAnswer({ commit }, payload) {
       const newKey = database.ref(`${payload.questionId}/answers/`).push().key;
-      database.ref(`${payload.questionId}/answers/${newKey}/userId_${payload.userId}`).set({
+      database.ref(`${payload.questionId}/answers/${newKey}`).set({
         title: payload.questionTitle,
         answer: payload.answer,
         name: payload.name,
+        userId: payload.userId,
       });
     },
     upvoteAnswer({ commit }, payload) {
@@ -132,7 +133,6 @@ export default new Vuex.Store({
       });
     },
     getAllData({ commit }) {
-      console.log('inside getalldata actions');
       database.ref('/').on('value', (snapshot) => {
         commit('storeAllDataMutations', snapshot.val());
       });

@@ -6,12 +6,12 @@
     <div class="columns" id="userInfo">
       <div class="column is-1">
         <span class="icon" v-bind:class="{ 'has-text-info': upvoted }" @click="upvoteQuestion">
-          <i class="far fa-thumbs-up fa-2x"></i> {{getQuestionUpvotes}}
+          <i class="far fa-thumbs-up fa-2x"></i> {{getQuestionUpvotes(allQuestions)}}
         </span>
       </div>
       <div class="column is-1">
         <span class="icon" v-bind:class="{ 'has-text-danger': downvoted }" @click="downvoteQuestion">
-          <i class="far fa-thumbs-down fa-2x"></i> {{getQuestionDownvotes}}
+          <i class="far fa-thumbs-down fa-2x"></i> {{getQuestionDownvotes(allQuestions)}}
         </span>
       </div>
       <div class="column is-6"></div>
@@ -27,37 +27,22 @@
       <input v-model="newAnswer" class="input" type="text" placeholder="Answer here...">
       <a class="button is-info" @click="postAnswer">Post Answer</a>
     </div>
-    <div class="columns comment" v-for="(eachAnswer, index) in getAllAnswers" :key="index">
-      <div class="column is-2" id="fullname">
-        {{eachAnswer.name}}:
-      </div>
-      <div class="column bubble me" id="answerContent">
-        <div class="columns">
-          <div class="column is-9">
-            {{eachAnswer.answer}}
-          </div>
-          <div class="column">
-            <span class="icon" v-bind:class="{ 'has-text-info': answerUpvoted }" @click="upvoteAnswer(eachAnswer, index)">
-              <i class="far fa-thumbs-up"></i>{{ getAnswerUpvotes(getAnswerUpvotesFromStore, index) }}
-            </span>
-          </div>
-          <div class="column">
-            <span class="icon" v-bind:class="{ 'has-text-danger': answerDownvoted }" @click="downvoteAnswer(eachAnswer, index)">
-              <i class="far fa-thumbs-down"></i>{{ getAnswerDownvotes(getAnswerDownvotesFromStore, index) }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <comment v-for="(eachAnswer, index) in allQuestions.answers" :key="index" :eachAnswer="eachAnswer"/>
+
   </div>
 </template>
 
 <script>
 import axios from '@/assets/dotapi';
-import database from '@/assets/config.js';
+import database from '@/assets/config';
+// import { mapState } from 'vuex';
+import Comment from '@/components/Comment.vue';
 
 export default {
   name: 'QuestionDetail',
+  components: {
+    Comment,
+  },
   data() {
     return {
       questionDetail: {
@@ -87,6 +72,20 @@ export default {
         });
       this.newAnswer = '';
     },
+    getQuestionUpvotes(question) {
+      let totalThumbsUp = 0;
+      if (question && question.thumbsup) {
+        totalThumbsUp = Object.values(question.thumbsup).length;
+      }
+      return totalThumbsUp;
+    },
+    getQuestionDownvotes(question) {
+      let totalThumbsDown = 0;
+      if (question && question.thumbsdown) {
+        totalThumbsDown = Object.values(question.thumbsdown).length;
+      }
+      return totalThumbsDown;
+    },
     getQuestionDetail() {
       axios.get(`/questions/${this.$route.params.id}`)
         .then(({ data }) => {
@@ -99,8 +98,7 @@ export default {
         });
     },
     upvoteQuestion() {
-      console.log('inside method upvotequestion');
-      if(this.questionDetail.authorId._id !== localStorage.current_user) {
+      if (this.questionDetail.authorId._id !== localStorage.current_user) {
         this.$store.dispatch('upvoteQuestion', {
           questionId: this.questionDetail._id,
           userId: localStorage.current_user,
@@ -109,7 +107,7 @@ export default {
       }
     },
     downvoteQuestion() {
-      if(this.questionDetail.authorId._id !== localStorage.current_user) {
+      if (this.questionDetail.authorId._id !== localStorage.current_user) {
         this.$store.dispatch('downvoteQuestion', {
           questionId: this.questionDetail._id,
           userId: localStorage.current_user,
@@ -117,75 +115,24 @@ export default {
         });
       }
     },
-    upvoteAnswer(answer, index) {
-      if(answer.userId !== localStorage.current_user) {
-        this.$store.dispatch('upvoteAnswer', {
-          answerId: index,
-          userId: localStorage.current_user,
-          name: localStorage.name,
-        });
-      } else {
-        console.log('Cannot upvote your own answer.');
-      }
-    },
-    downvoteAnswer(answer, index) {
-      if(answer.userId !== localStorage.current_user) {
-        this.$store.dispatch('downvoteAnswer', {
-          answerId: index,
-          userId: localStorage.current_user,
-          name: localStorage.name,
-        });
-      } else {
-        console.log('Cannot downvote your own answer.');
-      }
-    },
-    getAnswerUpvotes(allUpvotes, index) {
-      let totalUpvoter = 0;
-      for (let key in allUpvotes[index]) {
-        totalUpvoter++;
-      }
-      return totalUpvoter;
-    },
-    getAnswerDownvotes(allDownvotes, index) {
-      let totalDownvoter = 0;
-      for (let key in allDownvotes[index]) {
-        totalDownvoter++;
-      }
-      return totalDownvoter;
-    }
   },
   computed: {
-    getAllAnswers() {
-      return this.$store.state.answers[this.$route.params.id] || {};
-    },
-    getQuestionUpvotes() {
-      const thisRoute = this.$store.state.questionUpvotes[this.$route.params.id];
-      if (thisRoute) {
-        if (thisRoute[localStorage.current_user]) {
+    allQuestions: {
+      get() {
+        let question = this.$store.state.allQuestions[this.$route.params.id];
+        if (question && question.thumbsup && question.thumbsup[localStorage.current_user]) {
           this.upvoted = true;
+        } else {
+          this.upvoted = false;
         }
-      } else {
-        this.upvoted = false;
-      }
-      return Object.values(thisRoute || {}).length;
-    },
-    getQuestionDownvotes() {
-      const thisRoute = this.$store.state.questionDownvotes[this.$route.params.id];
-      if (thisRoute) {
-        if (thisRoute[localStorage.current_user]) {
+        if (question && question.thumbsdown && question.thumbsdown[localStorage.current_user]) {
           this.downvoted = true;
+        } else {
+          this.downvoted = false;
         }
-      } else {
-        this.downvoted = false;
-      }
-      return Object.values(thisRoute || {}).length;
+        return question;
+      },
     },
-    getAnswerUpvotesFromStore() {
-      return this.$store.state.answerUpvotes;
-    },
-    getAnswerDownvotesFromStore() {
-      return this.$store.state.answerDownvotes;
-    }
   },
 };
 </script>
@@ -213,51 +160,7 @@ hr {
   align-items: center;
   align-content: center;
 }
-.comment {
-  margin: .5rem;
-}
 input {
   margin-right: .5rem;
-}
-#fullname, #answerContent {
-  /* border: 1px solid rgb(228, 228, 228); */
-  border-radius: 5px;
-  align-self: center;
-  /* margin: 20px; */
-}
-
-.bubble{
-    background-color: #F2F2F2;
-    border-radius: 5px;
-    box-shadow: 0 0 6px #B2B2B2;
-    display: inline-block;
-    padding: 10px 18px;
-    position: relative;
-    vertical-align: top;
-}
-
-.bubble::before {
-    background-color: #F2F2F2;
-    content: "\00a0";
-    display: block;
-    height: 16px;
-    position: absolute;
-    top: 11px;
-    transform:             rotate( 29deg ) skew( -35deg );
-        -moz-transform:    rotate( 29deg ) skew( -35deg );
-        -ms-transform:     rotate( 29deg ) skew( -35deg );
-        -o-transform:      rotate( 29deg ) skew( -35deg );
-        -webkit-transform: rotate( 29deg ) skew( -35deg );
-    width:  20px;
-}
-
-.me {
-    float: left;
-    margin: 5px 45px 5px 20px;
-}
-
-.me::before {
-    box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
-    left: -9px;
 }
 </style>
