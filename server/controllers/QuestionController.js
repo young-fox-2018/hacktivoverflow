@@ -116,7 +116,7 @@ class QuestionController {
     }
 
     static downvote(req,res){
-         Question.findOne({
+        Question.findOne({
             _id: req.params.id
         })
             .then(question=>{
@@ -177,7 +177,7 @@ class QuestionController {
         Question.findOne({
             _id: req.params.id
         })
-            .populate({path: 'answers', populate : { path: 'author', select: ['name', '_id']}})
+            .populate({path: 'answers', populate : { path: 'author', select: ['name', '_id']}, select: ['_id', 'upVoters', 'downVoters', 'accepted', 'createdAt', 'updatedAt', 'body']})
             .populate({path: 'author', select: ['name', '_id', 'reputation']})
             .then(question=> {
                 res.status(200).json(question)
@@ -235,9 +235,9 @@ class QuestionController {
             .then(deleted=> {
                 res.status(200).json(deleted)
             })
-            .catch(err=> [
+            .catch(err=> {
                 res.status(400).json({errors: err.message})
-            ])
+            })
     }
 
     static updateAnswer(req, res){
@@ -255,6 +255,138 @@ class QuestionController {
         })
     }
 
+    static upvoteAnswer(req,res){
+        Answer.findOne({
+            _id: req.params.answerId
+        })
+            .then(answer=> {
+                console.log(req.currentUser.id, '==', answer.upVoters)
+                let checkVote = answer.upVoters.findIndex(upVoter=> upVoter == req.currentUser.id)
+                console.log(checkVote, '==checkvote')
+                if(checkVote !== -1){
+                    Answer.findOneAndUpdate({
+                        _id: req.params.answerId
+                    }, {
+                        $pull: {upVoters: {$in : [req.currentUser.id]}}
+                    }, {new: true})
+                        .then(updated=>{
+                            User.findOneAndUpdate({
+                                _id: req.currentUser.id
+                            }, {
+                                $inc: {reputation: -1}
+                            }, {new: true})
+                                .then(upvotedUser=> {
+                                    res.status(200).json({
+                                        message: 'undo Upvote success!',
+                                        updated: updated, 
+                                        upvotedUser: upvotedUser
+                                    })
+                                })
+                                .catch(err=> {
+                                    res.status(400).json({errors: {reputationUser: {message: 'Can not increment user\'s reputation'} || err.errors ||err. message}})
+                                })
+                        })
+                        .catch(err=>{
+                            res.status(400).json({
+                                message: 'Internal Server Error',
+                                err: err.message
+                            })
+                        })
+                } else {
+                    Answer.findOneAndUpdate({
+                        _id: req.params.answerId
+                    }, {
+                        $push: {upVoters: req.currentUser.id}
+                    }, { new: true })
+                        .then(updated=>{
+                            console.log(updated, 'masuk sinii')
+                            User.findOneAndUpdate({
+                                _id: req.currentUser.id
+                            }, {
+                                $inc: {reputation: 1}
+                            }, {new: true})
+                                .then(upvotedUser=> {
+                                    res.status(200).json({
+                                        message: 'Upvote success!',
+                                        updated: updated, 
+                                        upvotedUser: upvotedUser
+                                    })
+                                })
+                                .catch(err=> {
+                                    res.status(400).json({errors: {reputationUser: {message: 'Can not increment user\'s reputation'} || err.errors ||err. message}})
+                                })
+                            
+                        })
+                        .catch(err=>{
+                            res.status(400).json({
+                                err: err.message
+                            })
+                        })
+                }
+            })
+            .catch(err=> {
+                console.log(err)
+
+            })
+    }
+
+    static downvoteAnswer(req,res){
+        Answer.findOne({
+            _id: req.params.answerId
+        })
+            .then(answer=>{
+                let checkVote = answer.downVoters.findIndex(voter=> voter == req.currentUser.id)
+                if(checkVote !== -1){
+                    answer.downVoters.pull([req.currentUser.id])
+                    answer.save()
+                    User.findOneAndUpdate({
+                        _id: req.currentUser.id
+                    }, {
+                        $inc: {reputation: 1}
+                    }, {new: true})
+                        .then(downvotedUser=> {
+                            res.status(200).json({
+                                message: 'downVote success!',
+                                updated: updated, 
+                                downvotedUser: downvotedUser
+                            })
+                        })
+                        .catch(err=> {
+                            res.status(400).json({errors: {reputationUser: {message: 'Can not increment user\'s reputation'} || err.errors ||err. message}})
+                        })
+                    res.status(200).json({
+                        message: 'Undo DownVote Success!'
+                    })
+                } else {
+                   answer.downVoters.push([req.currentUser.id]) 
+                   answer.save()
+                   User.findOneAndUpdate({
+                        _id: req.currentUser.id
+                    }, {
+                        $inc: {reputation: -1}
+                    }, {new: true})
+                        .then(downvotedUser=> {
+                            res.status(200).json({
+                                message: 'Upvote success!',
+                                updated: updated, 
+                                downvotedUser: downvotedUser
+                            })
+                        })
+                        .catch(err=> {
+                            res.status(400).json({errors: {reputationUser: {message: 'Can not increment user\'s reputation'} || err.errors ||err. message}})
+                        })
+                   res.status(200).json({
+                       message: 'DownVote Success!'
+                   })
+                }
+            })
+            .catch(err=>{
+                res.status(400).json({
+                    err: err.message,
+                    message: 'Internal Server Error'
+                })
+            })
+    }
 }
 
 module.exports = QuestionController

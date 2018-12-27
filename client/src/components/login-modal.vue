@@ -24,6 +24,7 @@
 import FormGroup from '@/components/form-group.vue'
 import {mapActions, mapState, mapMutations} from 'vuex'
 import axios from 'axios'
+import api from '../assets/api-server.js'
 
 export default {
   data () {
@@ -58,10 +59,23 @@ export default {
       }
     },
     handleSubmit () {
-      this.login(this.user).then(data=> {
-        this.isLogin()
-      })
-      this.$refs.modal.hide()
+      api.post('/login', this.user)
+        .then(({data})=> {
+          // console.log(data)
+          localStorage.setItem('token', data.token)
+          this.login(data)
+          this.isLogin()
+          this.$refs.modal.hide()
+        })
+        .catch(err=> {
+          // console.log(err.response.data.message)
+          console.log(err.response)
+          this.$swal({
+            type: 'warning', 
+            text: err.response.data.message,
+            title: 'Login Error!'
+          })
+        })
       
     },
     validateEmail(email) {

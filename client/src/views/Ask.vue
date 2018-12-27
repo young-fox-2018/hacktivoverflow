@@ -2,31 +2,33 @@
     <div id="ask">
         <div class="row mt-2">
             <div class="col-4">
-                <h3 style="float: left">Ask a question</h3>
+                <h3 style="float: left" v-if="usage== 'create'">Ask a question</h3>
+                <h3 style="float: left" v-else-if="usage=='edit'">Edit a question</h3>
             </div>
         </div>
-        <div class="card text-center" v-if="loginStatus">
+        <loading-spinner v-show="isLoading"></loading-spinner>
+        <div class="card text-center" v-if="!isLoading">
             <div class="card-body">
                 <form @submit.prevent>
                     <div class="form-group">
                         <label for="title" >Title</label>
                         <div class="small-font">
-                            <input type="text" class="form-control" v-model="editQuestion.title" v-if="$route.params.id" required>
+                            <input type="text" class="form-control" v-model="editQuestion.title" v-if="usage=='edit'" required>
                             <input type="text" class="form-control" v-model="question.title" v-else required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="question" >Question</label>
-                        <wysiwyg id="formQuestion" v-model="editQuestion.body" v-if="$route.params.id !== ''"/>
+                        <wysiwyg id="formQuestion" v-model="editQuestion.body" v-if="usage=='edit'"/>
                         <wysiwyg id="formQuestion" v-model="question.body" v-else/>
                     </div>
                     <div class="form-group" >
                         <label for="tags">Tags</label>
-                        <tags-input @get-tags="question.tags=$event" v-if="$route.params.id" :usage="'edit'" :currentTags="editQuestion.tags"></tags-input>
-                        <tags-input @get-tags="question.tags=$event" v-else :usage="'create'"></tags-input>
+                        <tags-input @get-tags="editQuestion.tags=$event" v-if="usage=='edit'" :usage="'edit'" :currentTags="editQuestion.tags"></tags-input>
+                        <tags-input @get-tags="question.tags=$event" v-else :usage="'create'" :currentTags="[{text: ''}]"></tags-input>
                     </div>
                     <div>
-                        <input type="submit" @click.prevent="edit" value="Edit" class="btn btn-primary"  v-if="$route.params.id">
+                        <input type="submit" @click.prevent="edit" value="Edit" class="btn btn-primary"  v-if="usage=='edit'">
                         <input type="submit" @click.prevent="asking" value="Ask" class="btn btn-primary" v-else>
                     </div>
                 </form>
@@ -42,11 +44,13 @@
 import TagsInput from '@/components/TagsInput.vue'
 import {mapState, mapActions} from 'vuex'
 import api from '../assets/api-server.js'
+import LoadingSpinner from '@/components/Loading.vue'
 
 export default {
     name: 'ask',
     components: {
-        TagsInput
+        TagsInput,
+        LoadingSpinner
     },
     props: {
         userLoggedIn: Object,
@@ -62,7 +66,9 @@ export default {
                 title: '',
                 body: '',
                 tags: []
-            }
+            }, 
+            usage: 'create',
+            isLoading: false
         }
     },
     methods: {
@@ -83,9 +89,10 @@ export default {
                     this.$router.push('/')
                 })
                 .catch(({response})=> {
+                    console.log(response)
                     this.$swal({
                         type: 'warning',
-                        title: 'Error!',
+                        title: 'Error euy!',
                         text: response.statusText
                     })
                 })
@@ -113,10 +120,22 @@ export default {
             this.$router.replace('/')
         } else {
             if(this.$route.params.id){
+                this.usage = 'edit'
+                this.isLoading = true
                 api.get(`/questions/${this.$route.params.id}`)
                     .then(({data})=> {
-                        console.log(data, 'data')
+                        let dummyTags = []
+                        for(let i = 0; i < data.tags.length; i++){
+                            let newDummy = {
+                                text: data.tags[i],
+                                tiClasses: ['valid']
+                            }
+                            dummyTags.push(newDummy)
+                        } 
+                        data.tags = dummyTags
+                        console.log(data.tags, '=======')
                         this.editQuestion = data
+                        this.isLoading = false
                     })
                     .catch(err=> {
                         console.log(err)
@@ -129,6 +148,7 @@ export default {
         $route(){
             if(this.$route.params.id){
                 this.getQuestion(this.$route.params.id)
+                this.usage = 'edit'
             }
         }
     }

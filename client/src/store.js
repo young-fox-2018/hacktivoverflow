@@ -52,6 +52,7 @@ export default new Vuex.Store({
         text: 'continue your work'
       }
       state.token = data.token
+      state.name = data.name
     },
     toAlert: (state, data)=>{
       state.alert = {
@@ -88,18 +89,7 @@ export default new Vuex.Store({
   },
   actions: {
     login({commit}, payload){
-     return  api.post('/login', {
-        email: payload.email,
-        password: payload.password
-      })
-        .then(response=>{
-          localStorage.setItem('token', response.data.token)
-          localStorage.setItem('name', response.data.name)
-          commit('toLogin', response.data)
-        })
-        .catch(err=>{
-          commit('toAlert', {title: 'Oops something wrong!', text: err.message, type: 'warning'})
-        })
+      commit('toLogin', payload)
     },
     register({commit}, payload){
       axios({
@@ -123,7 +113,7 @@ export default new Vuex.Store({
         })
     }, 
     getQuestions({commit}){
-      api.get('/questions')
+      return api.get('/questions')
         .then(payload=>{
           commit('setQuestions', payload.data)
         })

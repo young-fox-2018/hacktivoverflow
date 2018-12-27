@@ -108,7 +108,10 @@ export default {
   color: #42b983;
 }
 
-
+#footer {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
 
 .mainContainer {
     margin-top: 61px;

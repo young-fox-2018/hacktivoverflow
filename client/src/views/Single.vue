@@ -1,25 +1,27 @@
 <template>
     <div id="single">
-        <div class="row mt-2  mb-2">
-            <div class="col-12">
-                <h3 style="float: left">{{currentQuestion.title}} </h3>
+        <div v-if="!isLoading">
+            <div class="row mt-2  mb-2">
+                <div class="col-12">
+                    <h3 style="float: left">{{currentQuestion.title}} </h3>
+                </div>
             </div>
-        </div>
-        <card-detail :usage="'question'" :item="currentQuestion" @get-vote="getQuestion(this.$route.params.id)"></card-detail>
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <form action="" @submit.prevent="setAnswer">
-                    <div class="form-group" v-if="loginStatus">
-                        <label for="question">Your Answer</label>
-                        <wysiwyg id="formQuestion" v-model="answer.body"/>
-                    <input type="submit" class="btn btn-primary mt-2" value="submit answer" style="float: left">
-                    </div>
-                </form>
+            <card-detail :usage="'question'" :item="currentQuestion" @get-vote="getQuestion(this.$route.params.id)"></card-detail>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <form action="" @submit.prevent="setAnswer">
+                        <div class="form-group" v-if="loginStatus">
+                            <label for="question">Your Answer</label>
+                            <wysiwyg id="formQuestion" v-model="answer.body"/>
+                        <input type="submit" class="btn btn-primary mt-2" value="submit answer" style="float: left">
+                        </div>
+                    </form>
+                </div>
             </div>
+            <h3>Answers : </h3>  
+            <card-detail :usage="'answer'" v-for="(answer, index) in currentQuestion.answers" :key="index" :item="answer" @edit-answer="editAnswer($event)" class="mb-2" ></card-detail>
         </div>
-        <h3>Answers : </h3>  
-        <card-detail :usage="'answer'" v-for="(answer, index) in currentQuestion.answers" :key="index" :item="answer" class="mb-2"></card-detail>
-        
+        <loading-spinner v-show="isLoading"></loading-spinner>
     </div>
 </template>
 
@@ -27,6 +29,7 @@
 import {mapState, mapActions} from 'vuex'
 import CardDetail from '@/components/CardDetail.vue'
 import api from '../assets/api-server.js'
+import LoadingSpinner from '@/components/Loading.vue'
 
 export default {
     name: 'single',
@@ -36,38 +39,80 @@ export default {
     methods: {
         ...mapActions(['getQuestion']),
         setAnswer(){
-            api.post(`/questions/${this.$route.params.id}/answer`, {
-                body: this.answer.body
-            }, {headers: {token: localStorage.token}})
-                .then(({data})=> {
-                    let answeredQuestion = data
-                    this.getQuestion(this.$route.params.id)
-                    this.answer={
-                        body: ''
-                    }
-                    this.$swal({
-                        type: 'success',
-                        title: 'Answer Successfully Added',
-                        text: 'Thanks for your answer',
+            if(this.formUse == 'create'){
+                api.post(`/questions/${this.$route.params.id}/answer`, {
+                    body: this.answer.body
+                }, {headers: {token: localStorage.token}})
+                    .then(({data})=> {
+                        let answeredQuestion = data
+                        this.getQuestion(this.$route.params.id)
+                        this.answer ={
+                            body: ''
+                        }
+                        this.$swal({
+                            type: 'success',
+                            title: 'Answer Successfully Added',
+                            text: 'Thanks for your answer',
+                        })
                     })
+                    .catch(err=> {
+                        console.log(err.response)
+                    })
+            } else if(this.formUse == 'edit'){
+                this.edit()
+            }
+
+        },
+        editAnswer(id){
+            this.formUse = 'edit'
+            api.get(`/answers/${id}`)
+                .then(({data})=> {
+                    // console.log(data)
+                    this.answer.body = data.body
+                    this.answer.id = data._id
                 })
                 .catch(err=> {
                     console.log(err.response)
                 })
-
+        }, 
+        edit(){
+            this.$swal.showLoading()
+            api.patch(`/answers/${this.answer.id}`, {body: this.answer.body}, {headers: {token: localStorage.token}})
+                .then(({data})=> {
+                    
+                    this.answer = {
+                        body : '',
+                        id: ''
+                    }
+                    this.getQuestion(this.$route.params.id).then((data)=> {
+                        this.$swal.close()
+                    })
+                    this.formUse = 'create'
+                    // this.$swal.stopLoading()
+                })
+                .catch(err=> {
+                    console.log(err.response, 'err')
+                })
         }
     },
     created() {
-        this.getQuestion(this.$route.params.id)
+        this.isLoading = true
+        this.getQuestion(this.$route.params.id).then((data)=> {
+            this.isLoading = false
+        })
     },
     components: {
         CardDetail,
+        LoadingSpinner
     },
     data(){
         return {
             answer : {
-                body: ''
-            }
+                body: '',
+                id: ''
+            },
+            formUse : 'create',
+            isLoading: false,
         }
     }
 }

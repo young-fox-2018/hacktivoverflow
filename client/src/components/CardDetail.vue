@@ -26,7 +26,9 @@
                 <div class="mt-2">
                     <small v-if="usage == 'question'">asked by {{item.author.name}}</small>
                     <small v-if="usage == 'answer'" >answered by {{item.author.name}}</small>
-                    <small v-if="usage == 'answer' && item.author._id == userLoggedIn.id">delete</small>
+                    <div>
+                        <small v-if="usage == 'answer' && item.author._id == userLoggedIn.id" class="btn btn-info btn-sm" @click="$emit('edit-answer', item._id)" >update</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,6 +38,7 @@
 <script>
 import {mapState, mapActions} from 'vuex'
 import api from '../assets/api-server.js'
+import Swal from 'vue-sweetalert2'
 
 export default {
     props: {
@@ -50,8 +53,19 @@ export default {
                     author: {
                         name: '',
                         _id: ''
-                    }
-                }]
+                    }, 
+                    body: '',
+                    createdAt: '',
+                    updatedAt: '',
+                    _id: ''
+                }],
+                author: {
+                    name: '',
+                    _id: ''
+                }, 
+                tags: [''],
+                _id: '',
+                body: ''
             }
         },
         usage: String,
@@ -71,6 +85,7 @@ export default {
                         type: 'warning', 
                         title: 'Can not upvote your own question'
                     })
+                    // this.$swal.showLoading()
                 } else {
                     api.patch(`/questions/${this.$route.params.id}/upvote`, {}, {headers: {token: localStorage.token}})
                         .then(({data})=> {
@@ -118,6 +133,15 @@ export default {
                         title: 'Error!',
                         text: 'Can not upvote your own answer'
                     })
+                } else {
+                    api.patch(`/answers/${this.item._id}/upvote`, {}, {headers: {token: localStorage.token}})
+                        .then(({data})=> {
+                            this.getQuestion(this.$route.params.id)
+                            // console.log(data)
+                        })
+                        .catch(({response})=> {
+                            console.log(response)
+                        })
                 }
             } 
         },
@@ -134,6 +158,15 @@ export default {
                         title: 'Error!',
                         text: 'Can not downvote your own answer'
                     })
+                } else {
+                    api.patch(`/answers/${this.item._id}/downvote`, {}, {headers: {token: localStorage.token}})
+                    .then(({data})=> {
+                        console.log(data)
+                        this.getQuestion(this.$route.params.id)
+                    })
+                    .catch(({response})=> {
+                        console.log(response)
+                    })
                 }
             }
             
@@ -143,7 +176,7 @@ export default {
         ...mapState(['currentQuestion', 'userLoggedIn'])
     },
     created(){
-        console.log(this.item)
+        // console.log(this.item)
     }
 }
 </script>

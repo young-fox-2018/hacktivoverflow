@@ -1,5 +1,6 @@
 
 const Question = require('../models/Question')
+const Answer = require('../models/Answer')
 
 class isOwner{
 
@@ -43,6 +44,38 @@ class isOwner{
             })
             .catch(err=>{
                 res.status(500).json({message:'Internal Server Error'})
+            })
+    }
+
+    static voteAnswer(req,res,next){
+        Answer.findOne({
+            _id: req.params.answerId
+        })
+            .then(answer=> {
+                if(answer.author !== req.currentUser.id){
+                    next()
+                } else {
+                    res.status(403).json({errors: {auth: {message: 'Forbidden'}}})
+                }
+            })
+            .catch(err=> {
+                res.status(400).json({errors: {answer: {message: err.message}}})
+            })
+    }
+
+    static answer(req,res,next){
+        Answer.findOne({
+            _id: req.params.id
+        })
+            .then(answer=> {
+                if(answer.author == req.currentUser.id){
+                    next()
+                } else {
+                    res.status(403).json({errors: {auth: {message: 'Forbidden'}}})
+                }
+            })
+            .catch(err=>{
+                res.status(400).json({errors: {answer: {message: err.message}}})
             })
     }
     

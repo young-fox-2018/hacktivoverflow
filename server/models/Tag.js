@@ -1,7 +1,19 @@
 const mongoose = require('mongoose')
 
 const tagSchema = mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        validate: {
+            isAsync: true,
+            validator: function(v,cb){
+                Tag.findOne({
+                    name: v
+                }, (err, projection)=> {
+                    
+                })
+            }
+        }
+    },
     followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 })
 

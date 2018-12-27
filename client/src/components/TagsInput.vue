@@ -52,7 +52,13 @@ export default {
         }
     },
     props: {
-      currentTags: Array, 
+      currentTags: {
+        type: Array,
+        default: [{
+          text: '',
+          tiClasses: ['valid']
+        }]
+      }, 
       usage: {
         type: String,
         default: 'create'

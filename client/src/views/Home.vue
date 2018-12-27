@@ -12,7 +12,7 @@
       <br>
       &nbsp;
       <div class="card text-center">
-        
+        <loading-spinner v-show="isLoading" style="margin-left: 320px"></loading-spinner>
         <card v-for="(q, index) in allQuestions" :key="index"
               :question="q"
               class="question-card">
@@ -25,6 +25,7 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import Card from '@/components/Card.vue'
+import LoadingSpinner from '@/components/Loading.vue'
 
 import {mapState, mapActions} from 'vuex'
 
@@ -32,18 +33,23 @@ export default {
   name: 'home',
   data(){
     return {
-      question:''
+      question:'',
+      isLoading: true
     }
   },
   components: {
     HelloWorld,
-    Card
+    Card,
+    LoadingSpinner
   },
   computed: {
     ...mapState(['allQuestions', 'loginStatus', 'token'])
   },
   created(){
-    this.$store.dispatch('getQuestions')
+    this.isLoading = true
+    this.$store.dispatch('getQuestions').then((data)=> {
+      this.isLoading = false
+    })
   },
   methods: {
     submitQuestion(){

@@ -16,6 +16,7 @@ db.once('open', function callback () {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var questionRouter = require('./routes/questions')
+var answersRouter = require('./routes/answers')
 var app = express();
 
 // view engine setup
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/answers', answersRouter)
 app.use('/questions', questionRouter)
 
 // catch 404 and forward to error handler
