@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import database from '@/assets/config.js';
+import database from '@/assets/config';
 
 Vue.use(Vuex);
 
@@ -27,13 +27,13 @@ export default new Vuex.Store({
       state.successMessage = msg;
       setTimeout(() => {
         state.successMessage = '';
-      }, 3000);
+      }, 2000);
     },
     setErrorMessage(state, msg) {
       state.errorMessage = msg;
       setTimeout(() => {
         state.errorMessage = '';
-      }, 3000);
+      }, 2000);
     },
     storeAllDataMutations(state, payload) {
       state.allQuestions = payload || {};
@@ -52,10 +52,10 @@ export default new Vuex.Store({
     },
     saveAnswerDownvotesMutations(state, payload) {
       state.answerDownvotes = payload || {};
-    }
+    },
   },
   actions: {
-    upvoteQuestion({ commit }, payload) {
+    upvoteQuestion(context, payload) {
       database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
           database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
@@ -72,7 +72,7 @@ export default new Vuex.Store({
         }
       });
     },
-    downvoteQuestion({ commit }, payload) {
+    downvoteQuestion(context, payload) {
       database.ref(`${payload.questionId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
         if (!snapshot.val()) {
           database.ref(`${payload.questionId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
@@ -89,7 +89,7 @@ export default new Vuex.Store({
         }
       });
     },
-    postAnswer({ commit }, payload) {
+    postAnswer(context, payload) {
       const newKey = database.ref(`${payload.questionId}/answers/`).push().key;
       database.ref(`${payload.questionId}/answers/${newKey}`).set({
         title: payload.questionTitle,
@@ -100,34 +100,40 @@ export default new Vuex.Store({
     },
     upvoteAnswer({ commit }, payload) {
       database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
-        if(!snapshot.val()) {
+        if (!snapshot.val()) {
           database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
-            if(!snapshot.val()) {
+            if (!snapshot.val()) {
               database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).set({
                 name: payload.name,
               });
+              commit('setSuccessMessage', 'Answer upvoted.');
             } else {
+              commit('setSuccessMessage', 'Upvote removed.');
               database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).remove();
             }
           });
         } else {
+          commit('setSuccessMessage', 'Downvote removed.');
           database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).remove();
         }
       });
     },
     downvoteAnswer({ commit }, payload) {
       database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).once('value').then((snapshot) => {
-        if(!snapshot.val()) {
+        if (!snapshot.val()) {
           database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).once('value').then((snapshot) => {
-            if(!snapshot.val()) {
+            if (!snapshot.val()) {
               database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).set({
                 name: payload.name,
               });
+              commit('setSuccessMessage', 'Answer downvoted.');
             } else {
+              commit('setSuccessMessage', 'Downvote removed.');
               database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsdown/${payload.userId}`).remove();
             }
           });
         } else {
+          commit('setSuccessMessage', 'Upvote removed.');
           database.ref(`${payload.questionId}/answers/${payload.answerId}/thumbsup/${payload.userId}`).remove();
         }
       });

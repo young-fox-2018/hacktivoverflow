@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <success-alert />
+    <error-alert />
     <h1>{{ questionDetail.title }}</h1>
     <hr>
     <p v-html="questionDetail.content"></p>
@@ -27,7 +29,7 @@
       <input v-model="newAnswer" class="input" type="text" placeholder="Answer here...">
       <a class="button is-info" @click="postAnswer">Post Answer</a>
     </div>
-    <comment v-for="(eachAnswer, index) in allQuestions.answers" :key="index" :eachAnswer="eachAnswer"/>
+    <comment v-for="(eachAnswer, index) in allQuestions.answers" :key="index" :answerId="index" :eachAnswer="eachAnswer"/>
 
   </div>
 </template>
@@ -35,13 +37,16 @@
 <script>
 import axios from '@/assets/dotapi';
 import database from '@/assets/config';
-// import { mapState } from 'vuex';
 import Comment from '@/components/Comment.vue';
+import SuccessAlert from '@/components/SuccessAlert.vue';
+import ErrorAlert from '@/components/ErrorAlert.vue';
 
 export default {
   name: 'QuestionDetail',
   components: {
     Comment,
+    SuccessAlert,
+    ErrorAlert,
   },
   data() {
     return {
@@ -52,9 +57,7 @@ export default {
       upvoted: false,
       downvoted: false,
       answerUpvoted: false,
-      answerDownvoted: false,
-      answerUpvotedTotal: 0,
-      answerDownvotedTotal: 0,
+      answerDownvoted: false,      
     };
   },
   created() {
@@ -93,7 +96,7 @@ export default {
           this.questionDetail.posted_at = new Date(this.questionDetail.posted_at).toISOString().substring(0, 10);
         })
         .catch((err) => {
-          console.log('error getting question detail');
+          this.$store.commit('setErrorMessage', 'Error getting question detail.');
           console.log(err.response);
         });
     },
@@ -104,6 +107,8 @@ export default {
           userId: localStorage.current_user,
           name: localStorage.name,
         });
+      } else {
+        this.$store.commit('setErrorMessage', 'Cannot upvote your own question.');
       }
     },
     downvoteQuestion() {
@@ -113,6 +118,8 @@ export default {
           userId: localStorage.current_user,
           name: localStorage.name,
         });
+      } else {
+        this.$store.commit('setErrorMessage', 'Cannot downvote your own question.');
       }
     },
   },
@@ -141,7 +148,7 @@ export default {
 .container {
   width: 100%;
   text-align: left;
-  padding: .5rem;
+  padding: 1rem;
 }
 h1 {
   font-size: 1.2rem;

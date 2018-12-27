@@ -10,13 +10,13 @@
             {{eachAnswer.answer}}
           </div>
           <div class="column">
-            <span class="icon" v-bind:class="{ 'has-text-info': answerUpvoted }" @click="upvoteAnswer(eachAnswer)">
-              <i class="far fa-thumbs-up"></i>{{ getAnswerUpvotes(getAnswerUpvotesFromStore) }}
+            <span class="icon" v-bind:class="{ 'has-text-info': upvoted }" @click="upvoteAnswer(eachAnswer, answerId)">
+              <i class="far fa-thumbs-up"></i>{{ getAnswerUpvotes(allQuestions) }}
             </span>
           </div>
           <div class="column">
-            <span class="icon" v-bind:class="{ 'has-text-danger': answerDownvoted }" @click="downvoteAnswer(eachAnswer)">
-              <i class="far fa-thumbs-down"></i>{{ getAnswerDownvotes(getAnswerDownvotesFromStore) }}
+            <span class="icon" v-bind:class="{ 'has-text-danger': downvoted }" @click="downvoteAnswer(eachAnswer, answerId)">
+              <i class="far fa-thumbs-down"></i>{{ getAnswerDownvotes(allQuestions) }}
             </span>
           </div>
         </div>
@@ -26,13 +26,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import SuccessAlert from '@/components/SuccessAlert.vue';
+import ErrorAlert from '@/components/ErrorAlert.vue';
+
 export default {
   name: 'Comment',
-  props: ['eachAnswer'],
+  props: ['eachAnswer', 'answerId'],  
   data() {
     return {
-      answerDownvoted: false,
-      answerUpvoted: false,
+      downvoted: false,
+      upvoted: false,
+      answerUpvotedTotal: 0,
+      answerDownvotedTotal: 0,
     };
   },
   methods: {
@@ -43,9 +49,9 @@ export default {
           answerId: index,
           userId: localStorage.current_user,
           name: localStorage.name,
-        });
+        });        
       } else {
-        console.log('Cannot upvote your own answer.');
+        this.$store.commit('setErrorMessage', 'Cannot upvote your own answer.');
       }
     },
     downvoteAnswer(answer, index) {
@@ -57,30 +63,40 @@ export default {
           name: localStorage.name,
         });
       } else {
-        console.log('Cannot downvote your own answer.');
+        this.$store.commit('setErrorMessage', 'Cannot upvote your own answer.');
       }
     },
-    getAnswerUpvotes(allUpvotes, index) {
+    getAnswerUpvotes(question) {
       let totalUpvoter = 0;
-      // for (let key in allUpvotes[index]) {
-      //   totalUpvoter++;
-      // }
+      if(question.thumbsup) {
+        totalUpvoter = Object.values(question.thumbsup).length;
+      }
       return totalUpvoter;
     },
-    getAnswerDownvotes(allDownvotes, index) {
+    getAnswerDownvotes(question) {
       let totalDownvoter = 0;
-      // for (let key in allDownvotes[index]) {
-      //   totalDownvoter++;
-      // }
+      if(question.thumbsdown) {
+        totalDownvoter = Object.values(question.thumbsdown).length;
+      }
       return totalDownvoter;
     },
   },
   computed: {
-    getAnswerUpvotesFromStore() {
-      return this.$store.state.answerUpvotes;
-    },
-    getAnswerDownvotesFromStore() {
-      return this.$store.state.answerDownvotes;
+    allQuestions: {
+      get() {
+        let particularAnswer = this.$store.state.allQuestions[this.$route.params.id].answers[this.answerId];
+        if (particularAnswer.thumbsup && particularAnswer.thumbsup[localStorage.current_user]) {
+          this.upvoted = true;
+        } else {
+          this.upvoted = false;
+        }
+        if (particularAnswer.thumbsdown && particularAnswer.thumbsdown[localStorage.current_user]) {
+          this.downvoted = true;
+        } else {
+          this.downvoted = false;
+        }
+        return particularAnswer;
+      }
     },
   },
 };

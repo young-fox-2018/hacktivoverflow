@@ -19,3 +19,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-alert {
+  padding: 5px;
+}
+</style>
