@@ -45,7 +45,7 @@
                 </a>
               </li>
             </ul>
-            <p class="copyright text-muted">Copyright © hacktiv-overflow.abdev.online 2018</p>
+            <p class="copyright text-muted">Copyright © hacktiv-overflow.abdev.icu 2018</p>
           </div>
         </div>
       </div>

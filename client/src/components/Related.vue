@@ -1,6 +1,6 @@
 <template>
     <div class="related">
-        <b-card title="Card title"
+        <b-card :title="title"
             sub-title="Card subtitle">
             
         </b-card>
@@ -9,7 +9,20 @@
 
 <script>
 export default {
-    
+    data(){
+        return {
+
+        }
+    },
+    props: {
+        title: {
+            type: String,
+            default: 'related questions'
+        },
+        items: [{
+            
+        }]
+    }
 }
 
 </script>

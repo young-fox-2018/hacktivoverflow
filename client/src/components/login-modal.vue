@@ -69,7 +69,7 @@ export default {
         })
         .catch(err=> {
           // console.log(err.response.data.message)
-          console.log(err.response)
+          // console.log(err.response)
           this.$swal({
             type: 'warning', 
             text: err.response.data.message,

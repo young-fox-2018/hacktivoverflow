@@ -7,15 +7,7 @@
              @ok="handleOk"
              >
       <form @submit.stop.prevent="handleSubmit">
-        <div class="alert alert-danger" role="alert" v-show="showError">
-          please fill all fields to register
-        </div>
-        <div class="alert alert-danger" role="alert" v-show="errEmail">
-          Please insert a valid email
-        </div>
-        <div class="alert alert-danger" role="alert" v-show="errPassword">
-          Password must be at least 8 characters
-        </div>
+      
         <form-group label="name" type="text" @get-value="user.name=$event"></form-group>
         <form-group label="email" type="email" validate="validateEmail" @get-value="user.email=$event"></form-group>
         <form-group label="password" type="password" @get-value="user.password=$event"></form-group>
@@ -27,6 +19,8 @@
 <script>
 import FormGroup from '@/components/form-group.vue'
 import {mapActions} from 'vuex'
+import api from '@/assets/api-server.js'
+
 export default {
   data () {
     return {
@@ -55,17 +49,29 @@ export default {
       evt.preventDefault()
       if (Object.values(this.user).findIndex(index=>index == '') !== -1) {
         this.showError = true
+        this.$swal('Error!', 'please fill all fields correctly', 'error')
       }else if (this.validateEmail(this.user.email)==false) {
-        this.errEmail = true
+        // this.errEmail = true
+        this.$swal('Error!', 'please fill all fields correctly', 'error')
       } else if(this.user.password.length < 8) {
-        this.errPassword = true
+        this.$swal('Error!', 'please fill all fields correctly', 'error')
+        // this.errPassword = true
       } else {
         this.handleSubmit()
       }
     },
     handleSubmit () {
-      this.register(this.user)
-      this.$refs.modal.hide()
+      api.post('/register', this.user)
+        .then(({data})=> {
+          this.$swal('Register Success', 'Please login to continue', 'success')
+            .then(()=>{
+              this.$refs.modal.hide()
+            })
+        })
+        .catch(({response})=>{
+          console.log(response)
+          this.$swal('Register Error', response.data.message, 'error')
+        })
     },
     validateEmail(email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

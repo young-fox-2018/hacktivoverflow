@@ -92,15 +92,13 @@ export default new Vuex.Store({
       commit('toLogin', payload)
     },
     register({commit}, payload){
-      axios({
-        method: 'post',
-        url: 'http://localhost:3000/register',
-        data: {
+      return api.post('/register',
+        {
           name: payload.name,
           email: payload.email,
           password: payload.password
         }
-      })
+      )
         .then(response=>{
           if(response.status === 201){
             commit('toMustLogin')

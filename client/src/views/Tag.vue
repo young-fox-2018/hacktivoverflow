@@ -9,8 +9,9 @@
             </div>
         </div>
         <div class="row">
+            <loading-spinner v-show="isLoading"></loading-spinner>
             <div class="col-md-3 mb-2" 
-             v-for="(tag, index) in tags" :key="index">
+             v-for="(tag, index) in tags" :key="index" v-if="!isLoading">
                 <b-card :title="tag.name">
                     <router-link :to="{path: ''}" class="card-link">see questions</router-link>
                 </b-card>
@@ -21,12 +22,17 @@
 
 <script>
 import api from '../assets/api-server.js'
+import LoadingSpinner from '@/components/Loading.vue'
 
 export default {
     name: 'tag',
+    components: {
+        LoadingSpinner
+    },
     data(){
         return {
-            tags: []
+            tags: [],
+            isLoading: true
         }
     },
     methods: {
@@ -34,6 +40,7 @@ export default {
             api.get('/tags')
                 .then(({data})=> {
                     this.tags = data
+                    this.isLoading = false
                 })
                 .catch(err=> {
                     console.log(err.response)
