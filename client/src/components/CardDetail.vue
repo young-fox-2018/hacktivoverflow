@@ -21,7 +21,7 @@
             <div class="col-md-11 question-summary">
                 <div v-html="item.body"></div>
                 <div style="display: inline" v-if="usage == 'question'">
-                    <button class="btn btn-default btn-sm mr-1" v-for="(tag, index) in item.tags" :key="index">{{tag}}</button>
+                    <button class="btn btn-default btn-sm mr-1" v-for="(tag, index) in item.tags" :key="index">{{tag.name}}</button>
                 </div>
                 <div class="mt-2">
                     <small v-if="usage == 'question'">asked by {{item.author.name}}</small>

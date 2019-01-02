@@ -25,7 +25,7 @@
                         <router-link :to="{name: 'single', params: {slug: question.slug, id: question._id}}">{{question.title}}</router-link>
                     </div>
                     <div style="display: inline">
-                        <button class="btn btn-default btn-sm mr-1" v-for="(tag, index) in question.tags" :key="index">{{tag}}</button>
+                        <button class="btn btn-default btn-sm mr-1" v-for="(tag, index) in question.tags" :key="index">{{tag.name}}</button>
                     </div>
                     <div v-if="question.author._id == userLoggedIn.id" style="text-align: right !important;">
                         <a href="" @click.prevent="toUpdate(question._id)" class="btn btn-info btn-sm mr-2">update</a>

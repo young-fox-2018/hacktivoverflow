@@ -15,7 +15,8 @@
         <loading-spinner v-show="isLoading" style="margin-left: 320px"></loading-spinner>
         <card v-for="(q, index) in allQuestions" :key="index"
               :question="q"
-              class="question-card">
+              class="question-card"
+              v-if="!isLoading">
         </card>
       </div>
   </div>
@@ -49,6 +50,7 @@ export default {
     this.isLoading = true
     this.$store.dispatch('getQuestions').then((data)=> {
       this.isLoading = false
+      // console.log(data)
     })
   },
   methods: {

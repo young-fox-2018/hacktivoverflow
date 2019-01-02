@@ -9,9 +9,10 @@
         </div>
         <div class="col-md-8">
           <router-view :userLoggedIn="userLoggedIn"/>
-
         </div>
-        <div class="col-md-2 border-left"></div>
+        <div class="col-md-2 border-left">
+          
+        </div>
       </div>
     </b-container>
     <footer>
@@ -56,10 +57,13 @@
 import Navbar from '@/components/navbar.vue'
 import {mapState, mapActions} from 'vuex'
 import Sidebar from '@/components/Sidebar.vue'
+import Related from '@/components/Related.vue'
+
 export default {
   components: {
     Navbar,
-    Sidebar
+    Sidebar,
+    Related
   },
   computed: {
     ...mapState(['showAlert', 'varAlert', 'alertMessage', 'loginStatus', 'userLoggedIn'])
@@ -108,9 +112,9 @@ export default {
   color: #42b983;
 }
 
-#footer {
-    padding-top: 10px;
-    padding-bottom: 0px;
+footer {
+  padding-top: 10px !important;
+  padding-bottom: 0px !important;
 }
 
 .mainContainer {

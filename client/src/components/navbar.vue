@@ -2,12 +2,15 @@
     <div id="navbar">
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top">
         <div class="container">
-            <a class="navbar-brand text-dark" href="#"><img src="../assets/stack-magic.png" style="height: 35px" alt=""> </a>
+            <a class="navbar-brand text-dark" href="#" @click.prevent><router-link to="/"><img src="../assets/stack-magic.png" style="height: 35px" alt=""> </router-link> </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item mr-5">
+                    <input type="text" class="form-control" placeholder="search">
+                </li>
                 <li class="nav-item">
                     <router-link class="nav-link" to="/">Home</router-link>
                 </li>
@@ -33,6 +36,7 @@
 import LoginModal from '@/components/login-modal.vue'
 import RegisterModal from '@/components/register-modal.vue'
 import {mapState, mapActions} from 'vuex'
+
 export default {
    components: {
        LoginModal,
@@ -42,7 +46,7 @@ export default {
        ...mapState(['loginStatus', 'userLoggedIn'])
    },
    created(){
-       console.log( this.loginStatus)
+    //    console.log( this.loginStatus)
    }, 
    methods: {
        ...mapActions(['isLogin']),

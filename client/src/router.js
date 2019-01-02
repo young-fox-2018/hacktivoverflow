@@ -35,6 +35,11 @@ export default new Router({
       path: '/ask/:id/edit', 
       name: 'edit',
       component: () => import(/* webpackChunkName: "ask" */ './views/Ask.vue')
+    },
+    {
+      path: '/tags',
+      name: 'tags',
+      component: () => import(/* webpackChunkName: "ask" */ './views/Tag.vue')
     }
   ]
 })

@@ -21,7 +21,7 @@ const questionSchema = mongoose.Schema({
         type: Date,
         default: new Date()
     },
-    tags: [String],
+    tags: [{type: mongoose.Schema.Types.ObjectId, ref: 'Tag'}],
     body: {
         type: String,
         minlength: 10,

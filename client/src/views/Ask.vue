@@ -58,7 +58,7 @@ export default {
     data(){
         return {
             question: {
-                title: '',
+                tagstitle: '',
                 body: '',
                 tags: []
             }, 
@@ -98,13 +98,16 @@ export default {
                 })
         }, 
         edit(){
+            this.$swal.showLoading()
             api.put(`/questions/${this.$route.params.id}`, this.editQuestion, {headers: {token: localStorage.token}})
                 .then(({data})=> {
                     this.$swal({
                         type: 'success',
                         title: 'Edit Success',
-                        text: 'changes successfully added'
+                        text: 'changes successfully added',
+                        timer: 2500
                     })
+                    // this.$swal.close()
                     this.$router.push('/')
                 })
                 .catch(err=> {
@@ -127,13 +130,13 @@ export default {
                         let dummyTags = []
                         for(let i = 0; i < data.tags.length; i++){
                             let newDummy = {
-                                text: data.tags[i],
+                                text: data.tags[i].name,
                                 tiClasses: ['valid']
                             }
                             dummyTags.push(newDummy)
                         } 
                         data.tags = dummyTags
-                        console.log(data.tags, '=======')
+                        // console.log(data.tags, '=======')
                         this.editQuestion = data
                         this.isLoading = false
                     })

@@ -115,6 +115,7 @@ export default new Vuex.Store({
     getQuestions({commit}){
       return api.get('/questions')
         .then(payload=>{
+          // console.log(payload.data)
           commit('setQuestions', payload.data)
         })
         .catch(err=>{
@@ -122,7 +123,7 @@ export default new Vuex.Store({
         })
     },
     changeLogin ({commit}, payload){
-      console.log('login has changed true')
+      // console.log('login has changed true')
       commit('changeLogin', payload)
     },
     isLogin({commit}){

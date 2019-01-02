@@ -8,15 +8,12 @@ const jwtHelper = require('../helpers/jwtHelper')
 class QuestionController {
     static create(req,res){
         let user = req.currentUser
-        let newTags = req.body.tags.map(tag=> tag.text)
-        // console.log(newTags)
-        // console.log(req.body)
-        // console.log(req.currentUser)
+       
         Question.create({
             author : user.id,
             body: req.body.body,
             title: req.body.title,
-            tags: newTags
+            tags: req.body.tags
         })
             .then(question=>{
                 // console.log('masuk sini')
@@ -31,19 +28,37 @@ class QuestionController {
     }
 
     static index(req,res){
-        Question.find()
-            .populate('author')
-            .populate('answers')
-            .sort({createdAt: -1})
-            .then(questions=>{
-                res.status(200).json(questions)
+        if(req.query.tag){
+            Question.find({
+                tags: req.query.tag
             })
-            .catch(err=>{
-                res.status(400).json({
-                    message: 'Internal Server Error',
-                    error: err.message
+                .populate('author')
+                .populate('answers')
+                .populate('tags')
+                .sort({createdAt: -1})
+                .then(questions=> {
+                    res.status(200).json(questions)
                 })
-            })
+                .catch(err=> {
+                    // console.log(err)
+                    res.status(400).json({errors: {questions: {message: err.message}}})
+                })
+        } else {
+            Question.find()
+                .populate('author')
+                .populate('answers')
+                .populate('tags')
+                .sort({createdAt: -1})
+                .then(questions=>{
+                    res.status(200).json(questions)
+                })
+                .catch(err=>{
+                    res.status(400).json({
+                        message: 'Internal Server Error',
+                        error: err.message
+                    })
+                })
+        }
     }
 
     static upvote(req,res){
@@ -179,6 +194,7 @@ class QuestionController {
         })
             .populate({path: 'answers', populate : { path: 'author', select: ['name', '_id']}, select: ['_id', 'upVoters', 'downVoters', 'accepted', 'createdAt', 'updatedAt', 'body']})
             .populate({path: 'author', select: ['name', '_id', 'reputation']})
+            .populate('tags')
             .then(question=> {
                 res.status(200).json(question)
             })
@@ -211,19 +227,20 @@ class QuestionController {
     }
 
     static update(req,res){
-        let newTags = req.body.tags.map(tag=> tag.text)
+        // let newTags = req.body.tags.map(tag=> tag.text)
         Question.findOneAndUpdate({
             _id: req.params.id
         }, {
             author : req.currentUser.id,
             body: req.body.body,
             title: req.body.title,
-            tags: newTags
+            tags: req.body.tags
         }, {new: true})
             .then(updatedQuestion => {
                 res.status(201).json(updatedQuestion)
             })
             .catch(err=> {
+                console.log(err)
                 res.status(400).json({errors: err.errors || err.message})
             })
     }
