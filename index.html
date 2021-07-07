@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://www.gstatic.com/firebasejs/5.7.1/firebase.js"></script>
+
+  <title>Document</title>
+</head>
+<body>
+
+
+  <script>
+  const config = {
+    apiKey: 'AIzaSyD8nSlAQLiiXwiT2hXcFJKN69eeS7avsAU',
+    authDomain: 'hacktivoverflow-a60a5.firebaseapp.com',
+    databaseURL: 'https://hacktivoverflow-a60a5.firebaseio.com',
+    projectId: 'hacktivoverflow-a60a5',
+    storageBucket: 'hacktivoverflow-a60a5.appspot.com',
+    messagingSenderId: '907636860373',
+  };
+
+  // const database = firebase.initializeApp(config).database();
+  const database = firebase.initializeApp(config).firestore();
+  database.settings({ timestampsInSnapshots: true });
+
+  database.collection('Question').get().then((snapshot) => {
+    console.log(snapshot.docs, 'from firestore====');
+  });
+
+  </script>
+</body>
+</html>
